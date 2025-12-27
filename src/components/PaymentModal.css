@@ -1,0 +1,146 @@
+.payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.payment-modal {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    flex: 1;
+    font-size: 18px;
+    color: #333;
+}
+
+.security-icon {
+    color: var(--color-primary-green);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.amount-display {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.currency {
+    font-size: 16px;
+    color: #666;
+    margin-right: 4px;
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.amount {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-mock {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.card-number {
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.pay-btn {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.secure-note {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.modal-status {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.spinner {
+    color: var(--color-primary-green);
+    margin-bottom: 20px;
+}
+
+.success-icon {
+    color: var(--color-primary-green);
+    margin-bottom: 20px;
+}
+
+.modal-status h3 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+}
+
+.modal-status p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}

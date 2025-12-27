@@ -1,0 +1,216 @@
+.track-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.track-header {
+    padding: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-clean-white);
+    z-index: 10;
+}
+
+.order-id {
+    color: var(--color-medium-gray);
+    font-weight: 500;
+}
+
+.map-wrapper {
+    height: 45vh;
+    width: 100%;
+    position: relative;
+}
+
+.leaflet-map {
+    height: 100%;
+    width: 100%;
+}
+
+.status-panel {
+    flex: 1;
+    background-color: var(--color-clean-white);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    margin-top: -20px;
+    /* Overlap map slightly */
+    z-index: 20;
+    position: relative;
+    padding: var(--spacing-lg);
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.eta-card {
+    background: var(--gradient-hero);
+    color: var(--color-clean-white);
+    text-align: center;
+}
+
+.eta-label {
+    display: block;
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.eta-time {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.eta-progress {
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-full);
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--color-clean-white);
+    border-radius: var(--radius-full);
+}
+
+.eta-expected {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Timeline */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background-color: var(--color-light-gray);
+    z-index: 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-medium-gray);
+    border: 2px solid var(--color-clean-white);
+}
+
+.timeline-item.completed .timeline-icon {
+    background-color: var(--color-primary-green);
+    color: var(--color-clean-white);
+}
+
+.timeline-item.active .timeline-icon {
+    background-color: var(--color-vibrant-orange);
+    color: var(--color-clean-white);
+    box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.2);
+}
+
+.timeline-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timeline-content h4 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.timeline-content span {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+}
+
+.driver-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: var(--color-light-gray);
+    border-radius: var(--radius-md);
+}
+
+.driver-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.driver-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-medium-gray);
+}
+
+.driver-details h4 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.driver-details span {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+}
+
+.driver-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.icon-action-btn.green {
+    background-color: var(--color-primary-green);
+}
+
+.icon-action-btn.orange {
+    background-color: var(--color-vibrant-orange);
+}
+
+.w-full {
+    width: 100%;
+}

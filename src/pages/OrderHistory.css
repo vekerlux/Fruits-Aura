@@ -1,0 +1,135 @@
+.history-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.history-header {
+    padding: var(--spacing-md);
+    background-color: var(--color-clean-white);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
+}
+
+.history-header h2 {
+    margin-bottom: var(--spacing-md);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: var(--spacing-md);
+    border-bottom: 1px solid var(--color-light-gray);
+}
+
+.filter-tab {
+    background: none;
+    border: none;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--color-medium-gray);
+    position: relative;
+    font-weight: 500;
+}
+
+.filter-tab.active {
+    color: var(--color-primary-green);
+}
+
+.filter-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-primary-green);
+}
+
+.orders-list {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.order-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-date {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+}
+
+.status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.green {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--color-primary-green);
+}
+
+.status-badge.orange {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--color-vibrant-orange);
+}
+
+.order-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-info h4 {
+    font-size: 16px;
+    margin: 0 0 2px 0;
+}
+
+.order-info p {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+    margin-bottom: 4px;
+}
+
+.order-total {
+    font-weight: 600;
+    color: var(--color-dark-gray);
+}
+
+.order-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.reorder-btn {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
+    gap: 6px;
+}
+
+.receipt-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-medium-gray);
+}
