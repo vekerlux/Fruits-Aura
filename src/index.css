@@ -1,46 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap');
 
-/* Brand Colors */
---color-primary-green: #67B043;
-/* Fresh Green */
---color-vibrant-orange: #FF7020;
-/* Bright Orange */
---color-soft-yellow: #FFD54F;
-/* Subtle Yellow */
---color-clean-white: #FFFFFF;
---color-light-gray: #F9FAFB;
---color-dark-gray: #333333;
---color-medium-gray: #757575;
---color-error: #D32F2F;
+:root {
+  /* Brand Colors */
+  --color-primary-green: #67B043;
+  /* Fresh Green */
+  --color-vibrant-orange: #FF7020;
+  /* Bright Orange */
+  --color-soft-yellow: #FFD54F;
+  /* Subtle Yellow */
+  --color-clean-white: #FFFFFF;
+  --color-light-gray: #F9FAFB;
+  --color-dark-gray: #333333;
+  --color-medium-gray: #757575;
+  --color-error: #D32F2F;
 
-/* Gradients */
---gradient-hero: linear-gradient(135deg, var(--color-primary-green) 0%, var(--color-vibrant-orange) 100%);
---gradient-accent: linear-gradient(to right, var(--color-primary-green), var(--color-vibrant-orange));
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, var(--color-primary-green) 0%, var(--color-vibrant-orange) 100%);
+  --gradient-accent: linear-gradient(to right, var(--color-primary-green), var(--color-vibrant-orange));
 
-/* Typography */
---font-heading: 'Poppins',
-sans-serif;
---font-body: 'Roboto',
-sans-serif;
+  /* Typography */
+  --font-heading: 'Poppins',
+    sans-serif;
+  --font-body: 'Roboto',
+    sans-serif;
 
-/* Spacing */
---spacing-xs: 4px;
---spacing-sm: 8px;
---spacing-md: 16px;
---spacing-lg: 24px;
---spacing-xl: 32px;
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
 
-/* Border Radius */
---radius-sm: 8px;
---radius-md: 16px;
---radius-lg: 24px;
---radius-full: 9999px;
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
 
-/* Shadows */
---shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
---shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
---shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
---shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
 * {
