@@ -28,7 +28,7 @@ const Menu = () => {
         const loadProducts = async () => {
             try {
                 const response = await getAllProducts();
-                setProducts(response.products || []);
+                setProducts(response.data?.products || []);
             } catch (error) {
                 showToast('Failed to load products', 'error');
                 console.error('Error loading products:', error);
