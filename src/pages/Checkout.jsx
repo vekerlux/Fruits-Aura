@@ -47,7 +47,11 @@ const Checkout = () => {
         });
 
         // Delivery Fee Logic (Abakaliki)
-        if (bundles > 0 || bottles >= 5) fee = 2000;
+        if (bundles > 0 || bottles >= 5) {
+            // Auraset fee: ₦1,500 - ₦2,000. Using 1750 as base.
+            const aurasetCount = bundles || Math.floor(bottles / 5);
+            fee = aurasetCount * 1750;
+        }
         else if (bottles === 4) fee = 1500;
         else if (bottles === 3) fee = 1500;
         else if (bottles === 2) fee = 1200;
@@ -92,9 +96,9 @@ const Checkout = () => {
             const items = cart.map(item => ({
                 productId: String(item.id).replace('-bundle', ''),
                 name: item.name,
-                price: typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price,
+                price: item.price,
                 quantity: item.quantity,
-                subtotal: (typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price) * item.quantity,
+                subtotal: item.price * item.quantity,
                 isBundle: item.isBundle || item.name.toLowerCase().includes('auraset')
             }));
 
@@ -173,7 +177,7 @@ const Checkout = () => {
                                         <span className="item-qty">× {item.quantity}</span>
                                     </div>
                                     <span className="item-price">
-                                        ${(typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price) * item.quantity.toFixed(2)}
+                                        {formatNairaWithoutDecimals(item.price * item.quantity)}
                                     </span>
                                 </div>
                             ))}

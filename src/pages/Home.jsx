@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, Truck, MapPin, Clock, ChevronRight } from 'lucide-react';
+import { Bell, Truck, MapPin, Clock, ChevronRight, Phone, Navigation } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../components/Card';
 import Button from '../components/Button';
@@ -34,6 +34,15 @@ const Home = () => {
     const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const handleCall = () => {
+        window.location.href = 'tel:+2348000000000'; // Placeholder business number
+    };
+
+    const handleLocation = () => {
+        // Open Google Maps with shop coordinates (Abakaliki placeholder)
+        window.open('https://www.google.com/maps/search/?api=1&query=Abakaliki,Ebonyi+State,Nigeria', '_blank');
+    };
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -138,13 +147,26 @@ const Home = () => {
                         </motion.div>
 
                         <motion.div whileTap={{ scale: 0.98 }}>
-                            <Card className="action-card" onClick={() => navigate('/locations')}>
+                            <Card className="action-card" onClick={handleLocation}>
                                 <div className="icon-wrapper orange">
                                     <MapPin size={24} />
                                 </div>
                                 <div className="action-text">
-                                    <h4>Find Nearby</h4>
-                                    <p>Locate a shop</p>
+                                    <h4>Shop Location</h4>
+                                    <p>Find us in Abakaliki</p>
+                                </div>
+                                <Navigation size={20} className="chevron" />
+                            </Card>
+                        </motion.div>
+
+                        <motion.div whileTap={{ scale: 0.98 }}>
+                            <Card className="action-card" onClick={handleCall}>
+                                <div className="icon-wrapper yellow">
+                                    <Phone size={24} />
+                                </div>
+                                <div className="action-text">
+                                    <h4>Call Us Now</h4>
+                                    <p>Instant support</p>
                                 </div>
                                 <ChevronRight size={20} className="chevron" />
                             </Card>
@@ -152,7 +174,7 @@ const Home = () => {
 
                         <motion.div whileTap={{ scale: 0.98 }}>
                             <Card className="action-card" onClick={() => navigate('/history')}>
-                                <div className="icon-wrapper yellow">
+                                <div className="icon-wrapper blue">
                                     <Clock size={24} />
                                 </div>
                                 <div className="action-text">

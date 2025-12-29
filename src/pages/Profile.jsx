@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User, MapPin, CreditCard, Bell, HelpCircle, LogOut, ChevronRight, Clock, Moon, Sun, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import Button from '../components/Button';
 import './Profile.css';
 
 const Profile = () => {
@@ -14,6 +15,7 @@ const Profile = () => {
     const { isDark, toggleTheme } = useTheme();
     const { user, isAuthenticated, isAdmin, logout } = useAuth();
     const { showToast } = useToast();
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -23,6 +25,12 @@ const Profile = () => {
         } catch (error) {
             showToast('Logout failed', 'error');
         }
+    };
+
+    const handleSaveAddress = (e) => {
+        e.preventDefault();
+        // Mock saving address logic
+        showToast('Address saved as default!', 'success');
     };
 
     const menuItems = [
@@ -85,26 +93,53 @@ const Profile = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                 >
-                    <Card className="subscription-card">
+                    <Card className="subscription-card premium-aura">
                         <div className="sub-header">
-                            <h3>Subscription Status</h3>
-                            <span className={`status-pill ${user?.subscription?.status || 'active'}`}>
+                            <div className="sub-title-group">
+                                <h3>Subscription</h3>
+                                <div className="aura-sparkle">✨</div>
+                            </div>
+                            <span className="status-pill active">
                                 {user?.subscription?.status || 'Active'}
                             </span>
                         </div>
-                        <div className="plan-details">
-                            <p className="plan-name">Current Plan: <strong>{user?.subscription?.plan === 'aura' ? 'Aura (Welcome Bonus)' : 'Fresher (Free)'}</strong></p>
-                            <p className="plan-desc">
-                                {user?.subscription?.plan === 'aura'
-                                    ? ' enjoying welcome benefits and discounts.'
-                                    : 'Basic access to ordering.'}
-                            </p>
+                        <div className="plan-details-hero">
+                            <p className="plan-label">Current Plan</p>
+                            <h4 className="plan-name">Aura (Welcome Bonus)</h4>
+                            <p className="plan-info">Valid until transition to Fresher plan.</p>
+                            <div className="plan-benefits">
+                                <span>• 20 bottles/day limit</span>
+                                <span>• 3 Aurasets/day limit</span>
+                                <span>• Priority delivery</span>
+                            </div>
                         </div>
-                        {user?.role === 'consumer' && (
-                            <button className="upgrade-btn">
-                                Upgrade to Distributor
-                            </button>
-                        )}
+                    </Card>
+                </motion.div>
+
+                {/* Address Management */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="address-management-section"
+                >
+                    <Card className="address-card">
+                        <div className="card-header-row">
+                            <h3>Delivery Addresses</h3>
+                            <Button variant="secondary" className="btn-tiny">Add New</Button>
+                        </div>
+                        <div className="address-list">
+                            <div className="address-item active">
+                                <div className="address-icon">
+                                    <MapPin size={18} />
+                                </div>
+                                <div className="address-text">
+                                    <p className="title">Default Address (Home)</p>
+                                    <p className="detail">Abakaliki, Ebonyi State, Nigeria</p>
+                                </div>
+                                <div className="active-dot"></div>
+                            </div>
+                        </div>
                     </Card>
                 </motion.div>
 
