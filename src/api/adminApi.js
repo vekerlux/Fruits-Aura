@@ -60,6 +60,16 @@ export const deleteUser = async (id) => {
     return response.data;
 };
 
+export const getPendingDistributors = async () => {
+    const response = await client.get('/admin/distributors/pending');
+    return response.data;
+};
+
+export const approveDistributor = async (id) => {
+    const response = await client.put(`/admin/distributors/${id}/approve`);
+    return response.data;
+};
+
 // ===== Order Management =====
 
 export const getAllOrders = async (params = {}) => {
@@ -69,6 +79,16 @@ export const getAllOrders = async (params = {}) => {
 
 export const updateOrderStatusAdmin = async (id, status) => {
     const response = await client.patch(`/admin/orders/${id}/status`, { status });
+    return response.data;
+};
+
+export const approveOrder = async (id, approvalData) => {
+    const response = await client.put(`/admin/${id}/approve`, approvalData);
+    return response.data;
+};
+
+export const getPendingOrders = async () => {
+    const response = await client.get('/admin/pending');
     return response.data;
 };
 

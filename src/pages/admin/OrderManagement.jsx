@@ -1,21 +1,28 @@
-import { useState, useEffect } from 'react';
-import { getAllOrders, updateOrderStatusAdmin } from '../../api/adminApi';
+import { getAllOrders, updateOrderStatusAdmin, approveOrder, getPendingOrders } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Eye } from 'lucide-react';
+import { Eye, CheckCircle, XCircle, Edit3, Truck, AlertCircle } from 'lucide-react';
+import { formatNairaWithoutDecimals } from '../../utils/currency';
+import Modal from '../../components/Modal'; // Assuming a Modal component exists or I'll create one
+import Button from '../../components/Button';
 
 export default function OrderManagement() {
     const { showToast } = useToast();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('all'); // 'all' or 'pending'
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+    const [overriddenFee, setOverriddenFee] = useState('');
 
     useEffect(() => {
         loadOrders();
-    }, []);
+    }, [view]);
 
     const loadOrders = async () => {
         try {
-            const response = await getAllOrders();
-            setOrders(response.orders);
+            setLoading(true);
+            const response = view === 'pending' ? await getPendingOrders() : await getAllOrders();
+            setOrders(response.orders || response.data?.orders || []);
         } catch (error) {
             showToast('Failed to load orders', 'error');
         } finally {
@@ -30,6 +37,27 @@ export default function OrderManagement() {
             loadOrders();
         } catch (error) {
             showToast('Failed to update order status', 'error');
+        }
+    };
+
+    const handleOpenApproval = (order) => {
+        setSelectedOrder(order);
+        setOverriddenFee(order.deliveryFee || '');
+        setIsApprovalModalOpen(true);
+    };
+
+    const handleConfirmApproval = async () => {
+        try {
+            const approvalData = {
+                status: 'approved',
+                deliveryFee: overriddenFee ? parseFloat(overriddenFee) : selectedOrder.deliveryFee
+            };
+            await approveOrder(selectedOrder._id, approvalData);
+            showToast('Order approved successfully', 'success');
+            setIsApprovalModalOpen(false);
+            loadOrders();
+        } catch (error) {
+            showToast('Failed to approve order', 'error');
         }
     };
 
@@ -52,8 +80,26 @@ export default function OrderManagement() {
     return (
         <div className="order-management">
             <div className="admin-page-header">
-                <h1>Orders</h1>
-                <p>Manage customer orders and order status</p>
+                <div className="header-title-row">
+                    <div>
+                        <h1>Orders</h1>
+                        <p>Manage customer orders and approval workflows</p>
+                    </div>
+                    <div className="admin-tabs">
+                        <button
+                            className={`tab-btn ${view === 'all' ? 'active' : ''}`}
+                            onClick={() => setView('all')}
+                        >
+                            All Orders
+                        </button>
+                        <button
+                            className={`tab-btn ${view === 'pending' ? 'active' : ''}`}
+                            onClick={() => setView('pending')}
+                        >
+                            Pending Approval
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div className="admin-table-container">
@@ -63,6 +109,7 @@ export default function OrderManagement() {
                             <th>Order ID</th>
                             <th>Customer</th>
                             <th>Items</th>
+                            <th>Delivery Fee</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Date</th>
@@ -72,8 +119,8 @@ export default function OrderManagement() {
                     <tbody>
                         {orders.length === 0 ? (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
-                                    No orders found
+                                <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>
+                                    No {view === 'pending' ? 'pending' : ''} orders found
                                 </td>
                             </tr>
                         ) : (
@@ -90,32 +137,52 @@ export default function OrderManagement() {
                                             </p>
                                         </div>
                                     </td>
-                                    <td>{order.items?.length || 0} items</td>
-                                    <td>${order.totalAmount?.toFixed(2)}</td>
                                     <td>
-                                        <select
-                                            className={`status-badge ${order.status}`}
-                                            value={order.status}
-                                            onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                                            style={{
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                padding: '0.5rem'
-                                            }}
-                                        >
-                                            <option value="pending">Pending</option>
-                                            <option value="confirmed">Confirmed</option>
-                                            <option value="preparing">Preparing</option>
-                                            <option value="ready">Ready for Pickup</option>
-                                            <option value="delivered">Delivered</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
+                                        <div className="items-summary">
+                                            {order.items?.length || 0} items
+                                            <span className="items-preview">
+                                                ({order.items?.map(i => i.name).join(', ').slice(0, 30)}...)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>{formatNairaWithoutDecimals(order.deliveryFee || 0)}</td>
+                                    <td style={{ fontWeight: '700' }}>
+                                        {formatNairaWithoutDecimals(order.totalAmount || order.total)}
+                                    </td>
+                                    <td>
+                                        {order.status === 'pending-approval' || order.status === 'pending' ? (
+                                            <span className="status-badge pending">Pending</span>
+                                        ) : (
+                                            <select
+                                                className={`status-select-badge ${order.status}`}
+                                                value={order.status}
+                                                onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="approved">Approved</option>
+                                                <option value="preparing">Preparing</option>
+                                                <option value="in-transit">In Transit</option>
+                                                <option value="delivered">Delivered</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            </select>
+                                        )}
                                     </td>
                                     <td>{formatDate(order.createdAt)}</td>
                                     <td>
-                                        <button className="action-btn view">
-                                            <Eye size={16} />
-                                        </button>
+                                        <div className="action-row">
+                                            {order.status === 'pending' || order.status === 'pending-approval' ? (
+                                                <button
+                                                    className="action-btn approve"
+                                                    onClick={() => handleOpenApproval(order)}
+                                                    title="Approve Order"
+                                                >
+                                                    <CheckCircle size={16} />
+                                                </button>
+                                            ) : null}
+                                            <button className="action-btn view" title="View Details">
+                                                <Eye size={16} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -123,6 +190,50 @@ export default function OrderManagement() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Approval Modal */}
+            {isApprovalModalOpen && (
+                <div className="admin-modal-overlay">
+                    <div className="admin-modal">
+                        <div className="modal-header">
+                            <h2>Approve Order</h2>
+                            <button className="close-btn" onClick={() => setIsApprovalModalOpen(false)}>
+                                <XCircle size={24} />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="order-context">
+                                <p><strong>Customer:</strong> {selectedOrder?.user?.name}</p>
+                                <p><strong>Items:</strong> {selectedOrder?.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}</p>
+                                <p><strong>Subtotal:</strong> {formatNairaWithoutDecimals(selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0))}</p>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Delivery Fee (₦)</label>
+                                <div className="input-with-icon">
+                                    <Truck size={18} className="input-icon" />
+                                    <input
+                                        type="number"
+                                        value={overriddenFee}
+                                        onChange={(e) => setOverriddenFee(e.target.value)}
+                                        placeholder="Enter delivery fee"
+                                    />
+                                </div>
+                                <p className="input-hint">Default for this order: {formatNairaWithoutDecimals(selectedOrder?.deliveryFee || 0)}</p>
+                            </div>
+
+                            <div className="total-preview">
+                                <span>Final Total:</span>
+                                <strong>{formatNairaWithoutDecimals((selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0)) + (overriddenFee ? parseFloat(overriddenFee) : 0))}</strong>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <Button variant="secondary" onClick={() => setIsApprovalModalOpen(false)}>Cancel</Button>
+                            <Button variant="primary" onClick={handleConfirmApproval}>Confirm & Approve</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
