@@ -8,6 +8,7 @@ import AddReview from '../components/AddReview';
 import PageTransition from '../components/PageTransition';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import { getProductById } from '../api/productsApi';
+import { formatNairaWithoutDecimals } from '../utils/currency';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useToast } from '../context/ToastContext';
@@ -156,7 +157,7 @@ const ProductDetail = () => {
                                 <span className="rating-text">{currentRating} ({reviews.length} reviews)</span>
                             </div>
                         </motion.div>
-                        <span className="price-tag">${currentPrice ? currentPrice.toFixed(2) : '0.00'}</span>
+                        <span className="price-tag">{formatNairaWithoutDecimals(currentPrice || 0)}</span>
                     </div>
 
                     {/* Auraset Toggle */}

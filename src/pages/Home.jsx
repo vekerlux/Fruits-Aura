@@ -48,7 +48,7 @@ const Home = () => {
                 {/* Header */}
                 <header className="home-header">
                     <div className="brand-logo">
-                        <img src="/logo.png" alt="Fruits Aura" className="header-logo" />
+                        <img src="/images/fruits-aura-logo.png" alt="Fruits Aura" className="header-logo" />
                         <span className="brand-text">Fruits Aura</span>
                     </div>
                     <div className="header-actions">

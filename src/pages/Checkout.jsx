@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import PageTransition from '../components/PageTransition';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { formatNaira, formatNairaWithoutDecimals } from '../utils/currency';
 import { createOrder } from '../api/ordersApi';
 import { useAuth } from '../context/AuthContext';
 import PaymentModal from '../components/PaymentModal';
@@ -180,15 +181,15 @@ const Checkout = () => {
                         <div className="summary-rows">
                             <div className="summary-row">
                                 <span>Subtotal</span>
-                                <span>${getCartTotal().toFixed(2)}</span>
+                                <span>{formatNairaWithoutDecimals(getCartTotal())}</span>
                             </div>
                             <div className="summary-row">
                                 <span>Delivery Fee</span>
-                                <span>${deliveryFee.toFixed(2)}</span>
+                                <span>{formatNairaWithoutDecimals(deliveryFee)}</span>
                             </div>
                             <div className="total-row">
                                 <span>Total</span>
-                                <span className="total-amount">${orderTotal.toFixed(2)}</span>
+                                <span className="total-amount">{formatNairaWithoutDecimals(orderTotal)}</span>
                             </div>
                         </div>
                     </section>
@@ -221,7 +222,7 @@ const Checkout = () => {
                         onClick={handleInitiatePayment}
                         disabled={isPlacingOrder || limitError}
                     >
-                        {isPlacingOrder ? 'Processing...' : `Pay Now • $${orderTotal.toFixed(2)}`}
+                        {isPlacingOrder ? 'Processing...' : `Pay Now • ${formatNairaWithoutDecimals(orderTotal)}`}
                     </Button>
                 </div>
 

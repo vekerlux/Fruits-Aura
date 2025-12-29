@@ -10,6 +10,7 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useToast } from '../context/ToastContext';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import { formatNairaWithoutDecimals } from '../utils/currency';
 import './Menu.css';
 
 const Menu = () => {
@@ -215,8 +216,8 @@ const Menu = () => {
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <span className="price" aria-label={`Price: $${typeof product.price === 'string' ? product.price : product.price.toFixed(2)}`}>
-                                                            ${typeof product.price === 'string' ? product.price : product.price.toFixed(2)}
+                                                        <span className="price" aria-label={`Price: ${formatNairaWithoutDecimals(product.price)}`}>
+                                                            {formatNairaWithoutDecimals(product.price)}
                                                         </span>
                                                         <motion.button
                                                             className="add-btn"

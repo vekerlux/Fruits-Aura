@@ -19,7 +19,7 @@ const Splash = ({ onComplete }) => {
                 transition={{ duration: 0.8, ease: "backOut" }}
             >
                 <div className="splash-logo">
-                    <img src="/logo.png" alt="Fruits Aura Logo" className="logo-image" />
+                    <img src="/images/fruits-aura-logo.png" alt="Fruits Aura Logo" className="logo-image" />
                 </div>
                 <motion.h1
                     initial={{ y: 20, opacity: 0 }}

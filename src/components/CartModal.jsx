@@ -1,7 +1,9 @@
+```javascript
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { formatNairaWithoutDecimals } from '../utils/currency';
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
 import './CartModal.css';
@@ -75,7 +77,7 @@ const CartModal = ({ isOpen, onClose }) => {
                                             <div className="cart-item-info">
                                                 <h4>{item.name}</h4>
                                                 <p className="cart-item-price">
-                                                    ${typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')).toFixed(2) : item.price.toFixed(2)}
+                                                    {formatNairaWithoutDecimals(typeof item.price === 'string' ? parseFloat(item.price.replace(/[₦$,]/g, '')) : item.price)}
                                                 </p>
                                             </div>
                                             <div className="cart-item-actions">
@@ -108,7 +110,7 @@ const CartModal = ({ isOpen, onClose }) => {
                                 <div className="cart-footer">
                                     <div className="cart-total">
                                         <span>Total</span>
-                                        <span className="total-amount">${getCartTotal().toFixed(2)}</span>
+                                        <span className="total-amount">{formatNairaWithoutDecimals(getCartTotal())}</span>
                                     </div>
                                     <Button variant="primary" className="checkout-btn" onClick={handleCheckout}>
                                         Proceed to Checkout
