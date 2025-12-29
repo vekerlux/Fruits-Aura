@@ -1,6 +1,7 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAllOrders, updateOrderStatusAdmin, approveOrder, getPendingOrders } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Eye, CheckCircle, XCircle, Edit3, Truck, AlertCircle } from 'lucide-react';
+import { CheckCircle, Truck } from 'lucide-react';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import Modal from '../../components/Modal'; // Assuming a Modal component exists or I'll create one
 import Button from '../../components/Button';
@@ -14,28 +15,30 @@ export default function OrderManagement() {
     const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
     const [overriddenFee, setOverriddenFee] = useState('');
 
-    useEffect(() => {
-        loadOrders();
-    }, [view]);
-
-    const loadOrders = async () => {
+    const loadOrders = useCallback(async () => {
         try {
             setLoading(true);
             const response = view === 'pending' ? await getPendingOrders() : await getAllOrders();
             setOrders(response.orders || response.data?.orders || []);
-        } catch (error) {
+        } catch (err) {
+            console.error('Error loading orders:', err);
             showToast('Failed to load orders', 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [view, showToast]);
+
+    useEffect(() => {
+        loadOrders();
+    }, [loadOrders]);
 
     const handleStatusChange = async (orderId, newStatus) => {
         try {
             await updateOrderStatusAdmin(orderId, newStatus);
             showToast('Order status updated', 'success');
             loadOrders();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error updating order status:', err);
             showToast('Failed to update order status', 'error');
         }
     };
@@ -56,7 +59,8 @@ export default function OrderManagement() {
             showToast('Order approved successfully', 'success');
             setIsApprovalModalOpen(false);
             loadOrders();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error approving order:', err);
             showToast('Failed to approve order', 'error');
         }
     };
@@ -192,48 +196,42 @@ export default function OrderManagement() {
             </div>
 
             {/* Approval Modal */}
-            {isApprovalModalOpen && (
-                <div className="admin-modal-overlay">
-                    <div className="admin-modal">
-                        <div className="modal-header">
-                            <h2>Approve Order</h2>
-                            <button className="close-btn" onClick={() => setIsApprovalModalOpen(false)}>
-                                <XCircle size={24} />
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="order-context">
-                                <p><strong>Customer:</strong> {selectedOrder?.user?.name}</p>
-                                <p><strong>Items:</strong> {selectedOrder?.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}</p>
-                                <p><strong>Subtotal:</strong> {formatNairaWithoutDecimals(selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0))}</p>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Delivery Fee (₦)</label>
-                                <div className="input-with-icon">
-                                    <Truck size={18} className="input-icon" />
-                                    <input
-                                        type="number"
-                                        value={overriddenFee}
-                                        onChange={(e) => setOverriddenFee(e.target.value)}
-                                        placeholder="Enter delivery fee"
-                                    />
-                                </div>
-                                <p className="input-hint">Default for this order: {formatNairaWithoutDecimals(selectedOrder?.deliveryFee || 0)}</p>
-                            </div>
-
-                            <div className="total-preview">
-                                <span>Final Total:</span>
-                                <strong>{formatNairaWithoutDecimals((selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0)) + (overriddenFee ? parseFloat(overriddenFee) : 0))}</strong>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <Button variant="secondary" onClick={() => setIsApprovalModalOpen(false)}>Cancel</Button>
-                            <Button variant="primary" onClick={handleConfirmApproval}>Confirm & Approve</Button>
-                        </div>
-                    </div>
+            <Modal
+                isOpen={isApprovalModalOpen}
+                onClose={() => setIsApprovalModalOpen(false)}
+                title="Approve Order"
+                footer={
+                    <>
+                        <Button variant="secondary" onClick={() => setIsApprovalModalOpen(false)}>Cancel</Button>
+                        <Button variant="primary" onClick={handleConfirmApproval}>Confirm & Approve</Button>
+                    </>
+                }
+            >
+                <div className="order-context">
+                    <p><strong>Customer:</strong> {selectedOrder?.user?.name}</p>
+                    <p><strong>Items:</strong> {selectedOrder?.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}</p>
+                    <p><strong>Subtotal:</strong> {formatNairaWithoutDecimals(selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0))}</p>
                 </div>
-            )}
+
+                <div className="form-group">
+                    <label>Delivery Fee (₦)</label>
+                    <div className="input-with-icon">
+                        <Truck size={18} className="input-icon" />
+                        <input
+                            type="number"
+                            value={overriddenFee}
+                            onChange={(e) => setOverriddenFee(e.target.value)}
+                            placeholder="Enter delivery fee"
+                        />
+                    </div>
+                    <p className="input-hint">Default for this order: {formatNairaWithoutDecimals(selectedOrder?.deliveryFee || 0)}</p>
+                </div>
+
+                <div className="total-preview">
+                    <span>Final Total:</span>
+                    <strong>{formatNairaWithoutDecimals((selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0)) + (overriddenFee ? parseFloat(overriddenFee) : 0))}</strong>
+                </div>
+            </Modal>
         </div>
     );
 }

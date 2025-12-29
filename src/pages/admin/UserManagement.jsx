@@ -1,6 +1,7 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAllUsers, updateUserRole, deleteUser, getPendingDistributors, approveDistributor } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Trash2, Shield, User, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Trash2, CheckCircle, Clock } from 'lucide-react';
 import Button from '../../components/Button';
 
 export default function UserManagement() {
@@ -9,23 +10,24 @@ export default function UserManagement() {
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('all'); // 'all' or 'pending-distributors'
 
-    useEffect(() => {
-        loadUsers();
-    }, [view]);
-
-    const loadUsers = async () => {
+    const loadUsers = useCallback(async () => {
         try {
             setLoading(true);
             const response = view === 'pending-distributors'
                 ? await getPendingDistributors()
                 : await getAllUsers();
             setUsers(response.users || response.data?.users || []);
-        } catch (error) {
+        } catch (err) {
+            console.error('Error loading users:', err);
             showToast('Failed to load users', 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [view, showToast]);
+
+    useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
 
     const handleRoleChange = async (userId, currentRole) => {
         // Simple cycle for now: consumer -> distributor -> admin -> consumer
@@ -39,7 +41,8 @@ export default function UserManagement() {
             await updateUserRole(userId, newRole);
             showToast('User role updated', 'success');
             loadUsers();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error updating role:', err);
             showToast('Failed to update user role', 'error');
         }
     };
@@ -51,7 +54,8 @@ export default function UserManagement() {
             await approveDistributor(userId);
             showToast('Distributor approved!', 'success');
             loadUsers();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error approving distributor:', err);
             showToast('Failed to approve distributor', 'error');
         }
     };
@@ -63,7 +67,8 @@ export default function UserManagement() {
             await deleteUser(userId);
             showToast('User deleted successfully', 'success');
             loadUsers();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error deleting user:', err);
             showToast('Failed to delete user', 'error');
         }
     };

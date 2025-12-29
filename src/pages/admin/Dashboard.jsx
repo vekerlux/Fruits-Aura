@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getDashboardStats } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
 import {
@@ -22,11 +22,7 @@ export default function Dashboard() {
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         try {
             setLoading(true);
             const [statsRes, rankingsRes] = await Promise.all([
@@ -34,13 +30,18 @@ export default function Dashboard() {
                 getVotingRankings()
             ]);
             setStats(statsRes.stats);
-            setRankings(rankingsRes.data || []);
-        } catch (error) {
+            setRankings(rankingsRes.products || rankingsRes.data || []);
+        } catch (err) {
+            console.error('Error loading dashboard data:', err);
             showToast('Failed to load dashboard data', 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [showToast]);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     if (loading) {
         return (

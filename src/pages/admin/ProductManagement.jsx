@@ -1,35 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getAllProductsAdmin, deleteProduct, toggleProductStatus } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import Button from '../../components/Button';
+import { formatNairaWithoutDecimals } from '../../utils/currency';
 
 export default function ProductManagement() {
     const { showToast } = useToast();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadProducts();
-    }, []);
-
-    const loadProducts = async () => {
+    const loadProducts = useCallback(async () => {
         try {
+            setLoading(true);
             const response = await getAllProductsAdmin();
-            setProducts(response.products);
-        } catch (error) {
+            setProducts(response.products || []);
+        } catch (err) {
+            console.error('Error loading products:', err);
             showToast('Failed to load products', 'error');
         } finally {
             setLoading(false);
         }
-    };
+    }, [showToast]);
+
+    useEffect(() => {
+        loadProducts();
+    }, [loadProducts]);
 
     const handleToggleStatus = async (productId) => {
         try {
             await toggleProductStatus(productId);
             showToast('Product status updated', 'success');
             loadProducts();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error updating status:', err);
             showToast('Failed to update product status', 'error');
         }
     };
@@ -41,7 +45,8 @@ export default function ProductManagement() {
             await deleteProduct(productId);
             showToast('Product deleted successfully', 'success');
             loadProducts();
-        } catch (error) {
+        } catch (err) {
+            console.error('Error deleting product:', err);
             showToast('Failed to delete product', 'error');
         }
     };
@@ -101,7 +106,7 @@ export default function ProductManagement() {
                                     </div>
                                 </td>
                                 <td>{product.category}</td>
-                                <td>${product.price.toFixed(2)}</td>
+                                <td>{formatNairaWithoutDecimals(product.price)}</td>
                                 <td>{product.inventory?.stock || 0}</td>
                                 <td>
                                     <button
