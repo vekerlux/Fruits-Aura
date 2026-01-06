@@ -11,15 +11,14 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-    const [isDark, setIsDark] = useState(false);
-
-    useEffect(() => {
+    const [isDark, setIsDark] = useState(() => {
         const savedTheme = localStorage.getItem('fruitsAuraTheme');
-        if (savedTheme === 'dark') {
-            setIsDark(true);
+        const wantsDark = savedTheme === 'dark';
+        if (wantsDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
-    }, []);
+        return wantsDark;
+    });
 
     const toggleTheme = () => {
         setIsDark(prev => {

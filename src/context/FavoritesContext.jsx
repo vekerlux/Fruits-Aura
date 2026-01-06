@@ -11,14 +11,10 @@ export const useFavorites = () => {
 };
 
 export const FavoritesProvider = ({ children }) => {
-    const [favorites, setFavorites] = useState([]);
-
-    useEffect(() => {
+    const [favorites, setFavorites] = useState(() => {
         const savedFavorites = localStorage.getItem('fruitsAuraFavorites');
-        if (savedFavorites) {
-            setFavorites(JSON.parse(savedFavorites));
-        }
-    }, []);
+        return savedFavorites ? JSON.parse(savedFavorites) : [];
+    });
 
     useEffect(() => {
         localStorage.setItem('fruitsAuraFavorites', JSON.stringify(favorites));

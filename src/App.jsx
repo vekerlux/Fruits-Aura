@@ -68,14 +68,9 @@ const AnimatedRoutes = () => {
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
-  }, []);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('hasSeenOnboarding');
+  });
 
   const handleSplashComplete = () => {
     setShowSplash(false);

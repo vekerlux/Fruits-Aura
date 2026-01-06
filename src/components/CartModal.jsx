@@ -1,4 +1,4 @@
-```javascript
+
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, ShoppingBag, Trash2 } from 'lucide-react';

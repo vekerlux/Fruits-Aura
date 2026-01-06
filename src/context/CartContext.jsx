@@ -11,15 +11,10 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
-
-    // Load cart from localStorage on mount
-    useEffect(() => {
+    const [cart, setCart] = useState(() => {
         const savedCart = localStorage.getItem('fruitsAuraCart');
-        if (savedCart) {
-            setCart(JSON.parse(savedCart));
-        }
-    }, []);
+        return savedCart ? JSON.parse(savedCart) : [];
+    });
 
     // Save cart to localStorage whenever it changes
     useEffect(() => {
