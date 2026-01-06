@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import ReviewSection from '../components/ReviewSection';
 import AddReview from '../components/AddReview';
 import PageTransition from '../components/PageTransition';
-import LoadingSkeleton from '../components/LoadingSkeleton';
+import LoadingMix from '../components/LoadingMix';
 import { getProductById } from '../api/productsApi';
 import { formatNairaWithoutDecimals } from '../utils/currency';
 import { useCart } from '../context/CartContext';
@@ -63,7 +63,7 @@ const ProductDetail = () => {
     if (loading || !product) {
         return (
             <div className="product-detail-container">
-                <LoadingSkeleton count={1} height={400} />
+                <LoadingMix message="Mixing fresh details..." />
             </div>
         );
     }
@@ -160,23 +160,24 @@ const ProductDetail = () => {
                         <span className="price-tag">{formatNairaWithoutDecimals(currentPrice || 0)}</span>
                     </div>
 
-                    {/* Auraset Toggle */}
+                    {/* Auraset Toggle - Enhanced Visibility */}
                     {product.bundlePrice && (
-                        <div className="bundle-toggle-container">
-                            <div className="toggle-label">
-                                <span className={!isBundle ? 'active' : ''}>Single Bottle</span>
-                            </div>
+                        <div className="bundle-toggle-container enhanced">
                             <div
-                                className={`toggle-switch large ${isBundle ? 'active' : ''}`}
-                                onClick={() => setIsBundle(!isBundle)}
+                                className={`toggle-option ${!isBundle ? 'active' : ''}`}
+                                onClick={() => setIsBundle(false)}
                             >
-                                <div className="toggle-knob"></div>
+                                <span className="option-name">Single Bottle</span>
+                                <span className="option-price">{formatNairaWithoutDecimals(product.price)}</span>
                             </div>
-                            <div className="toggle-label">
-                                <span className={isBundle ? 'active' : ''}>
-                                    Auraset (5 Pack)
-                                    <span className="save-badge">Save!</span>
-                                </span>
+
+                            <div
+                                className={`toggle-option ${isBundle ? 'active' : ''}`}
+                                onClick={() => setIsBundle(true)}
+                            >
+                                <div className="auraset-badge">BEST VALUE</div>
+                                <span className="option-name">Auraset (5 Pack)</span>
+                                <span className="option-price">{formatNairaWithoutDecimals(product.bundlePrice)}</span>
                             </div>
                         </div>
                     )}

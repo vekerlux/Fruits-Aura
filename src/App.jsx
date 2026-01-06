@@ -38,8 +38,41 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode='wait'>
       <Routes location={location} key={location.pathname}>
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="menu" element={<Menu />} />
+          <Route path="track" element={<Track />} />
+          <Route path="locations" element={<Locations />} />
+          <Route path="product/:id" element={<ProductDetail />} />
+
+          {/* Protected Customer Routes */}
+          <Route path="wishlist" element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          } />
+          <Route path="profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="history" element={
+            <ProtectedRoute>
+              <OrderHistory />
+            </ProtectedRoute>
+          } />
+          <Route path="checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+        </Route>
+
+        {/* Protected Admin Routes */}
         <Route path="/admin" element={
           <ProtectedRoute requireAdmin>
             <AdminLayout />
@@ -49,17 +82,6 @@ const AnimatedRoutes = () => {
           <Route path="products" element={<ProductManagement />} />
           <Route path="orders" element={<OrderManagement />} />
           <Route path="users" element={<UserManagement />} />
-        </Route>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="menu" element={<Menu />} />
-          <Route path="wishlist" element={<Wishlist />} />
-          <Route path="track" element={<Track />} />
-          <Route path="locations" element={<Locations />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="history" element={<OrderHistory />} />
-          <Route path="product/:id" element={<ProductDetail />} />
-          <Route path="checkout" element={<Checkout />} />
         </Route>
       </Routes>
     </AnimatePresence>

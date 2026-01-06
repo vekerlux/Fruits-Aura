@@ -1,8 +1,10 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingMix from './LoadingMix';
 
 export default function ProtectedRoute({ children, requireAdmin = false }) {
     const { isAuthenticated, isAdmin, loading } = useAuth();
+    const location = useLocation();
 
     if (loading) {
         return (
@@ -10,15 +12,17 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: '100vh'
+                minHeight: '100vh',
+                background: '#fafafa'
             }}>
-                <div>Loading...</div>
+                <LoadingMix />
             </div>
         );
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+        // Redirect to login but save the attempted location
+        return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
     if (requireAdmin && !isAdmin) {
