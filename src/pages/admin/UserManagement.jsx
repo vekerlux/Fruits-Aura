@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getAllUsers, updateUserRole, deleteUser, getPendingDistributors, approveDistributor } from '../../api/adminApi';
+import { getAllUsers, updateUserRole, deleteUser, getPendingDistributors, approveDistributor, updateUserSubscription } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Trash2, CheckCircle, Clock } from 'lucide-react';
+import { Trash2, CheckCircle, Clock, Edit2 } from 'lucide-react';
 import Button from '../../components/Button';
 
 export default function UserManagement() {
@@ -44,6 +44,23 @@ export default function UserManagement() {
         } catch (err) {
             console.error('Error updating role:', err);
             showToast('Failed to update user role', 'error');
+        }
+    };
+
+    const handleSubscriptionChange = async (userId, currentPlan) => {
+        const plans = ['fresher', 'aura', 'farming'];
+        const currentIndex = plans.indexOf(currentPlan || 'aura');
+        const nextPlan = plans[(currentIndex + 1) % plans.length]; // Cycle through plans
+
+        if (!confirm(`Change plan from ${currentPlan || 'aura'} to ${nextPlan}?`)) return;
+
+        try {
+            await updateUserSubscription(userId, { plan: nextPlan });
+            showToast(`Subscription updated to ${nextPlan}`, 'success');
+            loadUsers();
+        } catch (err) {
+            console.error('Error updating subscription:', err);
+            showToast('Failed to update subscription', 'error');
         }
     };
 
@@ -121,6 +138,7 @@ export default function UserManagement() {
                             <th>User</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Sub. Plan</th>
                             <th>Status</th>
                             <th>Joined</th>
                             <th>Actions</th>
@@ -129,7 +147,7 @@ export default function UserManagement() {
                     <tbody>
                         {users.length === 0 ? (
                             <tr>
-                                <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
+                                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
                                     No {view === 'pending-distributors' ? 'pending distributors' : 'users'} found
                                 </td>
                             </tr>
@@ -157,6 +175,26 @@ export default function UserManagement() {
                                             title="Click to change role"
                                         >
                                             {user.role || 'consumer'}
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="status-badge"
+                                            style={{
+                                                textTransform: 'capitalize',
+                                                background: user.subscription?.plan === 'farming' ? '#4ade8020' : '#f4f4f5',
+                                                color: user.subscription?.plan === 'farming' ? '#16a34a' : '#52525b',
+                                                border: '1px solid currentColor',
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '999px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '600',
+                                                cursor: 'pointer'
+                                            }}
+                                            onClick={() => handleSubscriptionChange(user._id, user.subscription?.plan)}
+                                            title="Click to change plan"
+                                        >
+                                            {user.subscription?.plan || 'aura'}
                                         </button>
                                     </td>
                                     <td>

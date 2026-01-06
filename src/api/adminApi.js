@@ -60,6 +60,11 @@ export const deleteUser = async (id) => {
     return response.data;
 };
 
+export const updateUserSubscription = async (id, subscriptionData) => {
+    const response = await client.patch(`/admin/users/${id}/subscription`, subscriptionData);
+    return response.data;
+};
+
 export const getPendingDistributors = async () => {
     const response = await client.get('/admin/distributors/pending');
     return response.data;

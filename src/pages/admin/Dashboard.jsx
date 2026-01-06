@@ -9,7 +9,8 @@ import {
     ThumbsUp,
     TrendingUp,
     AlertCircle,
-    ChevronRight
+    ChevronRight,
+    Clock
 } from 'lucide-react';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import { getVotingRankings } from '../../api/votingApi';
@@ -101,40 +102,104 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="dashboard-grid-layout">
-                {/* Voting Standings */}
-                <div className="dashboard-panel voting-panel">
-                    <div className="panel-header">
-                        <h3><TrendingUp size={20} /> Next Aura Mix Standings</h3>
-                        <span className="badge-info">Latest Votes</span>
-                    </div>
-                    <div className="voting-standings-list">
-                        {rankings.length === 0 ? (
-                            <p className="empty-msg">No votes recorded yet.</p>
-                        ) : (
-                            rankings.map((product, index) => (
-                                <div key={product._id} className="standing-item">
-                                    <div className="standing-rank">{index + 1}</div>
-                                    <div className="standing-info">
+            {/* Top Selling Products */}
+            <div className="dashboard-panel voting-panel">
+                <div className="panel-header">
+                    <h3><Package size={20} /> Top Selling Products</h3>
+                    <span className="badge-info">Best Sellers</span>
+                </div>
+                <div className="voting-standings-list">
+                    {stats?.topProducts?.length === 0 ? (
+                        <p className="empty-msg">No sales data yet.</p>
+                    ) : (
+                        stats?.topProducts?.map((product, index) => (
+                            <div key={product._id} className="standing-item">
+                                <div className="standing-rank" style={{ background: index === 0 ? 'var(--primary)' : '#eee', color: index === 0 ? '#fff' : '#666' }}>
+                                    {index + 1}
+                                </div>
+                                <div className="standing-info">
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <p className="standing-name">{product.name}</p>
-                                        <div className="progress-bar-bg">
-                                            <div
-                                                className="progress-bar-fill"
-                                                style={{ width: `${(product.voteCount / (rankings[0]?.voteCount || 1)) * 100}%` }}
-                                            ></div>
-                                        </div>
+                                        <span style={{ fontSize: '0.8rem', color: '#666' }}>{formatNairaWithoutDecimals(product.revenue)}</span>
                                     </div>
-                                    <div className="standing-votes">
-                                        <ThumbsUp size={14} />
-                                        <span>{product.voteCount}</span>
+                                    <div className="progress-bar-bg">
+                                        <div
+                                            className="progress-bar-fill"
+                                            style={{
+                                                width: `${(product.totalSold / (stats?.topProducts[0]?.totalSold || 1)) * 100}%`,
+                                                background: 'var(--secondary)'
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
-                            ))
-                        )}
+                                <div className="standing-votes">
+                                    <ShoppingBag size={14} />
+                                    <span>{product.totalSold}</span>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Voting Standings */}
+            <div className="dashboard-panel voting-panel">
+                <div className="panel-header">
+                    <h3><TrendingUp size={20} /> Next Aura Mix Standings</h3>
+                    <span className="badge-info">Latest Votes</span>
+                </div>
+                <div className="voting-standings-list">
+                    {rankings.length === 0 ? (
+                        <p className="empty-msg">No votes recorded yet.</p>
+                    ) : (
+                        rankings.map((product, index) => (
+                            <div key={product._id} className="standing-item">
+                                <div className="standing-rank">{index + 1}</div>
+                                <div className="standing-info">
+                                    <p className="standing-name">{product.name}</p>
+                                    <div className="progress-bar-bg">
+                                        <div
+                                            className="progress-bar-fill"
+                                            style={{ width: `${(product.voteCount / (rankings[0]?.voteCount || 1)) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div className="standing-votes">
+                                    <ThumbsUp size={14} />
+                                    <span>{product.voteCount}</span>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Revenue Breakdown & Alerts */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {/* Revenue Card */}
+                <div className="dashboard-panel alert-panel">
+                    <div className="panel-header">
+                        <h3><DollarSign size={20} /> Revenue Breakdown</h3>
+                    </div>
+                    <div className="action-alerts-list">
+                        <div className="alert-item">
+                            <div className="alert-icon green"><DollarSign size={18} /></div>
+                            <div className="alert-text">
+                                <p>Realized Revenue</p>
+                                <span>{formatNairaWithoutDecimals(stats?.totalRevenue || 0)} (Delivered)</span>
+                            </div>
+                        </div>
+                        <div className="alert-item">
+                            <div className="alert-icon orange"><Clock size={18} /></div>
+                            <div className="alert-text">
+                                <p>Potential Revenue</p>
+                                <span>{formatNairaWithoutDecimals(stats?.potentialRevenue || 0)} (Pending)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Important Actions / Alerts */}
+                {/* Important Actions */}
                 <div className="dashboard-panel alert-panel">
                     <div className="panel-header">
                         <h3><AlertCircle size={20} /> Actions Needed</h3>
