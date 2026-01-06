@@ -41,13 +41,14 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const response = await authApi.register(userData);
+            const { data } = response;
 
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                if (response.refreshToken) {
-                    localStorage.setItem('refreshToken', response.refreshToken);
+            if (data && data.accessToken) {
+                localStorage.setItem('token', data.accessToken);
+                if (data.refreshToken) {
+                    localStorage.setItem('refreshToken', data.refreshToken);
                 }
-                setUser(response.user);
+                setUser(data.user);
             }
 
             return response;
@@ -62,13 +63,14 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const response = await authApi.login(credentials);
+            const { data } = response;
 
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                if (response.refreshToken) {
-                    localStorage.setItem('refreshToken', response.refreshToken);
+            if (data && data.accessToken) {
+                localStorage.setItem('token', data.accessToken);
+                if (data.refreshToken) {
+                    localStorage.setItem('refreshToken', data.refreshToken);
                 }
-                setUser(response.user);
+                setUser(data.user);
             }
 
             return response;
