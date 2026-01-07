@@ -26,65 +26,74 @@ import Dashboard from './pages/admin/Dashboard';
 import ProductManagement from './pages/admin/ProductManagement';
 import OrderManagement from './pages/admin/OrderManagement';
 import UserManagement from './pages/admin/UserManagement';
+import NotificationManagement from './pages/admin/NotificationManagement';
+import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
 import './styles/auth.css';
 import './pages/admin/AdminLayout.css';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 
-const AnimatedRoutes = () => {
+const AppContent = () => {
   const location = useLocation();
+  const isAuthRoute = ['/login', '/register'].includes(location.pathname);
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const showBottomNav = !isAuthRoute && !isAdminRoute;
 
   return (
-    <AnimatePresence mode='wait'>
-      <Routes location={location} key={location.pathname}>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <div className="app-layout">
+      <main className="main-content">
+        <AnimatePresence mode='wait'>
+          <Routes location={location} key={location.pathname}>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="menu" element={<Menu />} />
-          <Route path="track" element={<Track />} />
-          <Route path="locations" element={<Locations />} />
-          <Route path="product/:id" element={<ProductDetail />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/track" element={<Track />} />
+            <Route path="/locations" element={<Locations />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
 
-          {/* Protected Customer Routes */}
-          <Route path="wishlist" element={
-            <ProtectedRoute>
-              <Wishlist />
-            </ProtectedRoute>
-          } />
-          <Route path="profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="history" element={
-            <ProtectedRoute>
-              <OrderHistory />
-            </ProtectedRoute>
-          } />
-          <Route path="checkout" element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          } />
-        </Route>
+            {/* Protected Customer Routes */}
+            <Route path="/wishlist" element={
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/history" element={
+              <ProtectedRoute>
+                <OrderHistory />
+              </ProtectedRoute>
+            } />
+            <Route path="/checkout" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
 
-        {/* Protected Admin Routes */}
-        <Route path="/admin" element={
-          <ProtectedRoute requireAdmin>
-            <AdminLayout />
-          </ProtectedRoute>
-        }>
-          <Route index element={<Dashboard />} />
-          <Route path="products" element={<ProductManagement />} />
-          <Route path="orders" element={<OrderManagement />} />
-          <Route path="users" element={<UserManagement />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
+            {/* Protected Admin Routes */}
+            <Route path="/admin/*" element={
+              <ProtectedRoute requireAdmin>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<ProductManagement />} />
+              <Route path="orders" element={<OrderManagement />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="notifications" element={<NotificationManagement />} />
+            </Route>
+          </Routes>
+        </AnimatePresence>
+      </main>
+      {showBottomNav && <BottomNav />}
+    </div>
   );
 };
 
@@ -118,7 +127,7 @@ function App() {
           <CartProvider>
             <ToastProvider>
               <Router>
-                <AnimatedRoutes />
+                <AppContent />
                 <FloatingWhatsApp />
               </Router>
             </ToastProvider>

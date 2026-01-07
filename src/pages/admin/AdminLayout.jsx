@@ -7,7 +7,8 @@ import {
     ShoppingCart,
     Users,
     LogOut,
-    Home
+    Home,
+    Bell
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -50,6 +51,10 @@ export default function AdminLayout() {
                     <NavLink to="/admin/users" className={({ isActive }) => isActive ? 'active' : ''}>
                         <Users size={20} />
                         <span>Users</span>
+                    </NavLink>
+                    <NavLink to="/admin/notifications" className={({ isActive }) => isActive ? 'active' : ''}>
+                        <Bell size={20} />
+                        <span>Notifications</span>
                     </NavLink>
                 </nav>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, MapPin, CreditCard, Bell, HelpCircle, LogOut, ChevronRight, Clock, Moon, Sun, Shield } from 'lucide-react';
+import { User, MapPin, CreditCard, Bell, HelpCircle, LogOut, ChevronRight, Clock, Moon, Sun, Shield, Camera, X, Check, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
 import PageTransition from '../components/PageTransition';
@@ -7,15 +7,23 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { updateProfile } from '../api/authApi';
 import Button from '../components/Button';
 import './Profile.css';
 
 const Profile = () => {
     const navigate = useNavigate();
     const { isDark, toggleTheme } = useTheme();
-    const { user, isAuthenticated, isAdmin, logout } = useAuth();
+    const { user, isAuthenticated, isAdmin, logout, updateUser } = useAuth();
     const { showToast } = useToast();
-    const [isAddingAddress, setIsAddingAddress] = useState(false);
+
+    // Edit State
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState({
+        name: user?.name || '',
+        email: user?.email || '', // Email usually read-only
+        avatar: user?.avatar || null
+    });
 
     const handleLogout = async () => {
         try {
@@ -27,10 +35,27 @@ const Profile = () => {
         }
     };
 
-    const handleSaveAddress = (e) => {
-        e.preventDefault();
-        // Mock saving address logic
-        showToast('Address saved as default!', 'success');
+    const handleSaveProfile = async () => {
+        try {
+            await updateProfile({ name: editForm.name });
+            // Update local context
+            updateUser({ ...user, name: editForm.name });
+            setIsEditing(false);
+            showToast('Profile updated successfully!', 'success');
+        } catch (error) {
+            console.error(error);
+            showToast('Failed to update profile', 'error');
+        }
+    };
+
+    const handleAvatarClick = () => {
+        if (!isEditing) return;
+        // Mock upload for now
+        showToast('Photo upload simulated! (Needs backend)', 'info');
+    };
+
+    const handleWhatsApp = () => {
+        window.open('https://wa.me/2349139110078', '_blank');
     };
 
     const menuItems = [
@@ -69,22 +94,75 @@ const Profile = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <div className="profile-avatar">
-                        <User size={40} />
+                    <div className="profile-avatar" onClick={handleAvatarClick} style={{ cursor: isEditing ? 'pointer' : 'default', position: 'relative' }}>
+                        {user?.avatar ? (
+                            <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                            <User size={40} />
+                        )}
+                        {isEditing && (
+                            <div style={{ position: 'absolute', bottom: 0, right: 0, background: 'var(--primary)', borderRadius: '50%', padding: '4px', color: 'white' }}>
+                                <Camera size={14} />
+                            </div>
+                        )}
                     </div>
+
                     <div className="profile-info">
-                        <h2>{user?.name || 'User'}</h2>
-                        <p>{user?.email}</p>
-                        <div className="profile-badges">
-                            {isAdmin && <span className="badge admin">Admin</span>}
-                            <span className={`badge ${user?.role || 'consumer'}`}>
-                                {user?.role === 'distributor' ? 'Distributor' : 'Consumer'}
-                            </span>
-                            <span className="badge plan">
-                                {user?.subscription?.plan === 'aura' ? 'Aura Plan' : 'Free Plan'}
-                            </span>
-                        </div>
+                        {!isEditing ? (
+                            <>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <h2>{user?.name || 'User'}</h2>
+                                    <button className="edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
+                                </div>
+                                <p>{user?.email}</p>
+                                <div className="profile-badges">
+                                    {isAdmin && <span className="badge admin">Admin</span>}
+                                    <span className={`badge ${user?.role || 'consumer'}`}>
+                                        {user?.role === 'distributor' ? 'Distributor' : 'Consumer'}
+                                    </span>
+                                    <span className="badge plan">
+                                        {user?.subscription?.plan === 'aura' ? 'Aura Plan' : 'Free Plan'}
+                                    </span>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="edit-form">
+                                <div className="profile-input-group">
+                                    <input
+                                        type="text"
+                                        className="profile-input"
+                                        value={editForm.name}
+                                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                        placeholder="Full Name"
+                                    />
+                                </div>
+                                <div className="action-buttons-row">
+                                    <Button size="sm" onClick={handleSaveProfile}><Check size={16} /> Save</Button>
+                                    <Button size="sm" variant="secondary" onClick={() => setIsEditing(false)}><X size={16} /> Cancel</Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                </motion.div>
+
+                {/* WhatsApp Direct */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                >
+                    <Card className="whatsapp-card" onClick={handleWhatsApp}>
+                        <div className="whatsapp-content">
+                            <Phone size={28} />
+                            <div className="whatsapp-text">
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <h3>Order via WhatsApp</h3>
+                                    <span className="save-contact-badge">SAVE ME</span>
+                                </div>
+                                <p>0913 911 0078 • Click to chat directly</p>
+                            </div>
+                        </div>
+                    </Card>
                 </motion.div>
 
                 {/* Subscription Dashboard */}

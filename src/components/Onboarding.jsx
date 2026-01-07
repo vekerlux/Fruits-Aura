@@ -1,35 +1,50 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 import './Onboarding.css';
 
 const slides = [
     {
         id: 1,
-        title: "Welcome to Fruits Aura",
-        description: "Experience the freshest, 100% natural fruit drinks that refresh your body and soul.",
-        icon: "🍊",
-        color: "var(--color-primary-green)"
+        title: "WATERMELON MIX",
+        subtitle: "Pure natural refreshment",
+        description: "100% Natural • No Added Sugar",
+        icon: "🍉",
+        color: "#FF6B6B", // Watermelon Red
+        action: "ORDER NOW",
+        link: "https://wa.me/message/LFA2LUMSBCYAL1?text=Hi%20Fruits%20Aura!%20I%20want%20to%20order%20the%20Watermelon%20Mix%20%F0%9F%8D%89",
+        isPremium: true
     },
     {
         id: 2,
-        title: "Track Your Order Live",
-        description: "Watch your drink travel from our kitchen to your doorstep in real-time.",
-        icon: "🚚",
-        color: "var(--color-vibrant-orange)"
+        title: "LOADING MIX – VOTE!",
+        subtitle: "Strawberry • Orange • Cucumber",
+        description: "Vote for your next flavor!",
+        icon: "🔥",
+        color: "#FF9800", // Orange
+        action: "VOTE NOW",
+        link: "https://wa.me/message/LFA2LUMSBCYAL1?text=I%20vote%20for%20the%20next%20Loading%20Mix!%20%F0%9F%94%A5",
+        isPremium: true
     },
     {
         id: 3,
-        title: "Find Us Nearby",
-        description: "Locate the nearest Fruits Aura shop or kiosk for a quick refreshment.",
-        icon: "📍",
-        color: "var(--color-soft-yellow)"
+        title: "UPCOMING EVENT",
+        subtitle: "Ebonyi's biggest refreshment experience",
+        description: "Don't miss the aura wave.",
+        icon: "🎉",
+        color: "#9C27B0", // Purple
+        action: "MORE INFO",
+        link: "https://whatsapp.com/channel/0029VaN3xQQE50Uca92g0513", // Hypothetical Channel Link or fallback to main number
+        isPremium: true
     }
 ];
 
 const Onboarding = ({ onComplete }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const { user } = useAuth();
+    const userName = user?.name?.split(' ')[0] || "Friend";
 
     const nextSlide = () => {
         if (currentIndex < slides.length - 1) {
@@ -39,27 +54,51 @@ const Onboarding = ({ onComplete }) => {
         }
     };
 
+    const handleAction = (link) => {
+        window.open(link, '_blank');
+    };
+
     return (
-        <div className="onboarding-container">
+        <div className="onboarding-container premium-bg">
             <div className="skip-btn-container">
                 <button className="skip-btn" onClick={onComplete}>Skip</button>
             </div>
 
-            <div className="slides-wrapper">
+            <motion.div
+                className="welcome-header"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+            >
+                <h1>Welcome {userName}!</h1>
+                <p>Refresh Your Aura with Fruits Aura ✨</p>
+            </motion.div>
+
+            <div className="slides-wrapper premium">
                 <AnimatePresence mode='wait'>
                     <motion.div
                         key={currentIndex}
-                        className="slide"
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.3 }}
+                        className="slide premium-card"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.4 }}
+                        style={{ borderTop: `4px solid ${slides[currentIndex].color}` }}
                     >
-                        <div className="slide-icon-wrapper" style={{ backgroundColor: slides[currentIndex].color }}>
-                            <span className="slide-icon">{slides[currentIndex].icon}</span>
+                        <div className="premium-icon" style={{ background: slides[currentIndex].color }}>
+                            {slides[currentIndex].icon}
                         </div>
-                        <h2>{slides[currentIndex].title}</h2>
-                        <p>{slides[currentIndex].description}</p>
+                        <h2 style={{ color: slides[currentIndex].color }}>{slides[currentIndex].title}</h2>
+                        <h3 className="premium-subtitle">{slides[currentIndex].subtitle}</h3>
+                        <p className="premium-desc">{slides[currentIndex].description}</p>
+
+                        <Button
+                            className="premium-action-btn"
+                            style={{ backgroundColor: slides[currentIndex].color }}
+                            onClick={() => handleAction(slides[currentIndex].link)}
+                        >
+                            {slides[currentIndex].action} <ExternalLink size={16} />
+                        </Button>
                     </motion.div>
                 </AnimatePresence>
             </div>
@@ -70,16 +109,17 @@ const Onboarding = ({ onComplete }) => {
                         <div
                             key={index}
                             className={`dot ${index === currentIndex ? 'active' : ''}`}
+                            style={{ backgroundColor: index === currentIndex ? slides[index].color : '#444' }}
                         />
                     ))}
                 </div>
                 <Button
-                    variant="primary"
-                    className="next-btn"
+                    variant="ghost"
+                    className="next-btn-text"
                     onClick={nextSlide}
                 >
-                    {currentIndex === slides.length - 1 ? "Get Started" : "Next"}
-                    {currentIndex < slides.length - 1 && <ChevronRight size={20} />}
+                    {currentIndex === slides.length - 1 ? "Start Refreshing" : "Next"}
+                    <ChevronRight size={20} />
                 </Button>
             </div>
         </div>

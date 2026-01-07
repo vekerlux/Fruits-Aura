@@ -13,9 +13,12 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
     const [isDark, setIsDark] = useState(() => {
         const savedTheme = localStorage.getItem('fruitsAuraTheme');
-        const wantsDark = savedTheme === 'dark';
+        // Default to dark if no preference, or if saved is 'dark'
+        const wantsDark = savedTheme === 'dark' || savedTheme === null;
         if (wantsDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
         }
         return wantsDark;
     });
