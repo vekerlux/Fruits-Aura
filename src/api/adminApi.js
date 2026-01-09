@@ -65,6 +65,16 @@ export const updateUserSubscription = async (id, subscriptionData) => {
     return response.data;
 };
 
+export const updateUserAdmin = async (id, userData) => {
+    const response = await client.patch(`/admin/users/${id}`, userData);
+    return response.data;
+};
+
+export const claimReferralReward = async (id) => {
+    const response = await client.patch(`/admin/users/${id}/claim-reward`);
+    return response.data;
+};
+
 export const getPendingDistributors = async () => {
     const response = await client.get('/admin/distributors/pending');
     return response.data;

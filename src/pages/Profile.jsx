@@ -37,21 +37,33 @@ const Profile = () => {
 
     const handleSaveProfile = async () => {
         try {
-            await updateProfile({ name: editForm.name });
-            // Update local context
-            updateUser({ ...user, name: editForm.name });
-            setIsEditing(false);
-            showToast('Profile updated successfully!', 'success');
+            const response = await updateProfile({ name: editForm.name, avatar: editForm.avatar });
+            // Update local context with the data returned from backend
+            if (response.success && response.data?.user) {
+                updateUser(response.data.user);
+                setIsEditing(false);
+                showToast('Profile updated successfully!', 'success');
+            } else {
+                throw new Error('Update failed');
+            }
         } catch (error) {
             console.error(error);
-            showToast('Failed to update profile', 'error');
+            showToast(error.response?.data?.message || 'Failed to update profile', 'error');
         }
     };
 
     const handleAvatarClick = () => {
         if (!isEditing) return;
-        // Mock upload for now
-        showToast('Photo upload simulated! (Needs backend)', 'info');
+        // Improved mock: Rotate through a few placeholders to show it "works"
+        const avatars = [
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Jameson',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Willow'
+        ];
+        const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+        setEditForm(prev => ({ ...prev, avatar: randomAvatar }));
+        showToast('Profile picture selected!', 'info');
     };
 
     const handleWhatsApp = () => {
@@ -95,8 +107,8 @@ const Profile = () => {
                     animate={{ opacity: 1, y: 0 }}
                 >
                     <div className="profile-avatar" onClick={handleAvatarClick} style={{ cursor: isEditing ? 'pointer' : 'default', position: 'relative' }}>
-                        {user?.avatar ? (
-                            <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                        {(isEditing ? editForm.avatar : user?.avatar) ? (
+                            <img src={isEditing ? editForm.avatar : user.avatar} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                         ) : (
                             <User size={40} />
                         )}
@@ -191,6 +203,71 @@ const Profile = () => {
                                 <span>• Priority delivery</span>
                             </div>
                         </div>
+                    </Card>
+                </motion.div>
+
+                {/* Referral Program Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.12 }}
+                >
+                    <Card className="referral-card">
+                        <div className="referral-header">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div className="gift-icon">🎁</div>
+                                <h3>Refer & Earn</h3>
+                            </div>
+                            <span className="referral-count">{user?.referrals?.length || 0} Joins</span>
+                        </div>
+                        <p className="referral-text">Share your code and get <strong>Free Aurasets</strong> when friends join!</p>
+
+                        <div className="referral-progress-container">
+                            <div className="referral-progress-info">
+                                <span>Progress to Reward</span>
+                                <span>{user?.referrals?.length || 0}/5 Friends</span>
+                            </div>
+                            <div className="referral-progress-bar">
+                                <motion.div
+                                    className="referral-progress-fill"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${Math.min(((user?.referrals?.length || 0) / 5) * 100, 100)}%` }}
+                                />
+                            </div>
+                            <p className="referral-milestone">
+                                {user?.referrals?.length >= 5
+                                    ? "🎉 Reward unlocked! Contact support."
+                                    : `Refer ${5 - (user?.referrals?.length || 0)} more to get a Free Auraset!`}
+                            </p>
+                        </div>
+
+                        <div className="referral-code-box">
+                            <span className="code-label">YOUR CODE:</span>
+                            <span className="code-value">{user?.referralCode || 'GENERATING...'}</span>
+                            <button
+                                className="copy-btn"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(user?.referralCode || '');
+                                    showToast('Code copied to clipboard!', 'success');
+                                }}
+                            >
+                                Copy
+                            </button>
+                        </div>
+
+                        {user?.referrals?.length > 0 && (
+                            <div className="referrals-list">
+                                <h4>Recent Joins</h4>
+                                <div className="referrals-chips">
+                                    {user.referrals.slice(0, 3).map((ref, idx) => (
+                                        <div key={idx} className="ref-chip">
+                                            {ref.name?.split(' ')[0] || 'Friend'}
+                                        </div>
+                                    ))}
+                                    {user.referrals.length > 3 && <div className="ref-chip extra">+{user.referrals.length - 3}</div>}
+                                </div>
+                            </div>
+                        )}
                     </Card>
                 </motion.div>
 

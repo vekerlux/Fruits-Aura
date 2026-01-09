@@ -93,6 +93,26 @@
     font-weight: 600;
 }
 
+.checkout-item.is-bundle {
+    padding: 8px 0;
+}
+
+.item-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bundle-label-pill {
+    background: var(--color-soft-yellow);
+    color: var(--color-dark-gray);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
 .total-row {
     display: flex;
     justify-content: space-between;

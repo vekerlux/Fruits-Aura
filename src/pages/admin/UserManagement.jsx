@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllUsers, updateUserRole, deleteUser, getPendingDistributors, approveDistributor, updateUserSubscription } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Trash2, CheckCircle, Clock, Edit2 } from 'lucide-react';
+import { Trash2, CheckCircle, Clock, Edit2, Gift, Users } from 'lucide-react';
 import Button from '../../components/Button';
+import { updateUserAdmin } from '../../api/adminApi'; // Assuming this exists or using generic update
 
 export default function UserManagement() {
     const { showToast } = useToast();
@@ -77,6 +78,19 @@ export default function UserManagement() {
         }
     };
 
+    const handleClaimReward = async (userId) => {
+        if (!confirm('Mark this referral reward as claimed/delivered?')) return;
+
+        try {
+            await claimReferralReward(userId);
+            showToast('Reward marked as claimed!', 'success');
+            loadUsers();
+        } catch (err) {
+            console.error('Error claiming reward:', err);
+            showToast('Failed to mark reward as claimed', 'error');
+        }
+    };
+
     const handleDelete = async (userId) => {
         if (!confirm('Are you sure you want to delete this user?')) return;
 
@@ -139,7 +153,8 @@ export default function UserManagement() {
                             <th>Email</th>
                             <th>Role</th>
                             <th>Sub. Plan</th>
-                            <th>Status</th>
+                            <th>Referrals</th>
+                            <th>Rewards</th>
                             <th>Joined</th>
                             <th>Actions</th>
                         </tr>
@@ -198,19 +213,33 @@ export default function UserManagement() {
                                         </button>
                                     </td>
                                     <td>
-                                        {user.role === 'distributor' ? (
-                                            user.approved ? (
-                                                <span className="status-verify verified"><CheckCircle size={14} /> Approved</span>
-                                            ) : (
-                                                <span className="status-verify pending"><Clock size={14} /> Pending</span>
-                                            )
+                                        <div className="referral-info-cell">
+                                            <Users size={14} />
+                                            <span>{user.referrals?.length || 0}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {user.referrals?.length >= 5 ? (
+                                            <div className={`reward-status ${user.referralRewardClaimed ? 'claimed' : 'unclaimed'}`}>
+                                                <Gift size={14} />
+                                                <span>{user.referralRewardClaimed ? 'Claimed' : 'READY!'}</span>
+                                            </div>
                                         ) : (
-                                            <span className="status-verify none">N/A</span>
+                                            <span style={{ color: '#ccc', fontSize: '0.8rem' }}>{user.referrals?.length}/5</span>
                                         )}
                                     </td>
                                     <td>{formatDate(user.createdAt)}</td>
                                     <td>
                                         <div className="action-row">
+                                            {user.referrals?.length >= 5 && !user.referralRewardClaimed && (
+                                                <button
+                                                    className="action-btn claim"
+                                                    onClick={() => handleClaimReward(user._id)}
+                                                    title="Mark Reward as Claimed"
+                                                >
+                                                    <Gift size={16} />
+                                                </button>
+                                            )}
                                             {user.role === 'distributor' && !user.approved && (
                                                 <button
                                                     className="action-btn approve"

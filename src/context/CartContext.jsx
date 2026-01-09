@@ -23,17 +23,19 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (product, quantity = 1) => {
         setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.id === product.id);
+            // Unique ID for bundles to separate them from single bottles
+            const itemId = product.isBundle ? `${product.id}-bundle` : product.id;
+            const existingItem = prevCart.find(item => item.id === itemId);
 
             if (existingItem) {
                 return prevCart.map(item =>
-                    item.id === product.id
+                    item.id === itemId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
 
-            return [...prevCart, { ...product, quantity }];
+            return [...prevCart, { ...product, id: itemId, quantity }];
         });
     };
 

@@ -60,6 +60,15 @@ const Onboarding = ({ onComplete }) => {
 
     return (
         <div className="onboarding-container premium-bg">
+            <div className="progress-bar-container">
+                <motion.div
+                    className="progress-bar-fill"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${((currentIndex + 1) / slides.length) * 100}%` }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                />
+            </div>
+
             <div className="skip-btn-container">
                 <button className="skip-btn" onClick={onComplete}>Skip</button>
             </div>
@@ -79,15 +88,26 @@ const Onboarding = ({ onComplete }) => {
                     <motion.div
                         key={currentIndex}
                         className="slide premium-card"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.4 }}
+                        initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: -100, scale: 0.9 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 20,
+                            opacity: { duration: 0.2 }
+                        }}
                         style={{ borderTop: `4px solid ${slides[currentIndex].color}` }}
                     >
-                        <div className="premium-icon" style={{ background: slides[currentIndex].color }}>
+                        <motion.div
+                            className="premium-icon"
+                            style={{ background: slides[currentIndex].color }}
+                            initial={{ scale: 0, rotate: -45 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                        >
                             {slides[currentIndex].icon}
-                        </div>
+                        </motion.div>
                         <h2 style={{ color: slides[currentIndex].color }}>{slides[currentIndex].title}</h2>
                         <h3 className="premium-subtitle">{slides[currentIndex].subtitle}</h3>
                         <p className="premium-desc">{slides[currentIndex].description}</p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllOrders, updateOrderStatusAdmin, approveOrder, getPendingOrders } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { CheckCircle, Truck } from 'lucide-react';
+import { CheckCircle, Truck, Eye, Package } from 'lucide-react';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import Modal from '../../components/Modal'; // Assuming a Modal component exists or I'll create one
 import Button from '../../components/Button';
@@ -147,6 +147,11 @@ export default function OrderManagement() {
                                             <span className="items-preview">
                                                 ({order.items?.map(i => i.name).join(', ').slice(0, 30)}...)
                                             </span>
+                                            {order.items?.some(i => i.isBundle) && (
+                                                <div className="bundle-indicator-pill">
+                                                    <Package size={12} /> BUNDLE
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
                                     <td>{formatNairaWithoutDecimals(order.deliveryFee || 0)}</td>

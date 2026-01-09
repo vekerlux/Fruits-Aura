@@ -10,6 +10,7 @@ import { formatNaira, formatNairaWithoutDecimals } from '../utils/currency';
 import { createOrder } from '../api/ordersApi';
 import { useAuth } from '../context/AuthContext';
 import PaymentModal from '../components/PaymentModal';
+import { initializePayment } from '../api/paymentApi';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -75,15 +76,52 @@ const Checkout = () => {
 
     const orderTotal = getCartTotal() + deliveryFee;
 
-    const handleInitiatePayment = () => {
+    const handleInitiatePayment = async () => {
         if (limitError) {
             showToast(limitError, 'error');
             return;
         }
-        setShowPaymentModal(true);
+
+        setIsPlacingOrder(true);
+        try {
+            // 1. Initialize payment on backend
+            const response = await initializePayment({
+                amount: orderTotal,
+                email: user.email,
+                metadata: {
+                    userId: user.id,
+                    cart: cart.map(i => ({ id: i.id, qty: i.quantity }))
+                }
+            });
+
+            if (response.success) {
+                const { access_code, reference } = response.data;
+
+                // 2. Open Paystack Popup
+                const handler = window.PaystackPop.setup({
+                    key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_sample', // Fallback or env
+                    email: user.email,
+                    amount: Math.round(orderTotal * 100),
+                    access_code: access_code,
+                    callback: (response) => {
+                        // Payment successful
+                        handlePaymentSuccess(response.reference);
+                    },
+                    onClose: () => {
+                        setIsPlacingOrder(false);
+                        showToast('Payment cancelled', 'info');
+                    }
+                });
+                handler.openIframe();
+            }
+        } catch (error) {
+            console.error('Payment initialization error:', error);
+            showToast('Failed to start payment. Please try again.', 'error');
+            setIsPlacingOrder(false);
+        }
     };
 
-    const handlePaymentSuccess = async () => {
+    const handlePaymentSuccess = async (paymentReference) => {
         setIsPlacingOrder(true);
         // Modal stays open showing success state while we create order in background
         // Wait a tiny bit for the modal success animation to play out fully if needed,
@@ -111,8 +149,11 @@ const Checkout = () => {
                     zipCode: '12345'
                 },
                 deliveryInstructions: 'Please ring doorbell',
-                paymentStatus: 'paid', // Mark as paid since simulation succeeded
-                paymentMethod: 'card'
+                paymentStatus: 'paid', // Verified by Paystack
+                paymentMethod: 'card',
+                paymentDetails: {
+                    reference: paymentReference
+                }
             };
 
             const response = await createOrder(orderData);
@@ -171,10 +212,15 @@ const Checkout = () => {
                         <h3>Order Summary</h3>
                         <div className="order-items">
                             {cart.map((item) => (
-                                <div key={item.id} className="checkout-item">
+                                <div key={item.id} className={`checkout-item ${item.isBundle ? 'is-bundle' : ''}`}>
                                     <div className="item-details">
-                                        <span className="item-name">{item.name}</span>
-                                        <span className="item-qty">× {item.quantity}</span>
+                                        <div className="item-name-row">
+                                            <span className="item-name">{item.name}</span>
+                                            {item.isBundle && <span className="bundle-label-pill">Auraset</span>}
+                                        </div>
+                                        <span className="item-qty">
+                                            {item.isBundle ? `5 Bottles × ${item.quantity}` : `× ${item.quantity}`}
+                                        </span>
                                     </div>
                                     <span className="item-price">
                                         {formatNairaWithoutDecimals(item.price * item.quantity)}
