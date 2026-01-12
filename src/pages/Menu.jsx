@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, Heart, ThumbsUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import PageTransition from '../components/PageTransition';
 import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../api/productsApi';
-import { voteForProduct, getVotingRankings } from '../api/votingApi';
+import { voteForProduct } from '../api/votingApi';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useToast } from '../context/ToastContext';
@@ -43,34 +43,45 @@ const Menu = () => {
         loadProducts();
     }, [showToast]);
 
-    // Filter and split products
-    const activeProducts = products.filter(p => !p.isComingSoon);
-    const comingSoonProducts = products.filter(p => p.isComingSoon)
-        .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0));
+    // Performance: Memoize derived data to avoid re-calculation on every render.
+    // These values are only recalculated when their dependencies change.
 
-    // Get unique categories from active products
-    const categories = ['All Drinks', ...new Set(activeProducts.map(p => p.category))];
+    // Memoize active products list
+    const activeProducts = useMemo(() => products.filter(p => !p.isComingSoon), [products]);
 
-    // Filter active products by category and search
-    let filteredActive = activeCategory === "All Drinks"
-        ? activeProducts
-        : activeProducts.filter(p => p.category === activeCategory);
+    // Memoize coming soon products list, sorted by vote count
+    const comingSoonProducts = useMemo(() =>
+        products.filter(p => p.isComingSoon)
+        .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0)), [products]);
 
-    if (searchQuery) {
-        filteredActive = filteredActive.filter(p =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }
+    // Memoize categories list
+    const categories = useMemo(() =>
+        ['All Drinks', ...new Set(activeProducts.map(p => p.category))], [activeProducts]);
 
-    // Sort active products
-    const sortedActive = [...filteredActive].sort((a, b) => {
-        if (sortBy === 'name') return a.name.localeCompare(b.name);
-        if (sortBy === 'price-low') return a.price - b.price;
-        if (sortBy === 'price-high') return b.price - a.price;
-        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        return 0;
-    });
+    // Memoize filtered products based on category and search
+    const filteredActive = useMemo(() => {
+        let filtered = activeCategory === "All Drinks"
+            ? activeProducts
+            : activeProducts.filter(p => p.category === activeCategory);
+
+        if (searchQuery) {
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.description.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+        return filtered;
+    }, [activeProducts, activeCategory, searchQuery]);
+
+    // Memoize sorted products
+    const sortedActive = useMemo(() =>
+        [...filteredActive].sort((a, b) => {
+            if (sortBy === 'name') return a.name.localeCompare(b.name);
+            if (sortBy === 'price-low') return a.price - b.price;
+            if (sortBy === 'price-high') return b.price - a.price;
+            if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+            return 0;
+        }), [filteredActive, sortBy]);
 
     const handleQuickAdd = (e, product) => {
         e.stopPropagation();
