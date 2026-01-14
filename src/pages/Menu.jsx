@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Plus, Heart, ThumbsUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
@@ -43,63 +43,76 @@ const Menu = () => {
         loadProducts();
     }, [showToast]);
 
-    // Filter and split products
-    const activeProducts = products.filter(p => !p.isComingSoon);
-    const comingSoonProducts = products.filter(p => p.isComingSoon)
-        .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0));
+    // Filter and split products using useMemo for optimization
+    const activeProducts = useMemo(() => products.filter(p => !p.isComingSoon), [products]);
 
-    // Get unique categories from active products
-    const categories = ['All Drinks', ...new Set(activeProducts.map(p => p.category))];
+    const comingSoonProducts = useMemo(() =>
+        products.filter(p => p.isComingSoon)
+        .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0)),
+    [products]);
 
-    // Filter active products by category and search
-    let filteredActive = activeCategory === "All Drinks"
-        ? activeProducts
-        : activeProducts.filter(p => p.category === activeCategory);
+    // Get unique categories from active products, memoized
+    const categories = useMemo(() =>
+        ['All Drinks', ...new Set(activeProducts.map(p => p.category))],
+    [activeProducts]);
 
-    if (searchQuery) {
-        filteredActive = filteredActive.filter(p =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }
+    // Filter active products by category and search, memoized
+    const filteredActive = useMemo(() => {
+        let filtered = activeCategory === "All Drinks"
+            ? activeProducts
+            : activeProducts.filter(p => p.category === activeCategory);
 
-    // Sort active products
-    const sortedActive = [...filteredActive].sort((a, b) => {
-        if (sortBy === 'name') return a.name.localeCompare(b.name);
-        if (sortBy === 'price-low') return a.price - b.price;
-        if (sortBy === 'price-high') return b.price - a.price;
-        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        return 0;
-    });
+        if (searchQuery) {
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.description.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+        return filtered;
+    }, [activeProducts, activeCategory, searchQuery]);
 
-    const handleQuickAdd = (e, product) => {
+    // Sort active products, memoized
+    const sortedActive = useMemo(() =>
+        [...filteredActive].sort((a, b) => {
+            if (sortBy === 'name') return a.name.localeCompare(b.name);
+            if (sortBy === 'price-low') return a.price - b.price;
+            if (sortBy === 'price-high') return b.price - a.price;
+            if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+            return 0;
+        }),
+    [filteredActive, sortBy]);
+
+    // Memoize event handlers to prevent re-creation on each render
+    const handleQuickAdd = useCallback((e, product) => {
         e.stopPropagation();
         addToCart(product);
         showToast(`${product.name} added to cart!`, 'success');
-    };
+    }, [addToCart, showToast]);
 
-    const handleToggleFavorite = (e, productId) => {
+    const handleToggleFavorite = useCallback((e, productId) => {
         e.stopPropagation();
         toggleFavorite(productId);
         const favorite = isFavorite(productId);
         showToast(favorite ? 'Added to favorites!' : 'Removed from favorites', 'success');
-    };
+    }, [toggleFavorite, isFavorite, showToast]);
 
-    const handleVote = async (e, productId) => {
+    const handleVote = useCallback(async (e, productId) => {
         e.stopPropagation();
         try {
             const response = await voteForProduct(productId);
             if (response.success) {
                 showToast('Vote recorded! Thanks for your interest.', 'success');
                 // Update local state to reflect new vote count
-                setProducts(products.map(p =>
-                    p._id === productId ? { ...p, voteCount: (p.voteCount || 0) + 1 } : p
-                ));
+                setProducts(prevProducts =>
+                    prevProducts.map(p =>
+                        p._id === productId ? { ...p, voteCount: (p.voteCount || 0) + 1 } : p
+                    )
+                );
             }
         } catch (error) {
             showToast(error.response?.data?.message || 'Failed to vote', 'error');
         }
-    };
+    }, [showToast]);
 
     if (loading) {
         return (
