@@ -4,11 +4,13 @@ import { useToast } from '../../context/ToastContext';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import Button from '../../components/Button';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
+import AddProductModal from '../../components/AddProductModal';
 
 export default function ProductManagement() {
     const { showToast } = useToast();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const loadProducts = useCallback(async () => {
         try {
@@ -66,11 +68,17 @@ export default function ProductManagement() {
                     <h1>Products</h1>
                     <p>Manage your product inventory</p>
                 </div>
-                <Button>
+                <Button onClick={() => setIsAddModalOpen(true)}>
                     <Plus size={18} />
                     Add Product
                 </Button>
             </div>
+
+            <AddProductModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onProductAdded={loadProducts}
+            />
 
             <div className="admin-table-container">
                 <table className="admin-table">

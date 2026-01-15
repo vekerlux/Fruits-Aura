@@ -189,6 +189,10 @@ const Menu = () => {
                                             <div className="image-placeholder"></div>
                                         )}
 
+                                        {product.bundlePrice && (
+                                            <div className="auraset-card-badge">Auraset Available</div>
+                                        )}
+
                                         <motion.button
                                             className={`favorite-btn ${isFavorite(product._id) ? 'favorited' : ''}`}
                                             onClick={(e) => handleToggleFavorite(e, product._id)}
@@ -237,7 +241,11 @@ const Menu = () => {
                                             style={{ backgroundColor: product.color || '#ddd' }}
                                         >
                                             <div className="loading-badge">Coming Soon</div>
-                                            {product.image && <img src={product.image} alt={product.name} className="blurred" />}
+                                            {product.image ? (
+                                                <img src={product.image} alt={product.name} className="blurred-coming-soon" />
+                                            ) : (
+                                                <div className="future-placeholder-icon">🥤</div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="future-info">

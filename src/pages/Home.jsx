@@ -12,21 +12,24 @@ import './Home.css';
 const carouselItems = [
     {
         id: 1,
-        title: "New Summer Blends",
-        subtitle: "Try our refreshing Citrus Burst!",
-        color: "var(--gradient-hero)"
+        title: "WATERMELON MIX",
+        subtitle: "100% Natural • No Added Sugar",
+        color: "#FF6B6B",
+        action: "Order Now"
     },
     {
         id: 2,
-        title: "Green Detox Special",
-        subtitle: "Start your day with a healthy glow.",
-        color: "linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%)"
+        title: "LOADING MIX – VOTE!",
+        subtitle: "Strawberry • Orange • Cucumber",
+        color: "#FF9800",
+        action: "Vote Now"
     },
     {
         id: 3,
-        title: "Tropical Paradise",
-        subtitle: "Escape with every sip.",
-        color: "linear-gradient(135deg, #FF9800 0%, #FFC107 100%)"
+        title: "UPCOMING EVENT",
+        subtitle: "Ebonyi's biggest refreshment experience",
+        color: "#9C27B0",
+        action: "More Info"
     }
 ];
 
@@ -111,7 +114,7 @@ const Home = () => {
                                     {carouselItems[currentSlide].subtitle}
                                 </motion.p>
                                 <Button variant="primary" className="hero-btn" onClick={() => navigate('/menu')}>
-                                    Order Now
+                                    {carouselItems[currentSlide].action}
                                 </Button>
                             </div>
                             <div className="hero-image-placeholder">

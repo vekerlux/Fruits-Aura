@@ -160,9 +160,9 @@ const ProductDetail = () => {
                         <span className="price-tag">{formatNairaWithoutDecimals(currentPrice || 0)}</span>
                     </div>
 
-                    {/* Auraset Toggle - Enhanced Visibility */}
+                    {/* Auraset Toggle - Premium Experience */}
                     {product.bundlePrice && (
-                        <div className="bundle-toggle-container enhanced">
+                        <div className="bundle-toggle-container premium-aura">
                             <div
                                 className={`toggle-option ${!isBundle ? 'active' : ''}`}
                                 onClick={() => setIsBundle(false)}
@@ -175,8 +175,8 @@ const ProductDetail = () => {
                                 className={`toggle-option ${isBundle ? 'active' : ''}`}
                                 onClick={() => setIsBundle(true)}
                             >
-                                <div className="auraset-badge">BEST VALUE</div>
-                                <span className="option-name">Auraset (5 Pack)</span>
+                                <div className="auraset-premium-badge">✨ PACK OF {product.bundleSize || 5}</div>
+                                <span className="option-name">Auraset</span>
                                 <span className="option-price">{formatNairaWithoutDecimals(product.bundlePrice)}</span>
                             </div>
                         </div>
