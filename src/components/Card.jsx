@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './Card.css';
 
-const Card = ({ children, className = '', onClick, ...props }) => {
+const CardComponent = ({ children, className = '', onClick, ...props }) => {
     return (
         <motion.div
             className={`card ${className}`}
@@ -15,5 +15,14 @@ const Card = ({ children, className = '', onClick, ...props }) => {
         </motion.div>
     );
 };
+
+// Memoize the Card component to prevent unnecessary re-renders.
+// This is beneficial when Card is used in lists where parent components
+// might re-render, but the Card's own props remain unchanged.
+const Card = React.memo(CardComponent);
+
+// Adding a display name for easier debugging in React DevTools
+Card.displayName = 'Card';
+
 
 export default Card;
