@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, MapPin, CreditCard, Bell, HelpCircle, LogOut, ChevronRight, Clock, Moon, Sun, Shield, Camera, X, Check, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
@@ -52,21 +52,32 @@ const Profile = () => {
         }
     };
 
+    const fileInputRef = useRef(null);
+
     const handleAvatarClick = () => {
         if (!isEditing) return;
-        // Improved mock: Rotate through a few placeholders to show it "works"
-        const avatars = [
-            'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
-            'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
-            'https://api.dicebear.com/7.x/avataaars/svg?seed=Jameson',
-            'https://api.dicebear.com/7.x/avataaars/svg?seed=Willow'
-        ];
-        const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
-        setEditForm(prev => ({ ...prev, avatar: randomAvatar }));
-        showToast('Profile picture selected!', 'info');
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 5000000) { // 5MB limit
+                showToast('Image is too large (max 5MB)', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditForm(prev => ({ ...prev, avatar: reader.result }));
+                showToast('Profile picture updated!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleWhatsApp = () => {
+        // Using the user provided number 09139110078 formatted for intl format (234...)
         window.open('https://wa.me/2349139110078', '_blank');
     };
 
@@ -139,6 +150,13 @@ const Profile = () => {
                             </>
                         ) : (
                             <div className="edit-form">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
                                 <div className="profile-input-group">
                                     <input
                                         type="text"

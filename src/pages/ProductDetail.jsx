@@ -60,10 +60,22 @@ const ProductDetail = () => {
         loadData();
     }, [id, navigate, showToast]);
 
-    if (loading || !product) {
+    if (loading) {
         return (
             <div className="product-detail-container">
                 <LoadingMix message="Mixing fresh details..." />
+            </div>
+        );
+    }
+
+    if (!product) {
+        return (
+            <div className="product-detail-container" style={{ textAlign: 'center', padding: '4rem' }}>
+                <h2>Product Not Found</h2>
+                <p>The mix you are looking for is unavailable.</p>
+                <Button onClick={() => navigate('/menu')} style={{ marginTop: '1rem' }}>
+                    Back to Menu
+                </Button>
             </div>
         );
     }

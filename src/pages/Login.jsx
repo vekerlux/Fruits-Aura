@@ -97,13 +97,7 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <div className="demo-credentials">
-                        <p>Demo Admin Account:</p>
-                        <p className="credentials-text">
-                            Email: <code>admin@fruitsaura.com</code><br />
-                            Password: <code>Admin123!</code>
-                        </p>
-                    </div>
+
                 </motion.div>
             </div>
         </PageTransition>
