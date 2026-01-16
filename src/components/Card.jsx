@@ -2,7 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './Card.css';
 
-const Card = ({ children, className = '', onClick, ...props }) => {
+// ⚡ Bolt: Memoized Card component to prevent unnecessary re-renders.
+// This is a common performance optimization for components that are rendered in lists
+// or are children of components that re-render frequently. By memoizing the component,
+// we ensure it only re-renders when its props have actually changed.
+const Card = React.memo(({ children, className = '', onClick, ...props }) => {
     return (
         <motion.div
             className={`card ${className}`}
@@ -14,6 +18,8 @@ const Card = ({ children, className = '', onClick, ...props }) => {
             {children}
         </motion.div>
     );
-};
+});
+
+Card.displayName = 'Card';
 
 export default Card;
