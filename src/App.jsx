@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
@@ -9,30 +9,31 @@ import { FavoritesProvider } from './context/FavoritesContext';
 import Layout from './components/Layout';
 import Splash from './components/Splash';
 import Onboarding from './components/Onboarding';
-import Home from './pages/Home';
-import Menu from './pages/Menu';
-import Track from './pages/Track';
-import Locations from './pages/Locations';
-import Profile from './pages/Profile';
-import OrderHistory from './pages/OrderHistory';
-import ProductDetail from './pages/ProductDetail';
-import Checkout from './pages/Checkout';
-import Wishlist from './pages/Wishlist';
-import Login from './pages/Login';
-import Register from './pages/Register';
+const Home = lazy(() => import('./pages/Home'));
+const Menu = lazy(() => import('./pages/Menu'));
+const Track = lazy(() => import('./pages/Track'));
+const Locations = lazy(() => import('./pages/Locations'));
+const Profile = lazy(() => import('./pages/Profile'));
+const OrderHistory = lazy(() => import('./pages/OrderHistory'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLayout from './pages/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import ProductManagement from './pages/admin/ProductManagement';
-import OrderManagement from './pages/admin/OrderManagement';
-import UserManagement from './pages/admin/UserManagement';
-import NotificationManagement from './pages/admin/NotificationManagement';
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ProductManagement = lazy(() => import('./pages/admin/ProductManagement'));
+const OrderManagement = lazy(() => import('./pages/admin/OrderManagement'));
+const UserManagement = lazy(() => import('./pages/admin/UserManagement'));
+const NotificationManagement = lazy(() => import('./pages/admin/NotificationManagement'));
 import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
 import './styles/auth.css';
 import './pages/admin/AdminLayout.css';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import Loading from './components/Loading';
 
 const AppContent = () => {
   const location = useLocation();
@@ -44,9 +45,10 @@ const AppContent = () => {
     <div className="app-layout">
       <main className="main-content">
         <AnimatePresence mode='wait'>
-          <Routes location={location} key={location.pathname}>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
+          <Suspense fallback={<Loading />}>
+            <Routes location={location} key={location.pathname}>
+              {/* Public Routes */}
+              <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             <Route path="/" element={<Home />} />
@@ -90,6 +92,7 @@ const AppContent = () => {
               <Route path="notifications" element={<NotificationManagement />} />
             </Route>
           </Routes>
+          </Suspense>
         </AnimatePresence>
       </main>
       {showBottomNav && <BottomNav />}
