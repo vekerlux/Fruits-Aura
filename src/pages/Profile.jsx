@@ -86,7 +86,7 @@ const Profile = () => {
         ...(isAdmin ? [{ icon: Shield, label: 'Admin Panel', path: '/admin' }] : []),
         { icon: MapPin, label: 'Saved Locations', path: '/locations' },
         { icon: CreditCard, label: 'Payment Methods', path: '#' },
-        { icon: Bell, label: 'Notifications', path: '#' },
+        { icon: Bell, label: 'Notifications', path: '/notifications' },
         { icon: HelpCircle, label: 'Help & Support', path: '#' },
     ];
 
@@ -230,67 +230,50 @@ const Profile = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.12 }}
                 >
-                    <Card className="referral-card">
-                        <div className="referral-header">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div className="gift-icon">🎁</div>
-                                <h3>Refer & Earn</h3>
-                            </div>
-                            <span className="referral-count">{user?.referrals?.length || 0} Joins</span>
-                        </div>
-                        <p className="referral-text">Share your code and get <strong>Free Aurasets</strong> when friends join!</p>
+                    <Card className="referral-card-new">
+                        <div className="referral-flex">
+                            <div className="referral-info-main">
+                                <div className="referral-badge-aura">SHARE & EARN</div>
+                                <h3>Invite Friends</h3>
+                                <p>Get <strong>Free Aurasets</strong> when friends join using your link.</p>
 
-                        <div className="referral-progress-container">
-                            <div className="referral-progress-info">
-                                <span>Progress to Reward</span>
-                                <span>{user?.referrals?.length || 0}/5 Friends</span>
-                            </div>
-                            <div className="referral-progress-bar">
-                                <motion.div
-                                    className="referral-progress-fill"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${Math.min(((user?.referrals?.length || 0) / 5) * 100, 100)}%` }}
-                                />
-                            </div>
-                            <p className="referral-milestone">
-                                {user?.referrals?.length >= 5
-                                    ? "🎉 Reward unlocked! Contact support."
-                                    : `Refer ${5 - (user?.referrals?.length || 0)} more to get a Free Auraset!`}
-                            </p>
-                        </div>
-
-                        <div className="referral-code-box">
-                            <span className="code-label">YOUR CODE:</span>
-                            <span className="code-value">{user?.referralCode || 'GENERATING...'}</span>
-                            <button
-                                className="copy-btn"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(user?.referralCode || '');
-                                    showToast('Code copied to clipboard!', 'success');
-                                }}
-                            >
-                                Copy
-                            </button>
-                        </div>
-
-                        {user?.referrals?.length > 0 && (
-                            <div className="referrals-list">
-                                <h4>Recent Joins</h4>
-                                <div className="referrals-chips">
-                                    {user.referrals.slice(0, 3).map((ref, idx) => (
-                                        <div key={idx} className="ref-chip">
-                                            {ref.name?.split(' ')[0] || 'Friend'}
-                                        </div>
-                                    ))}
-                                    {user.referrals.length > 3 && <div className="ref-chip extra">+{user.referrals.length - 3}</div>}
+                                <div className="referral-code-wrapper">
+                                    <code>{user?.referralCode || 'REF-XXXX'}</code>
+                                    <button
+                                        className="copy-icon-btn"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(user?.referralCode || '');
+                                            showToast('Code copied!', 'success');
+                                        }}
+                                    >
+                                        Copy
+                                    </button>
                                 </div>
                             </div>
-                        )}
+                            <div className="referral-qr-box">
+                                <div className="qr-placeholder">
+                                    <div className="qr-pattern"></div>
+                                    <span className="qr-label">SCAN ME</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="referral-stats-mini">
+                            <div className="stat-item">
+                                <span className="stat-value">{user?.referrals?.length || 0}</span>
+                                <span className="stat-label">Friends</span>
+                            </div>
+                            <div className="stat-sep"></div>
+                            <div className="stat-item">
+                                <span className="stat-value">{Math.floor((user?.referrals?.length || 0) / 5)}</span>
+                                <span className="stat-label">Rewards</span>
+                            </div>
+                        </div>
                     </Card>
                 </motion.div>
 
                 {/* Address Management */}
-                <motion.div
+                < motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 }}
@@ -314,7 +297,7 @@ const Profile = () => {
                             </div>
                         </div>
                     </Card>
-                </motion.div>
+                </motion.div >
 
                 <div className="profile-menu">
                     {menuItems.map((item, index) => (
@@ -367,8 +350,8 @@ const Profile = () => {
                         </Card>
                     </motion.div>
                 </div>
-            </div>
-        </PageTransition>
+            </div >
+        </PageTransition >
     );
 };
 

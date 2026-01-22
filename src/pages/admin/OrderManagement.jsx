@@ -133,11 +133,15 @@ export default function OrderManagement() {
                                     <td style={{ fontFamily: 'monospace', fontSize: '0.9rem' }}>
                                         #{order._id.slice(-8)}
                                     </td>
-                                    <td>
                                         <div>
-                                            <p style={{ fontWeight: '600' }}>{order.user?.name || 'Guest'}</p>
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                                {order.user?.email}
+                                            <div className="customer-info-row">
+                                                <p className="customer-name">{order.user?.name || order.userId?.name || 'Guest'}</p>
+                                                {order.plan === 'aura' && (
+                                                    <span className="priority-badge">PRIORITY</span>
+                                                )}
+                                            </div>
+                                            <p className="customer-email">
+                                                {order.user?.email || order.userId?.email}
                                             </p>
                                         </div>
                                     </td>
@@ -194,49 +198,49 @@ export default function OrderManagement() {
                                         </div>
                                     </td>
                                 </tr>
-                            ))
+                    ))
                         )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Approval Modal */}
-            <Modal
-                isOpen={isApprovalModalOpen}
-                onClose={() => setIsApprovalModalOpen(false)}
-                title="Approve Order"
-                footer={
-                    <>
-                        <Button variant="secondary" onClick={() => setIsApprovalModalOpen(false)}>Cancel</Button>
-                        <Button variant="primary" onClick={handleConfirmApproval}>Confirm & Approve</Button>
-                    </>
-                }
-            >
-                <div className="order-context">
-                    <p><strong>Customer:</strong> {selectedOrder?.user?.name}</p>
-                    <p><strong>Items:</strong> {selectedOrder?.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}</p>
-                    <p><strong>Subtotal:</strong> {formatNairaWithoutDecimals(selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0))}</p>
-                </div>
-
-                <div className="form-group">
-                    <label>Delivery Fee (₦)</label>
-                    <div className="input-with-icon">
-                        <Truck size={18} className="input-icon" />
-                        <input
-                            type="number"
-                            value={overriddenFee}
-                            onChange={(e) => setOverriddenFee(e.target.value)}
-                            placeholder="Enter delivery fee"
-                        />
-                    </div>
-                    <p className="input-hint">Default for this order: {formatNairaWithoutDecimals(selectedOrder?.deliveryFee || 0)}</p>
-                </div>
-
-                <div className="total-preview">
-                    <span>Final Total:</span>
-                    <strong>{formatNairaWithoutDecimals((selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0)) + (overriddenFee ? parseFloat(overriddenFee) : 0))}</strong>
-                </div>
-            </Modal>
+                </tbody>
+            </table>
         </div>
+
+            {/* Approval Modal */ }
+    <Modal
+        isOpen={isApprovalModalOpen}
+        onClose={() => setIsApprovalModalOpen(false)}
+        title="Approve Order"
+        footer={
+            <>
+                <Button variant="secondary" onClick={() => setIsApprovalModalOpen(false)}>Cancel</Button>
+                <Button variant="primary" onClick={handleConfirmApproval}>Confirm & Approve</Button>
+            </>
+        }
+    >
+        <div className="order-context">
+            <p><strong>Customer:</strong> {selectedOrder?.user?.name}</p>
+            <p><strong>Items:</strong> {selectedOrder?.items?.map(i => `${i.quantity}x ${i.name}`).join(', ')}</p>
+            <p><strong>Subtotal:</strong> {formatNairaWithoutDecimals(selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0))}</p>
+        </div>
+
+        <div className="form-group">
+            <label>Delivery Fee (₦)</label>
+            <div className="input-with-icon">
+                <Truck size={18} className="input-icon" />
+                <input
+                    type="number"
+                    value={overriddenFee}
+                    onChange={(e) => setOverriddenFee(e.target.value)}
+                    placeholder="Enter delivery fee"
+                />
+            </div>
+            <p className="input-hint">Default for this order: {formatNairaWithoutDecimals(selectedOrder?.deliveryFee || 0)}</p>
+        </div>
+
+        <div className="total-preview">
+            <span>Final Total:</span>
+            <strong>{formatNairaWithoutDecimals((selectedOrder?.totalAmount - (selectedOrder?.deliveryFee || 0)) + (overriddenFee ? parseFloat(overriddenFee) : 0))}</strong>
+        </div>
+    </Modal>
+        </div >
     );
 }

@@ -18,6 +18,7 @@ import OrderHistory from './pages/OrderHistory';
 import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import Wishlist from './pages/Wishlist';
+import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -27,6 +28,7 @@ import ProductManagement from './pages/admin/ProductManagement';
 import OrderManagement from './pages/admin/OrderManagement';
 import UserManagement from './pages/admin/UserManagement';
 import NotificationManagement from './pages/admin/NotificationManagement';
+import CarouselManagement from './pages/admin/CarouselManagement';
 import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
@@ -61,6 +63,11 @@ const AppContent = () => {
                 <Wishlist />
               </ProtectedRoute>
             } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            } />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
@@ -88,6 +95,7 @@ const AppContent = () => {
               <Route path="orders" element={<OrderManagement />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="notifications" element={<NotificationManagement />} />
+              <Route path="carousel" element={<CarouselManagement />} />
             </Route>
           </Routes>
         </AnimatePresence>

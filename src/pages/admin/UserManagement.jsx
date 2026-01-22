@@ -170,16 +170,10 @@ export default function UserManagement() {
                             users.map((user) => (
                                 <tr key={user._id}>
                                     <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            <div
-                                                className="user-avatar"
-                                                style={{
-                                                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))'
-                                                }}
-                                            >
+                                            <div className="user-avatar">
                                                 {user.name?.[0]?.toUpperCase() || 'U'}
                                             </div>
-                                            <p style={{ fontWeight: '600' }}>{user.name}</p>
+                                            <p className="user-name-cell">{user.name}</p>
                                         </div>
                                     </td>
                                     <td>{user.email}</td>
@@ -194,18 +188,7 @@ export default function UserManagement() {
                                     </td>
                                     <td>
                                         <button
-                                            className="status-badge"
-                                            style={{
-                                                textTransform: 'capitalize',
-                                                background: user.subscription?.plan === 'farming' ? '#4ade8020' : '#f4f4f5',
-                                                color: user.subscription?.plan === 'farming' ? '#16a34a' : '#52525b',
-                                                border: '1px solid currentColor',
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '999px',
-                                                fontSize: '0.75rem',
-                                                fontWeight: '600',
-                                                cursor: 'pointer'
-                                            }}
+                                            className={`status-badge plan-${user.subscription?.plan || 'aura'}`}
                                             onClick={() => handleSubscriptionChange(user._id, user.subscription?.plan)}
                                             title="Click to change plan"
                                         >
@@ -259,11 +242,11 @@ export default function UserManagement() {
                                         </div>
                                     </td>
                                 </tr>
-                            ))
+                    ))
                         )}
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
+        </div >
     );
 }

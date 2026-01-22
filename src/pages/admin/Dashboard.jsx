@@ -175,25 +175,26 @@ export default function Dashboard() {
             </div>
 
             {/* Revenue Breakdown & Alerts */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="dashboard-grid-layout">
                 {/* Revenue Card */}
                 <div className="dashboard-panel alert-panel">
                     <div className="panel-header">
-                        <h3><DollarSign size={20} /> Revenue Breakdown</h3>
+                        <h3><DollarSign size={20} /> Revenue Health</h3>
+                        <span className="badge-info">Financials</span>
                     </div>
                     <div className="action-alerts-list">
-                        <div className="alert-item">
+                        <div className="alert-item no-hover">
                             <div className="alert-icon green"><DollarSign size={18} /></div>
                             <div className="alert-text">
                                 <p>Realized Revenue</p>
-                                <span>{formatNairaWithoutDecimals(stats?.totalRevenue || 0)} (Delivered)</span>
+                                <span>{formatNairaWithoutDecimals(stats?.totalRevenue || 0)} (Confirmed)</span>
                             </div>
                         </div>
-                        <div className="alert-item">
+                        <div className="alert-item no-hover">
                             <div className="alert-icon orange"><Clock size={18} /></div>
                             <div className="alert-text">
                                 <p>Potential Revenue</p>
-                                <span>{formatNairaWithoutDecimals(stats?.potentialRevenue || 0)} (Pending)</span>
+                                <span>{formatNairaWithoutDecimals(stats?.potentialRevenue || 0)} (Pending/Transit)</span>
                             </div>
                         </div>
                     </div>
@@ -202,7 +203,7 @@ export default function Dashboard() {
                 {/* Important Actions */}
                 <div className="dashboard-panel alert-panel">
                     <div className="panel-header">
-                        <h3><AlertCircle size={20} /> Actions Needed</h3>
+                        <h3><AlertCircle size={20} /> Operational Alerts</h3>
                     </div>
                     <div className="action-alerts-list">
                         <div className="alert-item" onClick={() => navigate('/admin/orders')}>

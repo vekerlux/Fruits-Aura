@@ -63,15 +63,17 @@ export default function ProductManagement() {
 
     return (
         <div className="product-management">
-            <div className="admin-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                    <h1>Products</h1>
-                    <p>Manage your product inventory</p>
+            <div className="admin-page-header">
+                <div className="header-title-row">
+                    <div>
+                        <h1>Products</h1>
+                        <p>Manage your product inventory</p>
+                    </div>
+                    <Button onClick={() => setIsAddModalOpen(true)}>
+                        <Plus size={18} />
+                        Add Product
+                    </Button>
                 </div>
-                <Button onClick={() => setIsAddModalOpen(true)}>
-                    <Plus size={18} />
-                    Add Product
-                </Button>
             </div>
 
             <AddProductModal
@@ -96,18 +98,14 @@ export default function ProductManagement() {
                         {products.map((product) => (
                             <tr key={product._id}>
                                 <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div className="product-info-cell">
                                         <div
-                                            style={{
-                                                width: '50px',
-                                                height: '50px',
-                                                borderRadius: '12px',
-                                                background: product.color || '#ddd'
-                                            }}
+                                            className="product-color-preview"
+                                            style={{ background: product.color || '#ddd' }}
                                         />
                                         <div>
-                                            <p style={{ fontWeight: '600' }}>{product.name}</p>
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                                            <p className="product-name">{product.name}</p>
+                                            <p className="product-desc-preview">
                                                 {product.description}
                                             </p>
                                         </div>

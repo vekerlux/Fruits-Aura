@@ -1,28 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap');
 
 :root {
-  /* Brand Colors */
-  --color-primary-green: #67B043;
-  /* Fresh Green */
-  --color-vibrant-orange: #FF7020;
-  /* Bright Orange */
-  --color-soft-yellow: #FFD54F;
-  /* Subtle Yellow */
+  /* Brand Colors - Fruits Aura */
+  --color-primary-green: #00A651;
+  --color-vibrant-orange: #FF6B00;
+  --color-accent-orange: #FF8E4D;
   --color-clean-white: #FFFFFF;
-  --color-light-gray: #F9FAFB;
+  --color-light-gray: #F5F7F9;
   --color-dark-gray: #333333;
-  --color-medium-gray: #757575;
-  --color-error: #D32F2F;
+  --color-charcoal: #1A1A1A;
+  --color-medium-gray: #666666;
+  --color-error: #FF4B2B;
 
   /* Gradients */
-  --gradient-hero: linear-gradient(135deg, var(--color-primary-green) 0%, var(--color-vibrant-orange) 100%);
-  --gradient-accent: linear-gradient(to right, var(--color-primary-green), var(--color-vibrant-orange));
+  --gradient-primary: linear-gradient(135deg, var(--color-primary-green) 0%, #008542 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-vibrant-orange) 0%, #E66000 100%);
+  --gradient-aura: linear-gradient(135deg, var(--color-primary-green) 0%, var(--color-vibrant-orange) 100%);
 
   /* Typography */
-  --font-heading: 'Poppins',
-    sans-serif;
-  --font-body: 'Roboto',
-    sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Roboto', sans-serif;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -35,13 +32,15 @@
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow-aura: 0 10px 30px rgba(0, 166, 81, 0.2);
 }
 
 * {
