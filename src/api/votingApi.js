@@ -12,7 +12,7 @@ export const voteForProduct = async (productId) => {
 
 // Get rankings for coming soon products
 export const getVotingRankings = async () => {
-    const response = await client.get('/voting/coming-soon/rankings');
+    const response = await client.get('/voting/rankings');
     return response.data;
 };
 

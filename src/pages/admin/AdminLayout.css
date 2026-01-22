@@ -248,9 +248,15 @@
 }
 
 /* Responsive */
+@media (min-width: 1025px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
 @media (max-width: 1024px) {
     .desktop-only {
-        display: none;
+        display: none !important;
     }
 }
 
@@ -262,7 +268,6 @@
     .admin-sidebar {
         transform: translateX(-100%);
         width: 280px !important;
-        /* Force width on mobile */
         box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
     }
 
@@ -276,7 +281,7 @@
     }
 
     .mobile-only {
-        display: flex;
+        display: flex !important;
     }
 
     .mobile-close {

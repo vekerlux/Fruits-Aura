@@ -170,6 +170,7 @@ export default function UserManagement() {
                             users.map((user) => (
                                 <tr key={user._id}>
                                     <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                             <div className="user-avatar">
                                                 {user.name?.[0]?.toUpperCase() || 'U'}
                                             </div>
@@ -242,11 +243,11 @@ export default function UserManagement() {
                                         </div>
                                     </td>
                                 </tr>
-                    ))
+                            ))
                         )}
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
         </div >
     );
 }
