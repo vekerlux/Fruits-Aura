@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Bell, Truck, MapPin, Clock, ChevronRight, ChevronLeft, Phone, Navigation, ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -52,32 +52,32 @@ const Home = () => {
         window.open('https://www.google.com/maps/search/?api=1&query=Abakaliki,Ebonyi+State,Nigeria', '_blank');
     };
 
-    const nextSlide = () => {
+    const nextSlide = useCallback(() => {
         if (dynamicSlides.length <= 1) return;
         setDirection(1);
         setCurrentSlide((prev) => (prev + 1) % dynamicSlides.length);
-    };
+    }, [dynamicSlides.length]);
 
-    const prevSlide = () => {
+    const prevSlide = useCallback(() => {
         if (dynamicSlides.length <= 1) return;
         setDirection(-1);
         setCurrentSlide((prev) => (prev - 1 + dynamicSlides.length) % dynamicSlides.length);
-    };
+    }, [dynamicSlides.length]);
 
     useEffect(() => {
         if (currentSlide >= dynamicSlides.length && dynamicSlides.length > 0) {
             setCurrentSlide(0);
         }
-    }, [dynamicSlides.length]);
+    }, [currentSlide, dynamicSlides.length]);
 
+    // ⚡ Bolt: Separate fetch from timer to prevent memory leaks and unnecessary re-renders.
+    // Fetch data when the user authenticates
     useEffect(() => {
         const fetchHomeData = async () => {
             try {
-                // Fetch dynamic slides
+                setIsLoadingSlides(true);
                 const slidesRes = await client.get('/admin/carousel');
-                const slides = slidesRes.data.slides || [];
-                setDynamicSlides(slides);
-                setIsLoadingSlides(false);
+                setDynamicSlides(slidesRes.data.slides || []);
 
                 const mixesRes = await voteApi.getComingSoonMixes();
                 setComingSoon(mixesRes.data?.products || []);
@@ -91,17 +91,24 @@ const Home = () => {
                 }
             } catch (error) {
                 console.error('Error fetching home data:', error);
+            } finally {
                 setIsLoadingSlides(false);
             }
         };
+        fetchHomeData();
+    }, [user]);
+
+    // ⚡ Bolt: useEffect for carousel timer, depends only on slide changes.
+    // This resolves the exhaustive-deps lint warning and is more efficient.
+    useEffect(() => {
+        if (dynamicSlides.length <= 1) return;
 
         const timer = setInterval(() => {
             nextSlide();
         }, 5000);
 
-        fetchHomeData();
         return () => clearInterval(timer);
-    }, [user, dynamicSlides.length]);
+    }, [dynamicSlides.length, nextSlide]);
 
     const handleVoteInitiate = (mix) => {
         if (userVote) return;
