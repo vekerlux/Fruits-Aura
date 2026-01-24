@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Button from '../components/Button';
 import PageTransition from '../components/PageTransition';
-import './Register.css';
+import './Auth.css';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -32,13 +32,13 @@ export default function Register() {
 
         // Validate passwords match
         if (formData.password !== formData.confirmPassword) {
-            showToast('Passwords do not match', 'error');
+            showToast('Aura mismatch: Passwords do not match', 'error');
             return;
         }
 
         // Validate password length
         if (formData.password.length < 6) {
-            showToast('Password must be at least 6 characters', 'error');
+            showToast('Security alert: Access Key must be at least 6 characters', 'error');
             return;
         }
 
@@ -47,10 +47,10 @@ export default function Register() {
         try {
             const { confirmPassword, ...registerData } = formData;
             await register(registerData);
-            showToast('Account created successfully! Welcome to Fruits Aura', 'success');
+            showToast('Account initialized! Welcome to the garden.', 'success');
             navigate('/');
         } catch (error) {
-            showToast(error.message || 'Registration failed. Please try again.', 'error');
+            showToast(error.message || 'Initialization failed. Please try again.', 'error');
         } finally {
             setIsLoading(false);
         }
@@ -58,49 +58,50 @@ export default function Register() {
 
     return (
         <PageTransition>
-            <div className="register-page">
+            <div className="auth-page">
                 <motion.div
-                    className="register-container"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    className="auth-container"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, type: "spring" }}
                 >
-                    <div className="register-header">
-                        <h1>Create Account</h1>
-                        <p>Join Fruits Aura and start your healthy journey</p>
+                    <div className="auth-header">
+                        <img src="/images/fruits-aura-logo.png" alt="Fruits Aura" className="auth-logo" />
+                        <h1>Grow Your Aura</h1>
+                        <p>Join the future of fresh wellness</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="register-form">
+                    <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-group">
-                            <label htmlFor="name">Full Name</label>
+                            <label htmlFor="name">Full Identity</label>
                             <input
                                 type="text"
                                 id="name"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder="John Doe"
+                                placeholder="Your Name"
                                 required
                                 autoComplete="name"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">Email Identity</label>
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder="you@example.com"
+                                placeholder="name@email.com"
                                 required
                                 autoComplete="email"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="role">Account Type</label>
+                            <label htmlFor="role">Aura Type</label>
                             <select
                                 id="role"
                                 name="role"
@@ -109,13 +110,13 @@ export default function Register() {
                                 className="form-select"
                                 required
                             >
-                                <option value="consumer">Consumer (Personal Use)</option>
-                                <option value="distributor">Distributor (Business)</option>
+                                <option value="consumer">Consumer (Standard)</option>
+                                <option value="distributor">Distributor (Premium)</option>
                             </select>
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">Access Key</label>
                             <input
                                 type="password"
                                 id="password"
@@ -130,7 +131,7 @@ export default function Register() {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
+                            <label htmlFor="confirmPassword">Re-enter Key</label>
                             <input
                                 type="password"
                                 id="confirmPassword"
@@ -144,18 +145,19 @@ export default function Register() {
                         </div>
 
                         <Button
+                            className="auth-btn"
                             type="submit"
                             fullWidth
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Creating account...' : 'Create Account'}
+                            {isLoading ? 'Initializing...' : 'Plant Account'}
                         </Button>
                     </form>
 
-                    <div className="register-footer">
+                    <div className="auth-footer">
                         <p>
-                            Already have an account?{' '}
-                            <Link to="/login" className="link">Sign in</Link>
+                            Already planted?{' '}
+                            <Link to="/login" className="auth-link">Login here</Link>
                         </p>
                     </div>
                 </motion.div>

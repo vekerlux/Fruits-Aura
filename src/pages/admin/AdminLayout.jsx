@@ -12,6 +12,7 @@ import {
     Image,
     Menu,
     X,
+    Check,
     ChevronLeft,
     ChevronRight
 } from 'lucide-react';
@@ -62,7 +63,7 @@ export default function AdminLayout() {
             <aside className={`admin-sidebar ${isMobileMenuOpen ? 'show' : ''}`}>
                 <div className="admin-header">
                     <div className="admin-logo-section">
-                        <img src="/logo.png" alt="Fruits Aura" className="brand-logo" />
+                        <img src="/images/fruits-aura-logo.png" alt="Fruits Aura" className="brand-logo" />
                         {!isCollapsed && (
                             <div className="brand-text">
                                 <h2>Fruits Aura</h2>
@@ -102,6 +103,10 @@ export default function AdminLayout() {
                     <NavLink title="Carousel" to="/admin/carousel" className={({ isActive }) => isActive ? 'active' : ''}>
                         <Image size={20} />
                         {!isCollapsed && <span>Carousel</span>}
+                    </NavLink>
+                    <NavLink title="Voting Results" to="/admin/votes" className={({ isActive }) => isActive ? 'active' : ''}>
+                        <Check size={20} />
+                        {!isCollapsed && <span>Votes</span>}
                     </NavLink>
                 </nav>
 

@@ -1,0 +1,216 @@
+/* Dashboard - Premium Desktop Design */
+.dashboard-container {
+    padding: 24px;
+}
+
+/* Stats Grid - 4 Columns */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    border-color: var(--admin-primary);
+    box-shadow: var(--admin-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--admin-text);
+    margin: 0;
+    line-height: 1;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--admin-text);
+    margin: 0;
+}
+
+.view-all-btn {
+    background: transparent;
+    border: 1px solid var(--admin-primary);
+    color: var(--admin-primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+    background: var(--admin-primary);
+    color: var(--admin-bg-deep);
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+}
+
+/* Dashboard Table */
+.orders-table-container {
+    overflow-x: auto;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.dashboard-table tbody tr {
+    border-bottom: 1px solid var(--admin-border);
+    transition: background 0.2s ease;
+}
+
+.dashboard-table tbody tr:hover {
+    background: var(--admin-bg-hover);
+}
+
+.dashboard-table tbody td {
+    padding: 16px;
+    font-size: 0.9rem;
+    color: var(--admin-text);
+}
+
+.order-number {
+    font-weight: 700;
+    color: var(--admin-text-muted);
+}
+
+/* Customer Cell */
+.customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.customer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-accent) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 1rem;
+}
+
+.customer-name {
+    font-weight: 600;
+    color: var(--admin-text);
+    margin: 0 0 4px 0;
+}
+
+.customer-email {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+    margin: 0;
+}
+
+.product-count {
+    color: var(--admin-text-muted);
+}
+
+/* Status Pill */
+.status-pill {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.amount-cell {
+    font-weight: 700;
+    color: var(--admin-accent);
+}
+
+.date-cell {
+    color: var(--admin-text-muted);
+    font-size: 0.85rem;
+}
+
+/* Responsive Stats Grid */
+@media (max-width: 1400px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-container {
+        padding: 16px;
+    }
+}

@@ -60,8 +60,24 @@ client.interceptors.response.use(
         }
 
         // Handle other errors
-        const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
-        console.error('API Error:', errorMessage);
+        let friendlyMessage = 'An unexpected error occurred';
+
+        if (!error.response) {
+            // Network error (server down, cors, DNS) implementation
+            friendlyMessage = 'Unable to connect to server. Please check your internet connection or try again later.';
+        } else if (error.response.status === 429) {
+            friendlyMessage = 'Too many requests. Please wait a moment before trying again.';
+        } else if (error.response.status >= 500) {
+            friendlyMessage = `Server Error (${error.response.status}). Please contact support if this persists.`;
+        } else {
+            // Client error (400, 404, etc)
+            friendlyMessage = error.response.data?.message || error.message || 'Request failed';
+        }
+
+        console.error('API Error:', friendlyMessage, error);
+
+        // Attach friendly message to error object for UI use
+        error.userMessage = friendlyMessage;
 
         return Promise.reject(error);
     }

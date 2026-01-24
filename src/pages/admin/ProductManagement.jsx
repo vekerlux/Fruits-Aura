@@ -5,6 +5,7 @@ import { Edit, Trash2, Plus } from 'lucide-react';
 import Button from '../../components/Button';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import AddProductModal from '../../components/AddProductModal';
+import './ProductManagement.css';
 
 export default function ProductManagement() {
     const { showToast } = useToast();
@@ -19,7 +20,7 @@ export default function ProductManagement() {
             setProducts(response.products || []);
         } catch (err) {
             console.error('Error loading products:', err);
-            showToast('Failed to load products', 'error');
+            showToast(err.userMessage || 'Failed to load products', 'error');
         } finally {
             setLoading(false);
         }
@@ -82,64 +83,56 @@ export default function ProductManagement() {
                 onProductAdded={loadProducts}
             />
 
-            <div className="admin-table-container">
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product._id}>
-                                <td>
-                                    <div className="product-info-cell">
-                                        <div
-                                            className="product-color-preview"
-                                            style={{ background: product.color || '#ddd' }}
-                                        />
-                                        <div>
-                                            <p className="product-name">{product.name}</p>
-                                            <p className="product-desc-preview">
-                                                {product.description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{product.category}</td>
-                                <td>{formatNairaWithoutDecimals(product.price)}</td>
-                                <td>{product.inventory?.stock || 0}</td>
-                                <td>
-                                    <button
-                                        className={`status-badge ${product.isActive ? 'active' : 'inactive'}`}
-                                        onClick={() => handleToggleStatus(product._id)}
-                                        style={{ cursor: 'pointer', border: 'none' }}
-                                    >
-                                        {product.isActive ? 'Active' : 'Inactive'}
-                                    </button>
-                                </td>
-                                <td>
-                                    <div className="action-buttons">
-                                        <button className="action-btn edit">
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className="action-btn delete"
-                                            onClick={() => handleDelete(product._id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="products-grid">
+                {products.map((product) => (
+                    <div key={product._id} className="product-card-premium">
+                        <div className="product-card-image">
+                            {product.image ? (
+                                <img src={product.image} alt={product.name} />
+                            ) : (
+                                <div
+                                    className="product-color-circle"
+                                    style={{ background: product.color || '#ddd' }}
+                                />
+                            )}
+                        </div>
+
+                        <div className="product-card-content">
+                            <h3 className="product-card-title">{product.name}</h3>
+                            <p className="product-card-category">Category: {product.category}</p>
+
+                            <div className="product-card-meta">
+                                <span className="product-card-price">
+                                    {formatNairaWithoutDecimals(product.price)}
+                                </span>
+                                <span className="product-card-stock">
+                                    Stock: {product.inventory?.stock || 0}
+                                </span>
+                            </div>
+
+                            <button
+                                className={`product-status-badge ${product.isActive ? 'status-active' : 'status-inactive'}`}
+                                onClick={() => handleToggleStatus(product._id)}
+                            >
+                                {product.isActive ? '🟢 Active' : '🔴 Inactive'}
+                            </button>
+
+                            <div className="product-card-actions">
+                                <button className="product-action-btn edit-btn">
+                                    <Edit size={16} />
+                                    Edit
+                                </button>
+                                <button
+                                    className="product-action-btn delete-btn"
+                                    onClick={() => handleDelete(product._id)}
+                                >
+                                    <Trash2 size={16} />
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

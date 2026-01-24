@@ -19,6 +19,13 @@
     align-items: center;
     justify-content: center;
     color: var(--color-medium-gray);
+    border: 3px solid var(--color-clean-white);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
 }
 
 .profile-info {
@@ -143,586 +150,437 @@
 
 .toggle-switch.active .toggle-knob {
     transform: translateX(20px);
-
-    .profile-container {
-        padding: var(--spacing-md);
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-md);
-        margin-bottom: var(--spacing-xl);
-        padding: var(--spacing-md) 0;
-    }
-
-    .profile-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background-color: var(--color-light-gray);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-medium-gray);
-        border: 3px solid var(--color-clean-white);
-        box-shadow: var(--shadow-md);
-    }
-
-    .profile-info {
-        flex: 1;
-    }
-
-    .profile-info h2 {
-        font-size: 20px;
-        margin: 0;
-    }
-
-    .profile-info p {
-        color: var(--color-medium-gray);
-        font-size: 14px;
-    }
-
-    .edit-btn {
-        background: none;
-        color: var(--color-primary-green);
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    .profile-menu {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: var(--spacing-sm);
-    }
-
-    .profile-badges {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 8px;
-    }
-
-    .badge {
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-
-    .badge.admin {
-        background-color: var(--color-error);
-        color: white;
-    }
-
-    .badge.distributor {
-        background-color: var(--color-vibrant-orange);
-        color: white;
-    }
-
-    .badge.consumer {
-        background-color: var(--color-primary-green);
-        color: white;
-    }
-
-    .badge.plan {
-        background-color: var(--color-primary-green);
-        color: white;
-    }
-
-    .menu-item {
-        display: flex;
-        align-items: center;
-        padding: 16px;
-        gap: var(--spacing-md);
-        cursor: pointer;
-    }
-
-    .menu-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        background-color: var(--color-light-gray);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-dark-gray);
-    }
-
-    .menu-icon.red {
-        background-color: rgba(244, 67, 54, 0.1);
-        color: var(--color-error);
-    }
-
-    .menu-label {
-        flex: 1;
-        font-weight: 500;
-    }
-
-    .menu-label.red {
-        color: var(--color-error);
-    }
-
-    .toggle-switch {
-        width: 44px;
-        height: 24px;
-        background-color: var(--color-light-gray);
-        border-radius: 12px;
-        position: relative;
-        transition: background-color 0.3s ease;
-    }
-
-    .toggle-switch.active {
-        background-color: var(--color-primary-green);
-    }
-
-    .toggle-knob {
-        width: 20px;
-        height: 20px;
-        background-color: white;
-        border-radius: 50%;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.3s ease;
-    }
-
-    .toggle-switch.active .toggle-knob {
-        transform: translateX(20px);
-    }
-
-    .chevron {
-        color: var(--color-medium-gray);
-    }
-
-    /* Referral Card New */
-    .referral-card-new {
-        background: var(--color-clean-white);
-        padding: var(--spacing-lg);
-        border-radius: var(--radius-xl) !important;
-        border: none;
-        box-shadow: var(--shadow-aura);
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .referral-flex {
-        display: flex;
-        gap: 20px;
-        align-items: center;
-    }
-
-    .referral-info-main {
-        flex: 1;
-    }
-
-    .referral-badge-aura {
-        display: inline-block;
-        padding: 4px 10px;
-        background: var(--gradient-aura);
-        color: white;
-        font-size: 10px;
-        font-weight: 800;
-        border-radius: var(--radius-full);
-        margin-bottom: 12px;
-    }
-
-    .referral-info-main h3 {
-        font-size: 22px;
-        margin-bottom: 6px;
-        color: var(--color-charcoal);
-    }
-
-    .referral-info-main p {
-        font-size: 14px;
-        color: var(--color-medium-gray);
-        margin-bottom: 16px;
-    }
-
-    .referral-code-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: var(--color-light-gray);
-        padding: 8px 12px;
-        border-radius: var(--radius-md);
-        border: 1px dashed var(--color-primary-green);
-    }
-
-    .referral-code-wrapper code {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--color-primary-green);
-        letter-spacing: 1px;
-    }
-
-    .copy-icon-btn {
-        background: var(--color-primary-green);
-        color: white;
-        border: none;
-        padding: 4px 10px;
-        border-radius: var(--radius-sm);
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .referral-qr-box {
-        width: 100px;
-        height: 100px;
-    }
-
-    .qr-placeholder {
-        width: 100%;
-        height: 100%;
-        background: #f9f9f9;
-        border: 2px solid #EEE;
-        border-radius: var(--radius-md);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        padding: 8px;
-    }
-
-    .qr-pattern {
-        width: 60px;
-        height: 60px;
-        background-image:
-            radial-gradient(var(--color-charcoal) 2px, transparent 2px),
-            radial-gradient(var(--color-charcoal) 2px, transparent 2px);
-        background-size: 8px 8px;
-        background-position: 0 0, 4px 4px;
-        opacity: 0.6;
-    }
-
-    .qr-label {
-        font-size: 9px;
-        font-weight: 700;
-        color: var(--color-medium-gray);
-        margin-top: 4px;
-    }
-
-    .referral-stats-mini {
-        margin-top: 20px;
-        padding-top: 16px;
-        border-top: 1px solid #EEE;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-value {
-        display: block;
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--color-charcoal);
-    }
-
-    .stat-label {
-        font-size: 11px;
-        color: var(--color-medium-gray);
-        text-transform: uppercase;
-        font-weight: 600;
-    }
-
-    .stat-sep {
-        height: 24px;
-        width: 1px;
-        background: #EEE;
-    }
-
-    /* Subscription Card */
-    .subscription-card {
-        padding: 16px;
-        margin-bottom: var(--spacing-md);
-        background: linear-gradient(135deg, #FFF9C4 0%, #FFFFFF 100%);
-        border: 1px solid var(--color-soft-yellow);
-    }
-
-    .subscription-card.premium-aura {
-        background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
-        color: white;
-        padding: var(--spacing-lg);
-        border: 1px solid rgba(255, 215, 0, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .subscription-card.premium-aura::before {
-        content: '';
-        position: absolute;
-        top: -50px;
-        right: -50px;
-        width: 150px;
-        height: 150px;
-        background: radial-gradient(circle, rgba(255, 213, 79, 0.2) 0%, transparent 70%);
-        z-index: 0;
-    }
-
-    .sub-title-group {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-xs);
-        position: relative;
-        z-index: 1;
-    }
-
-    .sub-title-group h3 {
-        color: white;
-        margin: 0;
-    }
-
-    .aura-sparkle {
-        font-size: 18px;
-        animation: bounce 2s infinite;
-    }
-
-    .plan-details-hero {
-        margin-top: var(--spacing-md);
-        position: relative;
-        z-index: 1;
-    }
-
-    .plan-label {
-        text-transform: uppercase;
-        font-size: 10px;
-        letter-spacing: 1px;
-        color: rgba(255, 255, 255, 0.5);
-        margin-bottom: 4px;
-    }
-
-    .plan-name {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--color-soft-yellow);
-        margin: 0 0 4px 0;
-    }
-
-    .plan-info {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: var(--spacing-md);
-    }
-
-    .plan-benefits {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .plan-benefits span {
-        font-size: 13px;
-        color: white;
-    }
-
-    .address-management-section {
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .card-header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .card-header-row h3 {
-        margin: 0;
-    }
-
-    .btn-tiny {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
-    }
-
-    .address-item {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-md);
-        padding: var(--spacing-md);
-        background: #fdfdfd;
-        border: 1px solid #eee;
-        border-radius: var(--radius-md);
-    }
-
-    .address-item.active {
-        border-color: var(--color-primary-green);
-        background: rgba(103, 176, 67, 0.05);
-    }
-
-    .address-icon {
-        width: 40px;
-        height: 40px;
-        background: white;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-primary-green);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .address-text .title {
-        font-weight: 600;
-        font-size: 14px;
-        margin: 0;
-    }
-
-    .address-text .detail {
-        font-size: 12px;
-        color: var(--color-medium-gray);
-        margin: 0;
-    }
-
-    .active-dot {
-        margin-left: auto;
-        width: 10px;
-        height: 10px;
-        background: var(--color-primary-green);
-        border-radius: 50%;
-        box-shadow: 0 0 8px var(--color-primary-green);
-    }
-
-    @keyframes bounce {
-
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-5px);
-        }
-    }
-
-    .sub-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .sub-header h3 {
-        font-size: 16px;
-        margin: 0;
-        color: var(--color-dark-gray);
-    }
-
-    .status-pill {
-        font-size: 12px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 12px;
-        background-color: #E8F5E9;
-        color: #2E7D32;
-        text-transform: uppercase;
-    }
-
-    .status-pill.inactive {
-        background-color: #FFEBEE;
-        color: #C62828;
-    }
-
-    .plan-details {
-        margin-bottom: 16px;
-    }
-
-    .plan-name {
-        font-size: 14px;
-        color: var(--color-dark-gray);
-        margin-bottom: 4px;
-    }
-
-    .plan-desc {
-        font-size: 12px;
-        color: var(--color-medium-gray);
-    }
-
-    .upgrade-btn {
-        width: 100%;
-        padding: 10px;
-        background-color: var(--color-primary-green);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .upgrade-btn:hover {
-        background-color: #4CAF50;
-        /* Slightly darker/lighter green */
-    }
-
-    /* Editable Header */
-    .profile-input-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-        margin-bottom: 12px;
-    }
-
-    .profile-input {
-        background: var(--color-clean-white) !important;
-        border: 1px solid #E0E0E0 !important;
-        color: var(--color-charcoal) !important;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 16px;
-        width: 100%;
-    }
-
-    .action-buttons-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .whatsapp-card {
-        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-        color: white;
-        border: none;
-        margin-bottom: var(--spacing-md);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .whatsapp-content {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        position: relative;
-        z-index: 2;
-    }
-
-    .whatsapp-text h3 {
-        margin: 0;
-        font-size: 16px;
-    }
-
-    .whatsapp-text p {
-        margin: 4px 0 0 0;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 13px;
-    }
-
-    .save-contact-badge {
-        background: white;
-        color: #128C7E;
-        font-size: 10px;
-        font-weight: 800;
-        padding: 2px 6px;
-        border-radius: 4px;
-        margin-left: 8px;
-        text-transform: uppercase;
-    }
+}
+
+
+/* Referral Card New */
+.referral-card-new {
+    background: var(--color-clean-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl) !important;
+    border: none;
+    box-shadow: var(--shadow-aura);
+    margin-bottom: var(--spacing-lg);
+}
+
+.referral-flex {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.referral-info-main {
+    flex: 1;
+}
+
+.referral-badge-aura {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--gradient-aura);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: var(--radius-full);
+    margin-bottom: 12px;
+}
+
+.referral-info-main h3 {
+    font-size: 22px;
+    margin-bottom: 6px;
+    color: var(--color-charcoal);
+}
+
+.referral-info-main p {
+    font-size: 14px;
+    color: var(--color-medium-gray);
+    margin-bottom: 16px;
+}
+
+.referral-code-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-light-gray);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-primary-green);
+}
+
+.referral-code-wrapper code {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-primary-green);
+    letter-spacing: 1px;
+}
+
+.copy-icon-btn {
+    background: var(--color-primary-green);
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.referral-qr-box {
+    width: 100px;
+    height: 100px;
+}
+
+.qr-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f9f9f9;
+    border: 2px solid #EEE;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8px;
+}
+
+.qr-pattern {
+    width: 60px;
+    height: 60px;
+    background-image:
+        radial-gradient(var(--color-charcoal) 2px, transparent 2px),
+        radial-gradient(var(--color-charcoal) 2px, transparent 2px);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+    opacity: 0.6;
+}
+
+.qr-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-medium-gray);
+    margin-top: 4px;
+}
+
+.referral-stats-mini {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #EEE;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-charcoal);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--color-medium-gray);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.stat-sep {
+    height: 24px;
+    width: 1px;
+    background: #EEE;
+}
+
+/* Subscription Card */
+.subscription-card {
+    padding: 16px;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, #FFF9C4 0%, #FFFFFF 100%);
+    border: 1px solid var(--color-soft-yellow);
+}
+
+.subscription-card.premium-aura {
+    background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
+    color: white;
+    padding: var(--spacing-lg);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.subscription-card.premium-aura::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 213, 79, 0.2) 0%, transparent 70%);
+    z-index: 0;
+}
+
+.sub-title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    position: relative;
+    z-index: 1;
+}
+
+.sub-title-group h3 {
+    color: white;
+    margin: 0;
+}
+
+.aura-sparkle {
+    font-size: 18px;
+    animation: bounce 2s infinite;
+}
+
+.plan-details-hero {
+    margin-top: var(--spacing-md);
+    position: relative;
+    z-index: 1;
+}
+
+.plan-label {
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.plan-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-soft-yellow);
+    margin: 0 0 4px 0;
+}
+
+.plan-info {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-md);
+}
+
+.plan-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.plan-benefits span {
+    font-size: 13px;
+    color: white;
+}
+
+.address-management-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-header-row h3 {
+    margin: 0;
+}
+
+.btn-tiny {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+}
+
+.address-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: var(--radius-md);
+}
+
+.address-item.active {
+    border-color: var(--color-primary-green);
+    background: rgba(103, 176, 67, 0.05);
+}
+
+.address-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-green);
+    box-shadow: var(--shadow-sm);
+}
+
+
+
+.address-text .title {
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0;
+}
+
+.address-text .detail {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+    margin: 0;
+}
+
+.active-dot {
+    margin-left: auto;
+    width: 10px;
+    height: 10px;
+    background: var(--color-primary-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--color-primary-green);
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.sub-header h3 {
+    font-size: 16px;
+    margin: 0;
+    color: var(--color-dark-gray);
+}
+
+.status-pill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    text-transform: uppercase;
+}
+
+.status-pill.inactive {
+    background-color: #FFEBEE;
+    color: #C62828;
+}
+
+.plan-details {
+    margin-bottom: 16px;
+}
+
+.plan-name {
+    font-size: 14px;
+    color: var(--color-dark-gray);
+    margin-bottom: 4px;
+}
+
+.plan-desc {
+    font-size: 12px;
+    color: var(--color-medium-gray);
+}
+
+.upgrade-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.upgrade-btn:hover {
+    background-color: #4CAF50;
+    /* Slightly darker/lighter green */
+}
+
+/* Editable Header */
+.profile-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.profile-input {
+    background: var(--color-clean-white) !important;
+    border: 1px solid #E0E0E0 !important;
+    color: var(--color-charcoal) !important;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.action-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.whatsapp-card {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: white;
+    border: none;
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.whatsapp-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+.whatsapp-text h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.whatsapp-text p {
+    margin: 4px 0 0 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+}
+
+.save-contact-badge {
+    background: white;
+    color: #128C7E;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+}

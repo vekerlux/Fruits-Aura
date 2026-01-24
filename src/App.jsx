@@ -29,21 +29,61 @@ import OrderManagement from './pages/admin/OrderManagement';
 import UserManagement from './pages/admin/UserManagement';
 import NotificationManagement from './pages/admin/NotificationManagement';
 import CarouselManagement from './pages/admin/CarouselManagement';
+import VotingResults from './pages/admin/VotingResults';
 import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
 import './styles/auth.css';
 import './pages/admin/AdminLayout.css';
+import './pages/admin/AdminLayout.css';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
+import Header from './components/Header';
 
 const AppContent = () => {
   const location = useLocation();
   const isAuthRoute = ['/login', '/register'].includes(location.pathname);
   const isAdminRoute = location.pathname.startsWith('/admin');
   const showBottomNav = !isAuthRoute && !isAdminRoute;
+  const showHeader = !isAuthRoute && !isAdminRoute;
+
+  // State migrated from App component
+  const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('hasSeenOnboarding');
+  });
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('hasSeenOnboarding', 'true');
+  };
+
+  if (showSplash) {
+    return <Splash onComplete={handleSplashComplete} />;
+  }
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />;
+  }
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout ${isAdminRoute ? 'admin-mode' : ''}`}>
+      {/* Global Background Elements */}
+      {!isAdminRoute && (
+        <>
+          <div className="bg-circle bg-circle-1"></div>
+          <div className="bg-circle bg-circle-2"></div>
+          <div className="floating-fruit">🍊</div>
+          <div className="floating-fruit">🍋</div>
+          <div className="floating-fruit">🍎</div>
+        </>
+      )}
+
+      {showHeader && <Header />}
+
       <main className="main-content">
         <AnimatePresence mode='wait'>
           <Routes location={location} key={location.pathname}>
@@ -96,6 +136,7 @@ const AppContent = () => {
               <Route path="users" element={<UserManagement />} />
               <Route path="notifications" element={<NotificationManagement />} />
               <Route path="carousel" element={<CarouselManagement />} />
+              <Route path="votes" element={<VotingResults />} />
             </Route>
           </Routes>
         </AnimatePresence>
@@ -106,28 +147,6 @@ const AppContent = () => {
 };
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem('hasSeenOnboarding');
-  });
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
-
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-    localStorage.setItem('hasSeenOnboarding', 'true');
-  };
-
-  if (showSplash) {
-    return <Splash onComplete={handleSplashComplete} />;
-  }
-
-  if (showOnboarding) {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
-  }
-
   return (
     <ThemeProvider>
       <AuthProvider>

@@ -126,7 +126,7 @@ const ProductDetail = () => {
     return (
         <PageTransition>
             <div className="product-detail-container">
-                <div className="product-header" style={{ backgroundColor: product.color || '#4CAF50' }}>
+                <div className="product-header" style={{ backgroundColor: product.color || 'var(--color-bg-elevated)' }}>
                     <div className="header-actions">
                         <button
                             className="icon-btn white"
@@ -140,19 +140,23 @@ const ProductDetail = () => {
                             onClick={handleToggleFavorite}
                             aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
                         >
-                            <Heart size={24} fill={favorite ? "white" : "none"} />
+                            <Heart size={24} fill={favorite ? "var(--color-primary)" : "none"} stroke={favorite ? "var(--color-primary)" : "currentColor"} />
                         </button>
                     </div>
                     <motion.div
                         className="product-hero-image"
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
+                        initial={{ scale: 0.8, opacity: 0, rotate: -15 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 20
+                        }}
                     >
                         {product.image ? (
                             <img src={product.image} alt={product.name} className="hero-product-img" />
                         ) : (
-                            <div className="hero-circle"></div>
+                            <div className="hero-circle glass"></div>
                         )}
                     </motion.div>
                 </div>
@@ -165,8 +169,8 @@ const ProductDetail = () => {
                         >
                             <h1>{product.name}</h1>
                             <div className="rating-row">
-                                <Star size={16} fill="#FDD835" color="#FDD835" />
-                                <span className="rating-text">{currentRating} ({reviews.length} reviews)</span>
+                                <Star size={18} fill="var(--color-primary)" color="var(--color-primary)" />
+                                <span className="rating-text text-glow">{currentRating} ({reviews.length} reviews)</span>
                             </div>
                         </motion.div>
                         <span className="price-tag">{formatNairaWithoutDecimals(currentPrice || 0)}</span>
@@ -175,70 +179,88 @@ const ProductDetail = () => {
                     {/* Auraset Toggle - Premium Experience */}
                     {product.bundlePrice && (
                         <div className="bundle-toggle-container premium-aura">
-                            <div
+                            <motion.div
+                                whileTap={{ scale: 0.98 }}
                                 className={`toggle-option ${!isBundle ? 'active' : ''}`}
                                 onClick={() => setIsBundle(false)}
                             >
-                                <span className="option-name">Single Bottle</span>
+                                <span className="option-name">Standard</span>
                                 <span className="option-price">{formatNairaWithoutDecimals(product.price)}</span>
-                            </div>
+                            </motion.div>
 
-                            <div
+                            <motion.div
+                                whileTap={{ scale: 0.98 }}
                                 className={`toggle-option ${isBundle ? 'active' : ''}`}
                                 onClick={() => setIsBundle(true)}
                             >
-                                <div className="auraset-premium-badge">✨ PACK OF {product.bundleSize || 5}</div>
-                                <span className="option-name">Auraset</span>
+                                <div className="auraset-premium-badge shadow-neon">🔥 SAVINGS</div>
+                                <span className="option-name">Auraset ({product.bundleSize || 5} Pack)</span>
                                 <span className="option-price">{formatNairaWithoutDecimals(product.bundlePrice)}</span>
-                            </div>
+                            </motion.div>
                         </div>
                     )}
 
                     <p className="description">{product.description}</p>
 
-                    {product.ingredients && product.ingredients.length > 0 && (
-                        <div className="section">
-                            <h3>Ingredients</h3>
-                            <div className="ingredients-list">
-                                {product.ingredients.map((ing, i) => (
-                                    <span key={i} className="ingredient-chip">{ing}</span>
-                                ))}
+                    <div className="detail-sections">
+                        {product.ingredients && product.ingredients.length > 0 && (
+                            <div className="section">
+                                <div className="section-header flex items-center gap-sm">
+                                    <Info size={18} className="text-primary" />
+                                    <h3>Composition</h3>
+                                </div>
+                                <div className="ingredients-list">
+                                    {product.ingredients.map((ing, i) => (
+                                        <motion.span
+                                            key={i}
+                                            className="ingredient-chip glass"
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: i * 0.05 }}
+                                        >
+                                            {ing}
+                                        </motion.span>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {product.nutrition && (
-                        <div className="section">
-                            <h3>Nutrition Facts</h3>
-                            <div className="nutrition-grid">
-                                <div className="nutrition-item">
-                                    <span className="label">Calories</span>
-                                    <span className="value">{product.nutrition.calories || '-'}</span>
+                        {product.nutrition && (
+                            <div className="section">
+                                <div className="section-header flex items-center gap-sm">
+                                    <Star size={18} className="text-primary" />
+                                    <h3>Aura Profile</h3>
                                 </div>
-                                <div className="nutrition-item">
-                                    <span className="label">Sugar</span>
-                                    <span className="value">{product.nutrition.sugar || '-'}</span>
-                                </div>
-                                <div className="nutrition-item">
-                                    <span className="label">Vit C</span>
-                                    <span className="value">{product.nutrition.vitaminC || '-'}</span>
-                                </div>
-                                <div className="nutrition-item">
-                                    <span className="label">Protein</span>
-                                    <span className="value">{product.nutrition.protein || '-'}</span>
+                                <div className="nutrition-grid">
+                                    <div className="nutrition-item glass">
+                                        <span className="label">Energy</span>
+                                        <span className="value">{product.nutrition.calories || '-'}</span>
+                                    </div>
+                                    <div className="nutrition-item glass">
+                                        <span className="label">Natural Sugars</span>
+                                        <span className="value">{product.nutrition.sugar || '-'}</span>
+                                    </div>
+                                    <div className="nutrition-item glass">
+                                        <span className="label">Vitality (Vit C)</span>
+                                        <span className="value">{product.nutrition.vitaminC || '-'}</span>
+                                    </div>
+                                    <div className="nutrition-item glass">
+                                        <span className="label">Essence (Protein)</span>
+                                        <span className="value">{product.nutrition.protein || '-'}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
                     <div className="write-review-section">
                         <Button
                             variant="secondary"
-                            className="write-review-btn"
+                            className="write-review-btn glass"
                             onClick={() => setShowAddReview(true)}
                         >
                             <MessageSquarePlus size={20} />
-                            Write a Review
+                            Share Your Experience
                         </Button>
                     </div>
 
@@ -249,18 +271,18 @@ const ProductDetail = () => {
                     />
                 </div>
 
-                <div className="product-footer-action">
-                    <div className="quantity-selector">
+                <div className="product-footer-action glass">
+                    <div className="quantity-selector glass">
                         <button className="qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                            <Minus size={18} />
+                            <Minus size={20} />
                         </button>
                         <span className="qty">{quantity}</span>
                         <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>
-                            <Plus size={18} />
+                            <Plus size={20} />
                         </button>
                     </div>
-                    <Button variant="primary" className="add-to-cart-btn" onClick={handleAddToCart}>
-                        <ShoppingBag size={20} /> Add {isBundle ? 'Auraset' : 'Item'}
+                    <Button variant="primary" className="add-to-cart-btn shadow-neon" onClick={handleAddToCart}>
+                        <ShoppingBag size={22} /> {isBundle ? 'Add Auraset' : 'Add to Bag'}
                     </Button>
                 </div>
 

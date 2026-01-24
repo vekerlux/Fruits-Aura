@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Button from '../components/Button';
 import PageTransition from '../components/PageTransition';
+import './Auth.css';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -29,10 +30,10 @@ export default function Login() {
 
         try {
             await login(formData);
-            showToast('Welcome back! Logged in successfully', 'success');
+            showToast('Welcome back! Fresh aura incoming.', 'success');
             navigate('/');
         } catch (error) {
-            showToast(error.message || 'Login failed. Please check your credentials.', 'error');
+            showToast(error.message || 'Verification failed. Please check your credentials.', 'error');
         } finally {
             setIsLoading(false);
         }
@@ -40,35 +41,36 @@ export default function Login() {
 
     return (
         <PageTransition>
-            <div className="login-page">
+            <div className="auth-page">
                 <motion.div
-                    className="login-container"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    className="auth-container"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, type: "spring" }}
                 >
-                    <div className="login-header">
+                    <div className="auth-header">
+                        <img src="/images/fruits-aura-logo.png" alt="Fruits Aura" className="auth-logo" />
                         <h1>Welcome Back</h1>
-                        <p>Sign in to your Fruits Aura account</p>
+                        <p>Sign in to refresh your aura</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="login-form">
+                    <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">Email Identity</label>
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder="you@example.com"
+                                placeholder="name@email.com"
                                 required
                                 autoComplete="email"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">Access Key</label>
                             <input
                                 type="password"
                                 id="password"
@@ -82,22 +84,21 @@ export default function Login() {
                         </div>
 
                         <Button
+                            className="auth-btn"
                             type="submit"
                             fullWidth
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Signing in...' : 'Sign In'}
+                            {isLoading ? 'Decrypting...' : 'Enter Aura'}
                         </Button>
                     </form>
 
-                    <div className="login-footer">
+                    <div className="auth-footer">
                         <p>
-                            Don't have an account?{' '}
-                            <Link to="/register" className="link">Sign up</Link>
+                            New to the garden?{' '}
+                            <Link to="/register" className="auth-link">Plant an account</Link>
                         </p>
                     </div>
-
-
                 </motion.div>
             </div>
         </PageTransition>

@@ -1,0 +1,198 @@
+/* Voting Results Styles */
+.voting-results-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.chart-card,
+.winner-card {
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.chart-wrapper {
+    margin-top: 20px;
+}
+
+.winner-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.winner-content {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.crown-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.winner-content h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.vote-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--admin-text);
+}
+
+.winner-content p {
+    color: var(--admin-text-muted);
+    font-size: 0.9rem;
+}
+
+/* Comments Section */
+.comments-section {
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.comments-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-item {
+    background: var(--admin-bg-deep);
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 3px solid var(--admin-primary);
+}
+
+.comment-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    align-items: center;
+}
+
+.user-name {
+    font-weight: 700;
+    color: var(--admin-text);
+}
+
+.voted-for {
+    color: var(--admin-text-muted);
+}
+
+.voted-for strong {
+    color: var(--admin-accent);
+}
+
+.date {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.comment-text {
+    color: var(--admin-text);
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.no-data {
+    color: var(--admin-text-muted);
+    text-align: center;
+    padding: 20px;
+}
+
+/* CSS Chart Styles */
+.css-chart-container {
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.chart-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.chart-label {
+    width: 120px;
+    font-size: 0.9rem;
+    color: var(--admin-text);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-track {
+    flex: 1;
+    background: var(--admin-bg-deep);
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 40px;
+    /* Ensure value is always visible if mostly empty */
+}
+
+.bar-value {
+    color: #fff;
+    /* Always white on colored bars */
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 900px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}

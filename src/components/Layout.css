@@ -15,4 +15,14 @@
     background-color: var(--color-clean-white);
     min-height: 100vh;
     position: relative;
+    z-index: 10;
+}
+
+/* Admin Mode Override - Desktop View */
+.app-layout.admin-mode .main-content {
+    max-width: 100% !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    background-color: #121212 !important;
+    /* Force dark background for admin */
 }

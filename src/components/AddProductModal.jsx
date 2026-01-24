@@ -110,15 +110,27 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                 </div>
 
                 <div className="form-group">
-                    <label>Full Description</label>
-                    <textarea
-                        name="longDescription"
-                        value={formData.longDescription}
-                        onChange={handleChange}
-                        required
-                        rows={3}
-                        placeholder="Detailed description of the product..."
-                    />
+                    <label>Description</label>
+                    <div className="rich-text-editor">
+                        <div className="rte-toolbar">
+                            <button type="button" onClick={() => document.execCommand('bold')} title="Bold"><b>B</b></button>
+                            <button type="button" onClick={() => document.execCommand('italic')} title="Italic"><i>I</i></button>
+                            <button type="button" onClick={() => document.execCommand('underline')} title="Underline"><u>U</u></button>
+                            <select onChange={(e) => document.execCommand('fontName', false, e.target.value)} defaultValue="Inter">
+                                <option value="Inter">Inter</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Courier New">Courier</option>
+                            </select>
+                        </div>
+                        <div
+                            className="rte-content"
+                            contentEditable
+                            onInput={(e) => setFormData(prev => ({ ...prev, longDescription: e.currentTarget.innerHTML }))}
+                            dangerouslySetInnerHTML={{ __html: formData.longDescription }}
+                            style={{ minHeight: '100px', border: '1px solid #ddd', padding: '10px', borderRadius: '8px', background: '#333', color: '#fff' }}
+                        />
+                    </div>
                 </div>
 
                 <div className="form-row">
@@ -156,6 +168,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                         >
                             <option value="Fresh Mix">Fresh Mix</option>
                             <option value="Coming Soon">Coming Soon</option>
+                            <option value="Events">Events</option>
                         </select>
                     </div>
                     <div className="form-group">
@@ -166,7 +179,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                                 name="color"
                                 value={formData.color}
                                 onChange={handleChange}
-                                style={{ height: '40px', width: '60px', padding: 0, border: 'none' }}
+                                style={{ height: '40px', width: '60px', padding: 0, border: 'none', cursor: 'pointer' }}
                             />
                             <span style={{ fontSize: '0.8rem', color: '#666' }}>{formData.color}</span>
                         </div>
@@ -187,14 +200,41 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                 </div>
 
                 <div className="form-group">
-                    <label>Image URL (Optional)</label>
-                    <input
-                        type="url"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        placeholder="https://..."
-                    />
+                    <label>Product Image</label>
+                    <div className="image-upload-container" style={{ border: '2px dashed #444', padding: '20px', borderRadius: '12px', textAlign: 'center' }}>
+                        {formData.image ? (
+                            <div className="image-preview" style={{ position: 'relative', display: 'inline-block' }}>
+                                <img src={formData.image} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
+                                    style={{ position: 'absolute', top: -10, right: -10, background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer' }}
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        ) : (
+                            <label style={{ cursor: 'pointer', display: 'block', color: '#aaa' }}>
+                                <div style={{ fontSize: '24px', marginBottom: '8px' }}>📁</div>
+                                <span>Click to Upload from Gallery</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setFormData(prev => ({ ...prev, image: reader.result }));
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                    hidden
+                                />
+                            </label>
+                        )}
+                    </div>
                 </div>
             </form>
         </Modal>

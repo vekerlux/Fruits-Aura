@@ -11,6 +11,7 @@ const CarouselManagement = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(null); // ID of slide being edited
     const [showAddForm, setShowAddForm] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const { showToast } = useToast();
 
     const [form, setForm] = useState({
@@ -89,10 +90,34 @@ const CarouselManagement = () => {
         <div className="carousel-mgmt">
             <div className="mgmt-header">
                 <h2>Carousel Management</h2>
-                <Button onClick={() => setShowAddForm(true)}>
-                    <Plus size={18} /> Add Slide
-                </Button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <Button variant="secondary" onClick={() => setShowSettings(!showSettings)}>
+                        Settings
+                    </Button>
+                    <Button onClick={() => setShowAddForm(true)}>
+                        <Plus size={18} /> Add Slide
+                    </Button>
+                </div>
             </div>
+
+            {showSettings && (
+                <div className="settings-panel" style={{ background: '#1E1E1E', padding: '20px', borderRadius: '12px', marginBottom: '20px', border: '1px solid #333' }}>
+                    <h3>Carousel Settings</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '16px' }}>
+                        <div className="form-group">
+                            <label>Autoplay</label>
+                            <select style={{ width: '100%', padding: '8px', background: '#121212', border: '1px solid #333', borderRadius: '6px', color: 'white' }}>
+                                <option>Enabled</option>
+                                <option>Disabled</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Speed (ms)</label>
+                            <input type="number" defaultValue={5000} style={{ width: '100%', padding: '8px', background: '#121212', border: '1px solid #333', borderRadius: '6px', color: 'white' }} />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showAddForm && (
                 <div className="slide-form-overlay">

@@ -22,7 +22,7 @@ export default function OrderManagement() {
             setOrders(response.orders || response.data?.orders || []);
         } catch (err) {
             console.error('Error loading orders:', err);
-            showToast('Failed to load orders', 'error');
+            showToast(err.userMessage || 'Failed to load orders', 'error');
         } finally {
             setLoading(false);
         }

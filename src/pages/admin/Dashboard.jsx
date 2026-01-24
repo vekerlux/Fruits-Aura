@@ -15,6 +15,7 @@ import {
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import { getVotingRankings } from '../../api/votingApi';
 import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -32,9 +33,9 @@ export default function Dashboard() {
             ]);
             setStats(statsRes.stats);
             setRankings(rankingsRes.products || rankingsRes.data || []);
-        } catch (err) {
-            console.error('Error loading dashboard data:', err);
-            showToast('Failed to load dashboard data', 'error');
+        } catch (error) {
+            console.error(error);
+            showToast(error.userMessage || 'Failed to refresh dashboard data', 'error');
         } finally {
             setLoading(false);
         }
