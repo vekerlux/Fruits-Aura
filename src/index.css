@@ -1,33 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Premium Brand Colors - Fruits Aura */
-  /* Brand Core */
-  --brand-green: #8BC34A;
-  /* Fresh Lime */
-  --brand-orange: #FF9800;
-  /* Vibrant Citrus */
+  /* Brand Color System (Mobile-First Redesign) */
+  --primary-orange: #FF8C00;
+  --hover-orange: #FF6B00;
+  --accent-green: #00D4AA;
+  --bg-gradient: linear-gradient(135deg, #FF9966 0%, #FF8C00 100%);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text-dark: #1A1A1A;
+  --text-light: #666666;
 
-  /* Primary Actions */
-  --color-primary-green: var(--brand-green);
-  --color-vibrant-orange: var(--brand-orange);
-  --color-primary-glow: rgba(139, 195, 74, 0.4);
+  /* Layout Constants */
+  --app-max-width: 480px;
+  --header-height: 80px;
 
-  /* Gradients */
-  /* Vibrant Brand Mix (Restored by User Request) */
-  --gradient-primary: linear-gradient(135deg, #8BC34A 0%, #CDDC39 25%, #FFEB3B 50%, #FFC107 75%, #FF9800 100%);
+  /* Legacy Mapping (supporting existing styles) */
+  --brand-green: var(--accent-green);
+  --brand-orange: var(--primary-orange);
+  --color-primary-green: var(--accent-green);
+  --color-vibrant-orange: var(--primary-orange);
+  --color-text-primary: var(--text-dark);
+  --color-text-secondary: var(--text-light);
+  --gradient-primary: var(--bg-gradient);
+  --gradient-brand: linear-gradient(135deg, var(--accent-green) 0%, var(--primary-orange) 100%);
+  --gradient-cta: linear-gradient(135deg, var(--accent-green) 0%, #00B18E 100%);
+  /* Green CTA */
+
+  /* Gradients (from original, adjusted for new colors where applicable) */
   --gradient-card: linear-gradient(145deg, #ffffff, #fafafa);
   --gradient-aura: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-orange) 100%);
-  --gradient-cta: linear-gradient(135deg, var(--brand-orange) 0%, #FFB74D 100%);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
   --glass-blur: blur(15px);
 
   /* Typography */
   --font-heading: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
-
-  /* Layout */
-  --app-max-width: 480px;
 
   /* Spacing */
   --spacing-xs: 4px;

@@ -22,6 +22,7 @@ const Home = () => {
     const [selectedMix, setSelectedMix] = useState(null);
     const [voteComment, setVoteComment] = useState('');
     const [isVoting, setIsVoting] = useState(false);
+    const [userVote, setUserVote] = useState(null);
 
     // Dynamic Carousel State
     const [dynamicSlides, setDynamicSlides] = useState([]);
@@ -86,48 +87,53 @@ const Home = () => {
                     <p className="welcome-subtitle">Refresh Your Aura</p>
                 </div>
 
-                {/* Hero Banner Carousel */}
+                {/* Main Hero Card */}
                 <div className="hero-banner-container">
-                    {dynamicSlides.length > 0 ? (
-                        <div className="hero-banner" style={{ background: dynamicSlides[currentSlide].color || 'linear-gradient(135deg, #ff6b35, #f7931e)' }}>
-                            <div className="banner-content">
-                                <h2 className="banner-title">{dynamicSlides[currentSlide].title || 'SUMMER'}</h2>
-                                <h3 className="banner-heading">{dynamicSlides[currentSlide].description || 'ME AND YOU'}</h3>
-                                <p className="banner-subtext">fresh all round</p>
-                                <button className="explore-btn" onClick={() => navigate('/menu')}>EXPLORE MIXES</button>
-                            </div>
-                            {dynamicSlides[currentSlide].image && (
-                                <img src={dynamicSlides[currentSlide].image} alt="Slide" className="banner-image" />
-                            )}
-
-                            {/* Navigation Buttons (Hover visible) */}
-                            <button className="carousel-nav prev" onClick={(e) => { e.stopPropagation(); prevSlide(); }}>‹</button>
-                            <button className="carousel-nav next" onClick={(e) => { e.stopPropagation(); nextSlide(); }}>›</button>
+                    <div className="hero-banner brand-hero-card">
+                        <div className="hero-bottle-pattern"></div>
+                        <div className="banner-content">
+                            <h2 className="banner-title-primary">Fruits Aura x You</h2>
+                            <h3 className="banner-subtitle-white">Explore mixes</h3>
+                            <button
+                                className="explore-btn-premium"
+                                onClick={() => navigate('/menu')}
+                            >
+                                EXPLORE MIXES
+                            </button>
                         </div>
-                    ) : (
-                        // Fallback/Default Banner
-                        <div className="hero-banner" style={{ background: 'linear-gradient(135deg, #ff6b35, #f7931e)' }}>
-                            <div className="banner-content">
-                                <h2 className="banner-title">SUMMER</h2>
-                                <h3 className="banner-heading">ME AND YOU</h3>
-                                <p className="banner-subtext">fresh all round</p>
-                                <button className="explore-btn" onClick={() => navigate('/menu')}>EXPLORE MIXES</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Services Grid */}
-                <div className="section-container">
-                    <h3 className="section-title">Services</h3>
-                    <div className="services-grid">
-                        <ServiceCard icon="🚚" title="Track Order" subtitle="Live status" onClick={() => navigate('/track')} />
-                        <ServiceCard icon="📍" title="Find Us" subtitle="Our locations" onClick={() => navigate('/locations')} />
-                        <ServiceCard icon="💬" title="Chat Now" subtitle="WhatsApp help" onClick={handleWhatsApp} />
-                        <ServiceCard icon="🕐" title="History" subtitle="Past orders" onClick={() => navigate('/history')} />
                     </div>
                 </div>
 
+                {/* Services Grid (2x2 Responsive) */}
+                <div className="section-container">
+                    <h2 className="section-title">Our Services</h2>
+                    <div className="services-grid-responsive">
+                        <ServiceCard
+                            icon="🚚"
+                            title="Fast Delivery"
+                            subtitle="Speedy & Safe"
+                            onClick={() => navigate('/track')}
+                        />
+                        <ServiceCard
+                            icon="📍"
+                            title="Find Us"
+                            subtitle="Nearby Locations"
+                            onClick={() => navigate('/locations')}
+                        />
+                        <ServiceCard
+                            icon="💬"
+                            title="Live Chat"
+                            subtitle="24/7 Support"
+                            onClick={handleWhatsApp}
+                        />
+                        <ServiceCard
+                            icon="🕐"
+                            title="History"
+                            subtitle="Quick Reorder"
+                            onClick={() => navigate('/history')}
+                        />
+                    </div>
+                </div>
                 {/* Voting Section */}
                 <div className="vote-section">
                     <div className="glass-card vote-card" onClick={() => setIsVoteModalOpen(true)}>

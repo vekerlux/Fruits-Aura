@@ -1,33 +1,28 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { Bell } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
     const navigate = useNavigate();
-    const { cart } = useCart();
+    const { user } = useAuth();
+    const userName = user?.name?.split(' ')[0] || 'Aura Guest';
 
     return (
         <header className="glass-header">
-            <div className="header-logo-section">
-                <img src="/images/fruits-aura-logo.png" alt="Fruits Aura" className="header-brand-logo" />
-                <h1 className="brand-name">Fruits Aura</h1>
+            <div className="header-left">
+                <img src="/images/fruits-aura-logo.png" alt="Logo" className="header-logo-glow" />
             </div>
 
-            <div className="header-actions">
-                <button className="icon-btn notification-btn">
-                    <span className="emoji-icon">🔔</span>
-                    <span className="badge">1</span>
-                </button>
-                <button
-                    className="icon-btn cart-btn"
-                    onClick={() => navigate('/checkout')}
-                >
-                    <span className="emoji-icon">🛒</span>
-                    {cart.length > 0 && (
-                        <span className="badge">{cart.length}</span>
-                    )}
+            <div className="header-center">
+                <h2 className="header-greeting">Welcome back, {userName}! ✨</h2>
+            </div>
+
+            <div className="header-right">
+                <button className="notification-trigger" onClick={() => navigate('/notifications')}>
+                    <Bell size={24} color="var(--primary-orange)" />
+                    <span className="unread-badge">12</span>
                 </button>
             </div>
         </header>
