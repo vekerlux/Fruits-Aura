@@ -75,17 +75,13 @@ const Home = () => {
         }, 5000);
 
         return () => clearInterval(timer);
-    }, [dynamicSlides]);
+    }, []); // Run only once on mount
 
     return (
         <PageTransition>
             <div className="home-container" style={{ paddingBottom: '90px' }}> {/* Padding for bottom nav */}
 
-                {/* Welcome Section */}
-                <div className="welcome-section">
-                    <h1 className="welcome-title">Welcome back, {user?.name?.split(' ')[0] || 'Mis'}! 👋</h1>
-                    <p className="welcome-subtitle">Refresh Your Aura</p>
-                </div>
+
 
                 {/* Main Hero Card */}
                 <div className="hero-banner-container">
