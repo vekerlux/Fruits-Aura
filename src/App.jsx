@@ -38,7 +38,34 @@ import './pages/admin/AdminLayout.css';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import Header from './components/Header';
 
+// Basic Error Boundary for production debugging
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  componentDidCatch(error, errorInfo) { console.error("Global Crash:", error, errorInfo); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', color: 'red', textAlign: 'center' }}>
+          <h1>Something went wrong.</h1>
+          <p>{this.state.error?.toString()}</p>
+          <button onClick={() => window.location.reload()}>Reload App</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const AppContent = () => {
+  useEffect(() => {
+    console.log("App mounted at:", window.location.pathname);
+    console.log("API URL:", import.meta.env.VITE_API_URL || "Using Localhost Fallback");
+  }, []);
+
   const location = useLocation();
   const isAuthRoute = ['/login', '/register'].includes(location.pathname);
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -48,7 +75,12 @@ const AppContent = () => {
   // State migrated from App component
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem('hasSeenOnboarding');
+    try {
+      return !localStorage.getItem('hasSeenOnboarding');
+    } catch (e) {
+      console.warn('LocalStorage access failed:', e);
+      return false;
+    }
   });
 
   const handleSplashComplete = () => {
@@ -147,20 +179,22 @@ const AppContent = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <ToastProvider>
-              <Router>
-                <AppContent />
-                <FloatingWhatsApp />
-              </Router>
-            </ToastProvider>
-          </CartProvider>
-        </FavoritesProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <ToastProvider>
+                <Router>
+                  <AppContent />
+                  <FloatingWhatsApp />
+                </Router>
+              </ToastProvider>
+            </CartProvider>
+          </FavoritesProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
