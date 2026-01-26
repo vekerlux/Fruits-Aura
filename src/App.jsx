@@ -9,27 +9,28 @@ import { FavoritesProvider } from './context/FavoritesContext';
 import Layout from './components/Layout';
 import Splash from './components/Splash';
 import Onboarding from './components/Onboarding';
-import Home from './pages/Home';
-import Menu from './pages/Menu';
-import Track from './pages/Track';
-import Locations from './pages/Locations';
-import Profile from './pages/Profile';
-import OrderHistory from './pages/OrderHistory';
-import ProductDetail from './pages/ProductDetail';
-import Checkout from './pages/Checkout';
-import Wishlist from './pages/Wishlist';
-import Notifications from './pages/Notifications';
-import Login from './pages/Login';
-import Register from './pages/Register';
+// ⚡ Bolt: Code splitting for routes to improve initial load time.
+const Home = React.lazy(() => import('./pages/Home'));
+const Menu = React.lazy(() => import('./pages/Menu'));
+const Track = React.lazy(() => import('./pages/Track'));
+const Locations = React.lazy(() => import('./pages/Locations'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+const OrderHistory = React.lazy(() => import('./pages/OrderHistory'));
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const Checkout = React.lazy(() => import('./pages/Checkout'));
+const Wishlist = React.lazy(() => import('./pages/Wishlist'));
+const Notifications = React.lazy(() => import('./pages/Notifications'));
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLayout from './pages/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import ProductManagement from './pages/admin/ProductManagement';
-import OrderManagement from './pages/admin/OrderManagement';
-import UserManagement from './pages/admin/UserManagement';
-import NotificationManagement from './pages/admin/NotificationManagement';
-import CarouselManagement from './pages/admin/CarouselManagement';
-import VotingResults from './pages/admin/VotingResults';
+const AdminLayout = React.lazy(() => import('./pages/admin/AdminLayout'));
+const Dashboard = React.lazy(() => import('./pages/admin/Dashboard'));
+const ProductManagement = React.lazy(() => import('./pages/admin/ProductManagement'));
+const OrderManagement = React.lazy(() => import('./pages/admin/OrderManagement'));
+const UserManagement = React.lazy(() => import('./pages/admin/UserManagement'));
+const NotificationManagement = React.lazy(() => import('./pages/admin/NotificationManagement'));
+const CarouselManagement = React.lazy(() => import('./pages/admin/CarouselManagement'));
+const VotingResults = React.lazy(() => import('./pages/admin/VotingResults'));
 import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
@@ -116,10 +117,12 @@ const AppContent = () => {
       {showHeader && <Header />}
 
       <main className="main-content">
-        <AnimatePresence mode='wait'>
-          <Routes location={location} key={location.pathname}>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
+        {/* ⚡ Bolt: Add Suspense for lazy-loaded route components */}
+        <React.Suspense fallback={<div className="page-loading">Loading page...</div>}>
+          <AnimatePresence mode='wait'>
+            <Routes location={location} key={location.pathname}>
+              {/* Public Routes */}
+              <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             <Route path="/" element={<Home />} />
@@ -171,6 +174,7 @@ const AppContent = () => {
             </Route>
           </Routes>
         </AnimatePresence>
+        </React.Suspense>
       </main>
       {showBottomNav && <BottomNav />}
     </div>
