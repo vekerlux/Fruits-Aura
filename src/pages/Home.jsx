@@ -187,12 +187,16 @@ const Home = () => {
                                                     className={`vote-option ${selectedMix?._id === mix._id ? 'selected' : ''}`}
                                                     onClick={() => setSelectedMix(mix)}
                                                 >
-                                                    <span style={{ fontSize: '24px' }}>{
-                                                        mix.name.toLowerCase().includes('watermelon') ? '🍉' :
-                                                            mix.name.toLowerCase().includes('citrus') ? '🍊' :
-                                                                mix.name.toLowerCase().includes('avocado') ? '🥑' :
-                                                                    mix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
-                                                    }</span>
+                                                    {mix.image ? (
+                                                        <img src={mix.image} alt={mix.name} className="mix-thumb-small" />
+                                                    ) : (
+                                                        <span style={{ fontSize: '24px' }}>{
+                                                            mix.name.toLowerCase().includes('watermelon') ? '🍉' :
+                                                                mix.name.toLowerCase().includes('citrus') ? '🍊' :
+                                                                    mix.name.toLowerCase().includes('avocado') ? '🥑' :
+                                                                        mix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
+                                                        }</span>
+                                                    )}
                                                     <div>
                                                         <h4>{mix.name}</h4>
                                                         <small>{mix.voteCount || 0} votes</small>
@@ -205,12 +209,16 @@ const Home = () => {
                                         {selectedMix && (
                                             <div className="mix-detail-card">
                                                 <div className="mix-detail-header">
-                                                    <div className="mix-thumb-large">{
-                                                        selectedMix.name.toLowerCase().includes('watermelon') ? '🍉' :
-                                                            selectedMix.name.toLowerCase().includes('citrus') ? '🍊' :
-                                                                selectedMix.name.toLowerCase().includes('avocado') ? '🥑' :
-                                                                    selectedMix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
-                                                    }</div>
+                                                    <div className="mix-thumb-large">
+                                                        {selectedMix.image ? (
+                                                            <img src={selectedMix.image} alt={selectedMix.name} />
+                                                        ) : (
+                                                            selectedMix.name.toLowerCase().includes('watermelon') ? '🍉' :
+                                                                selectedMix.name.toLowerCase().includes('citrus') ? '🍊' :
+                                                                    selectedMix.name.toLowerCase().includes('avocado') ? '🥑' :
+                                                                        selectedMix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
+                                                        )}
+                                                    </div>
                                                     <div className="mix-info-text">
                                                         <h4>{selectedMix.name}</h4>
                                                         <span className="timing-badge">{selectedMix.optimalTiming}</span>

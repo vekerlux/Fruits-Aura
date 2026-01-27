@@ -249,15 +249,23 @@ const Menu = () => {
                                     <div className="future-image-container">
                                         <div
                                             className="future-placeholder"
-                                            style={{ background: 'var(--bg-gradient)' }}
+                                            style={{ background: 'var(--bg-gradient)', overflow: 'hidden' }}
                                         >
                                             <div className="loading-badge">Coming Soon</div>
+                                            {mix.image ? (
+                                                <img
+                                                    src={mix.image}
+                                                    alt={mix.name}
+                                                    style={{ width: '100%', height: '100%', object- fit: 'cover'}}
+                                                />
+                                            ) : (
                                             <div className="future-placeholder-icon" style={{ fontSize: '40px' }}>{
                                                 mix.name.toLowerCase().includes('watermelon') ? '🍉' :
                                                     mix.name.toLowerCase().includes('citrus') ? '🍊' :
                                                         mix.name.toLowerCase().includes('avocado') ? '🥑' :
                                                             mix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
                                             }</div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="future-info">
