@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import PageTransition from '../components/PageTransition';
 import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../api/productsApi';
-import { voteForProduct, getVotingRankings } from '../api/votingApi';
+import { voteForMix, getComingSoonMixes } from '../api/voteApi';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useToast } from '../context/ToastContext';
@@ -24,6 +24,7 @@ const Menu = () => {
     const { addToCart } = useCart();
     const { toggleFavorite, isFavorite } = useFavorites();
     const { showToast } = useToast();
+    const [comingSoonMixes, setComingSoonMixes] = useState([]);
 
     // Load products from API
     useEffect(() => {
@@ -40,7 +41,17 @@ const Menu = () => {
             }
         };
 
+        const loadMixes = async () => {
+            try {
+                const res = await getComingSoonMixes();
+                setComingSoonMixes(res.products || []);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         loadProducts();
+        loadMixes();
     }, [showToast]);
 
     // Filter and split products
@@ -85,15 +96,15 @@ const Menu = () => {
         showToast(favorite ? 'Added to favorites!' : 'Removed from favorites', 'success');
     };
 
-    const handleVote = async (e, productId) => {
+    const handleVote = async (e, mixId) => {
         e.stopPropagation();
         try {
-            const response = await voteForProduct(productId);
+            const response = await voteForMix(mixId);
             if (response.success) {
                 showToast('Vote recorded! Thanks for your interest.', 'success');
                 // Update local state to reflect new vote count
-                setProducts(products.map(p =>
-                    p._id === productId ? { ...p, voteCount: (p.voteCount || 0) + 1 } : p
+                setComingSoonMixes(comingSoonMixes.map(mix =>
+                    mix._id === mixId ? { ...mix, voteCount: (mix.voteCount || 0) + 1 } : mix
                 ));
             }
         } catch (error) {
@@ -225,43 +236,44 @@ const Menu = () => {
                     )}
                 </div>
 
-                {/* Coming Soon Section */}
-                {comingSoonProducts.length > 0 && (
+                {/* Coming Soon Section - Now using the dedicated mixes */}
+                {comingSoonMixes.length > 0 && (
                     <div className="coming-soon-section">
                         <div className="section-header">
                             <h3>Next Aura Mix</h3>
-                            <p>Based on your votes</p>
+                            <p>Based on your community votes</p>
                         </div>
                         <div className="coming-soon-grid">
-                            {comingSoonProducts.map((product, index) => (
-                                <Card key={product._id} className="future-card">
+                            {comingSoonMixes.map((mix, index) => (
+                                <Card key={mix._id} className="future-card">
                                     <div className="future-image-container">
                                         <div
                                             className="future-placeholder"
-                                            style={{ backgroundColor: product.color || '#ddd' }}
+                                            style={{ background: 'var(--bg-gradient)' }}
                                         >
                                             <div className="loading-badge">Coming Soon</div>
-                                            {product.image ? (
-                                                <img src={product.image} alt={product.name} className="blurred-coming-soon" />
-                                            ) : (
-                                                <div className="future-placeholder-icon">🥤</div>
-                                            )}
+                                            <div className="future-placeholder-icon" style={{ fontSize: '40px' }}>{
+                                                mix.name.toLowerCase().includes('watermelon') ? '🍉' :
+                                                    mix.name.toLowerCase().includes('citrus') ? '🍊' :
+                                                        mix.name.toLowerCase().includes('avocado') ? '🥑' :
+                                                            mix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
+                                            }</div>
                                         </div>
                                     </div>
                                     <div className="future-info">
                                         <div className="future-header">
-                                            <h4>{product.name}</h4>
+                                            <h4>{mix.name}</h4>
                                             <div className="rank-badge">#{index + 1}</div>
                                         </div>
-                                        <p>{product.description}</p>
+                                        <p>{mix.description}</p>
                                         <div className="vote-action-row">
                                             <div className="vote-count">
                                                 <ThumbsUp size={14} />
-                                                <span>{product.voteCount || 0} votes</span>
+                                                <span>{mix.voteCount || 0} votes</span>
                                             </div>
                                             <motion.button
                                                 className="vote-button"
-                                                onClick={(e) => handleVote(e, product._id)}
+                                                onClick={(e) => handleVote(e, mix._id)}
                                                 whileTap={{ scale: 0.95 }}
                                             >
                                                 Vote Now

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
-import { getVotingRankings } from '../../api/votingApi';
+import { getComingSoonMixes } from '../../api/voteApi';
 import client from '../../api/client';
 import Button from '../../components/Button';
 import { useToast } from '../../context/ToastContext';
@@ -18,8 +18,8 @@ const VotingResults = () => {
 
     const fetchResults = async () => {
         try {
-            const rankingsRes = await getVotingRankings();
-            const rankings = rankingsRes.products || rankingsRes.data || [];
+            const rankingsRes = await getComingSoonMixes();
+            const rankings = rankingsRes.products || [];
 
             const chartData = rankings.map(item => ({
                 name: item.mixName || item.name,

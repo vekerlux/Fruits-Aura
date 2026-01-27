@@ -13,7 +13,7 @@ import {
     Clock
 } from 'lucide-react';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
-import { getVotingRankings } from '../../api/votingApi';
+import { getComingSoonMixes } from '../../api/voteApi';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
@@ -29,7 +29,7 @@ export default function Dashboard() {
             setLoading(true);
             const [statsRes, rankingsRes] = await Promise.all([
                 getDashboardStats(),
-                getVotingRankings()
+                getComingSoonMixes()
             ]);
             setStats(statsRes.stats);
             setRankings(rankingsRes.products || rankingsRes.data || []);

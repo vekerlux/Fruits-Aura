@@ -4,14 +4,14 @@ import client from './client';
  * Voting API
  */
 
-// Vote for a coming soon product
-export const voteForProduct = async (productId) => {
-    const response = await client.post(`/voting/${productId}/vote`);
+// Vote for a coming soon mix
+export const voteForMix = async (mixId, comment = '') => {
+    const response = await client.post(`/voting/${mixId}/vote`, { comment });
     return response.data;
 };
 
-// Get rankings for coming soon products
-export const getVotingRankings = async () => {
+// Get all coming soon mixes with rankings
+export const getComingSoonMixes = async () => {
     const response = await client.get('/voting/rankings');
     return response.data;
 };

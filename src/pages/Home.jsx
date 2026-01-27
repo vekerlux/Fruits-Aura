@@ -60,7 +60,15 @@ const Home = () => {
                 setIsLoadingSlides(false);
 
                 const mixesRes = await voteApi.getComingSoonMixes();
-                setComingSoon(mixesRes.data?.products || []);
+                setComingSoon(mixesRes.products || []);
+
+                // Check if user has already voted
+                if (user) {
+                    const statusRes = await client.get('/votes/my-vote');
+                    if (statusRes.data.vote) {
+                        setUserVote(statusRes.data.vote);
+                    }
+                }
 
             } catch (error) {
                 console.error('Error fetching home data:', error);
@@ -159,60 +167,116 @@ const Home = () => {
                                 onClick={e => e.stopPropagation()}
                             >
                                 <h2>Vote for Next Mix</h2>
-                                <p>Which flavor should we launch next?</p>
+                                <p>{userVote ? 'Your aura is locked in! Stay tuned for launch.' : 'Which flavor should we launch next?'}</p>
 
-                                <div className="vote-options">
-                                    {comingSoon.map(mix => (
-                                        <div
-                                            key={mix._id}
-                                            className={`vote-option ${selectedMix?._id === mix._id ? 'selected' : ''}`}
-                                            onClick={() => setSelectedMix(mix)}
-                                        >
-                                            <span style={{ fontSize: '24px' }}>🥤</span>
-                                            <div>
-                                                <h4>{mix.name}</h4>
-                                                <small>{mix.voteCount || 0} votes</small>
-                                            </div>
+                                {userVote ? (
+                                    <div className="already-voted-msg">
+                                        <span className="voted-icon">✅</span>
+                                        <h3>You voted for: {userVote.mixName}</h3>
+                                        <p>Results will be announced soon. Thank you for being intentional about your health!</p>
+                                        <Button variant="primary" fullWidth onClick={() => setIsVoteModalOpen(false)} style={{ marginTop: '20px' }}>
+                                            Great!
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="vote-options">
+                                            {comingSoon.map(mix => (
+                                                <div
+                                                    key={mix._id}
+                                                    className={`vote-option ${selectedMix?._id === mix._id ? 'selected' : ''}`}
+                                                    onClick={() => setSelectedMix(mix)}
+                                                >
+                                                    <span style={{ fontSize: '24px' }}>{
+                                                        mix.name.toLowerCase().includes('watermelon') ? '🍉' :
+                                                            mix.name.toLowerCase().includes('citrus') ? '🍊' :
+                                                                mix.name.toLowerCase().includes('avocado') ? '🥑' :
+                                                                    mix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
+                                                    }</span>
+                                                    <div>
+                                                        <h4>{mix.name}</h4>
+                                                        <small>{mix.voteCount || 0} votes</small>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {comingSoon.length === 0 && <p>Preparing next batch of mixes...</p>}
                                         </div>
-                                    ))}
-                                    {comingSoon.length === 0 && <p>No mixes available for voting right now.</p>}
-                                </div>
 
-                                {selectedMix && (
-                                    <textarea
-                                        placeholder="Add a comment (optional)..."
-                                        value={voteComment}
-                                        onChange={e => setVoteComment(e.target.value)}
-                                        className="vote-comment-box"
-                                    />
+                                        {selectedMix && (
+                                            <div className="mix-detail-card">
+                                                <div className="mix-detail-header">
+                                                    <div className="mix-thumb-large">{
+                                                        selectedMix.name.toLowerCase().includes('watermelon') ? '🍉' :
+                                                            selectedMix.name.toLowerCase().includes('citrus') ? '🍊' :
+                                                                selectedMix.name.toLowerCase().includes('avocado') ? '🥑' :
+                                                                    selectedMix.name.toLowerCase().includes('pineapple') ? '🍍' : '🍌'
+                                                    }</div>
+                                                    <div className="mix-info-text">
+                                                        <h4>{selectedMix.name}</h4>
+                                                        <span className="timing-badge">{selectedMix.optimalTiming}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mix-feature-section">
+                                                    <h5>Nutrients</h5>
+                                                    <div className="nutrient-badges">
+                                                        {selectedMix.nutrients?.map((n, i) => (
+                                                            <span key={i} className="nutrient-tag">
+                                                                {n.label}: <strong>{n.value}</strong>
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="mix-feature-section">
+                                                    <h5>Key Benefits</h5>
+                                                    <ul className="benefits-list">
+                                                        {selectedMix.benefits?.slice(0, 3).map((b, i) => (
+                                                            <li key={i}>{b}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+
+                                                <div className="mix-feature-section">
+                                                    <h5>Fitness Edge</h5>
+                                                    <p className="app-text">{selectedMix.fitnessApplication}</p>
+                                                </div>
+
+                                                <textarea
+                                                    placeholder="Why do you want this mix? (optional)"
+                                                    value={voteComment}
+                                                    onChange={e => setVoteComment(e.target.value)}
+                                                    className="vote-comment-box"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="modal-actions" style={{ marginTop: '20px' }}>
+                                            <Button variant="secondary" onClick={() => setIsVoteModalOpen(false)}>Cancel</Button>
+                                            <Button
+                                                variant="primary"
+                                                disabled={!selectedMix || isVoting}
+                                                onClick={async () => {
+                                                    setIsVoting(true);
+                                                    try {
+                                                        const res = await voteApi.voteForMix(selectedMix._id, voteComment);
+                                                        setUserVote({ mixName: selectedMix.name });
+                                                        showToast('Vote cast successfully!', 'success');
+                                                        // Refresh rankings locally
+                                                        const refresh = await voteApi.getComingSoonMixes();
+                                                        setComingSoon(refresh.products || []);
+                                                    } catch (err) {
+                                                        showToast(err.response?.data?.message || 'Failed to cast vote', 'error');
+                                                    } finally {
+                                                        setIsVoting(false);
+                                                    }
+                                                }}
+                                            >
+                                                {isVoting ? 'Voting...' : 'Confirm Vote'}
+                                            </Button>
+                                        </div>
+                                    </>
                                 )}
-
-                                <div className="modal-actions">
-                                    <Button variant="secondary" onClick={() => setIsVoteModalOpen(false)}>Cancel</Button>
-                                    <Button
-                                        variant="primary"
-                                        disabled={!selectedMix || isVoting}
-                                        onClick={async () => {
-                                            setIsVoting(true);
-                                            try {
-                                                const res = await client.post('/votes', {
-                                                    mixId: selectedMix._id,
-                                                    mixName: selectedMix.name,
-                                                    comment: voteComment
-                                                });
-                                                setUserVote(res.data.vote);
-                                                showToast('Vote cast successfully!', 'success');
-                                                setIsVoteModalOpen(false);
-                                            } catch (err) {
-                                                showToast(err.userMessage || 'Failed to cast vote', 'error');
-                                            } finally {
-                                                setIsVoting(false);
-                                            }
-                                        }}
-                                    >
-                                        {isVoting ? 'Voting...' : 'Confirm Vote'}
-                                    </Button>
-                                </div>
                             </motion.div>
                         </motion.div>
                     )}
