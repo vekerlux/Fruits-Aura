@@ -97,20 +97,17 @@ export const AuthProvider = ({ children }) => {
         setUser(updatedUser);
     };
 
-    const isAdmin = user?.role === 'admin';
-    const isAuthenticated = !!user;
-
-    const value = {
+    const value = React.useMemo(() => ({
         user,
         loading,
         error,
-        isAuthenticated,
-        isAdmin,
+        isAuthenticated: !!user,
+        isAdmin: user?.role === 'admin',
         register,
         login,
         logout,
         updateUser
-    };
+    }), [user, loading, error]); // Simplified authenticated/admin logic inside memo
 
     return (
         <AuthContext.Provider value={value}>
