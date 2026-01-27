@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
@@ -9,27 +9,32 @@ import { FavoritesProvider } from './context/FavoritesContext';
 import Layout from './components/Layout';
 import Splash from './components/Splash';
 import Onboarding from './components/Onboarding';
-import Home from './pages/Home';
-import Menu from './pages/Menu';
-import Track from './pages/Track';
-import Locations from './pages/Locations';
-import Profile from './pages/Profile';
-import OrderHistory from './pages/OrderHistory';
-import ProductDetail from './pages/ProductDetail';
-import Checkout from './pages/Checkout';
-import Wishlist from './pages/Wishlist';
-import Notifications from './pages/Notifications';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import PageLoader from './components/PageLoader';
+
+// ⚡ Bolt: Route-based code splitting
+// Lazily load page components to reduce the initial bundle size.
+// This improves the initial load time of the application.
+const Home = lazy(() => import('./pages/Home'));
+const Menu = lazy(() => import('./pages/Menu'));
+const Track = lazy(() => import('./pages/Track'));
+const Locations = lazy(() => import('./pages/Locations'));
+const Profile = lazy(() => import('./pages/Profile'));
+const OrderHistory = lazy(() => import('./pages/OrderHistory'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminLayout from './pages/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import ProductManagement from './pages/admin/ProductManagement';
-import OrderManagement from './pages/admin/OrderManagement';
-import UserManagement from './pages/admin/UserManagement';
-import NotificationManagement from './pages/admin/NotificationManagement';
-import CarouselManagement from './pages/admin/CarouselManagement';
-import VotingResults from './pages/admin/VotingResults';
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ProductManagement = lazy(() => import('./pages/admin/ProductManagement'));
+const OrderManagement = lazy(() => import('./pages/admin/OrderManagement'));
+const UserManagement = lazy(() => import('./pages/admin/UserManagement'));
+const NotificationManagement = lazy(() => import('./pages/admin/NotificationManagement'));
+const CarouselManagement = lazy(() => import('./pages/admin/CarouselManagement'));
+const VotingResults = lazy(() => import('./pages/admin/VotingResults'));
 import BottomNav from './components/BottomNav'; // Assuming BottomNav is in components
 import './App.css';
 import './components/Layout.css';
@@ -117,59 +122,62 @@ const AppContent = () => {
 
       <main className="main-content">
         <AnimatePresence mode='wait'>
-          <Routes location={location} key={location.pathname}>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+          {/* ⚡ Bolt: Add Suspense for lazy-loaded routes */}
+          <Suspense fallback={<PageLoader />}>
+            <Routes location={location} key={location.pathname}>
+              {/* Public Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/track" element={<Track />} />
-            <Route path="/locations" element={<Locations />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/track" element={<Track />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
 
-            {/* Protected Customer Routes */}
-            <Route path="/wishlist" element={
-              <ProtectedRoute>
-                <Wishlist />
-              </ProtectedRoute>
-            } />
-            <Route path="/notifications" element={
-              <ProtectedRoute>
-                <Notifications />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
-            <Route path="/history" element={
-              <ProtectedRoute>
-                <OrderHistory />
-              </ProtectedRoute>
-            } />
-            <Route path="/checkout" element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            } />
+              {/* Protected Customer Routes */}
+              <Route path="/wishlist" element={
+                <ProtectedRoute>
+                  <Wishlist />
+                </ProtectedRoute>
+              } />
+              <Route path="/notifications" element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="/history" element={
+                <ProtectedRoute>
+                  <OrderHistory />
+                </ProtectedRoute>
+              } />
+              <Route path="/checkout" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
 
-            {/* Protected Admin Routes */}
-            <Route path="/admin/*" element={
-              <ProtectedRoute requireAdmin>
-                <AdminLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<ProductManagement />} />
-              <Route path="orders" element={<OrderManagement />} />
-              <Route path="users" element={<UserManagement />} />
-              <Route path="notifications" element={<NotificationManagement />} />
-              <Route path="carousel" element={<CarouselManagement />} />
-              <Route path="votes" element={<VotingResults />} />
-            </Route>
-          </Routes>
+              {/* Protected Admin Routes */}
+              <Route path="/admin/*" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<ProductManagement />} />
+                <Route path="orders" element={<OrderManagement />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="notifications" element={<NotificationManagement />} />
+                <Route path="carousel" element={<CarouselManagement />} />
+                <Route path="votes" element={<VotingResults />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </AnimatePresence>
       </main>
       {showBottomNav && <BottomNav />}
