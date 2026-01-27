@@ -134,7 +134,7 @@ const Home = () => {
                 <div className="vote-section">
                     <div className="glass-card vote-card" onClick={() => setIsVoteModalOpen(true)}>
                         <div>
-                            <h3 className="vote-title">Volt for Next Mix</h3>
+                            <h3 className="vote-title">Vote for Next Mix</h3>
                             <p className="vote-text">Your aura, your choice. Vote now.</p>
                         </div>
                         <div className="vote-icon">🗳️</div>

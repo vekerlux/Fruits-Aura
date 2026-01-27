@@ -93,12 +93,12 @@ export const getAllOrders = async (params = {}) => {
 };
 
 export const updateOrderStatusAdmin = async (id, status) => {
-    const response = await client.patch(`/admin/orders/${id}/status`, { status });
+    const response = await client.patch(`/orders/${id}/status`, { status });
     return response.data;
 };
 
 export const approveOrder = async (id, approvalData) => {
-    const response = await client.put(`/admin/${id}/approve`, approvalData);
+    const response = await client.put(`/${id}/approve`, approvalData);
     return response.data;
 };
 
@@ -108,7 +108,7 @@ export const getPendingOrders = async () => {
 };
 
 export const getOrderDetailsAdmin = async (id) => {
-    const response = await client.get(`/admin/orders/${id}`);
+    const response = await client.get(`/orders/${id}`);
     return response.data;
 };
 

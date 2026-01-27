@@ -1,7 +1,23 @@
 import client from './client';
 
-export const getMyVote = () => client.get('/votes/my-vote');
+/**
+ * Voting API
+ */
 
-export const submitVote = (voteData) => client.post('/votes', voteData);
+// Vote for a coming soon product
+export const voteForProduct = async (productId) => {
+    const response = await client.post(`/voting/${productId}/vote`);
+    return response.data;
+};
 
-export const getComingSoonMixes = () => client.get('/products?category=Coming Soon');
+// Get rankings for coming soon products
+export const getVotingRankings = async () => {
+    const response = await client.get('/voting/rankings');
+    return response.data;
+};
+
+// Check if user voted for a product
+export const getVoteStatus = async (productId) => {
+    const response = await client.get(`/voting/${productId}/vote-status`);
+    return response.data;
+};

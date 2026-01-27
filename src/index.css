@@ -9,6 +9,8 @@
   --card-bg: rgba(255, 255, 255, 0.95);
   --text-dark: #1A1A1A;
   --text-light: #666666;
+  --color-white: #ffffff;
+  --color-clean-white: #ffffff;
 
   /* Layout Constants */
   --app-max-width: 480px;
