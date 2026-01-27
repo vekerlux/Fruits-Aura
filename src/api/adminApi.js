@@ -123,3 +123,30 @@ export const deleteReviewAdmin = async (id) => {
     const response = await client.delete(`/admin/reviews/${id}`);
     return response.data;
 };
+
+// ===== ComingSoonMix (Voting) Management =====
+
+export const getAdminMixes = async () => {
+    const response = await client.get('/admin/mixes');
+    return response.data;
+};
+
+export const createMix = async (mixData) => {
+    const response = await client.post('/admin/mixes', mixData);
+    return response.data;
+};
+
+export const updateMix = async (id, mixData) => {
+    const response = await client.patch(`/admin/mixes/${id}`, mixData);
+    return response.data;
+};
+
+export const deleteMix = async (id) => {
+    const response = await client.delete(`/admin/mixes/${id}`);
+    return response.data;
+};
+
+export const resetVotingCycle = async () => {
+    const response = await client.post('/admin/votes/reset');
+    return response.data;
+};
