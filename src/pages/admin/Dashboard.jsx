@@ -175,36 +175,41 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Revenue Breakdown & Alerts */}
+            {/* Recent Orders & Operational Alerts */}
             <div className="dashboard-grid-layout">
-                {/* Revenue Card */}
-                <div className="dashboard-panel alert-panel">
+                {/* Recent Orders Card */}
+                <div className="dashboard-panel alert-panel" style={{ flex: 2 }}>
                     <div className="panel-header">
-                        <h3><DollarSign size={20} /> Revenue Health</h3>
-                        <span className="badge-info">Financials</span>
+                        <h3><ShoppingBag size={20} /> Recent Orders</h3>
+                        <span className="badge-info" onClick={() => navigate('/admin/orders')} style={{ cursor: 'pointer' }}>View All</span>
                     </div>
-                    <div className="action-alerts-list">
-                        <div className="alert-item no-hover">
-                            <div className="alert-icon green"><DollarSign size={18} /></div>
-                            <div className="alert-text">
-                                <p>Realized Revenue</p>
-                                <span>{formatNairaWithoutDecimals(stats?.totalRevenue || 0)} (Confirmed)</span>
-                            </div>
-                        </div>
-                        <div className="alert-item no-hover">
-                            <div className="alert-icon orange"><Clock size={18} /></div>
-                            <div className="alert-text">
-                                <p>Potential Revenue</p>
-                                <span>{formatNairaWithoutDecimals(stats?.potentialRevenue || 0)} (Pending/Transit)</span>
-                            </div>
-                        </div>
+                    <div className="recent-orders-list">
+                        {stats?.recentOrders?.length === 0 ? (
+                            <p className="empty-msg">No recent orders.</p>
+                        ) : (
+                            stats?.recentOrders?.map(order => (
+                                <div key={order._id} className="alert-item" onClick={() => navigate('/admin/orders')}>
+                                    <div className="alert-icon blue"><Package size={18} /></div>
+                                    <div className="alert-text">
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                                            <p>{order.userId?.name || 'Guest'}</p>
+                                            <span style={{ fontWeight: 'bold' }}>{formatNairaWithoutDecimals(order.totalAmount)}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '0.75rem' }}>
+                                            <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                                            <span className={`status-badge ${order.status}`}>{order.status}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
 
                 {/* Important Actions */}
-                <div className="dashboard-panel alert-panel">
+                <div className="dashboard-panel alert-panel" style={{ flex: 1 }}>
                     <div className="panel-header">
-                        <h3><AlertCircle size={20} /> Operational Alerts</h3>
+                        <h3><AlertCircle size={20} /> Operations</h3>
                     </div>
                     <div className="action-alerts-list">
                         <div className="alert-item" onClick={() => navigate('/admin/orders')}>

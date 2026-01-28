@@ -17,6 +17,10 @@ const VotingResults = () => {
         description: '',
         image: '',
         optimalTiming: 'Pre/Post-Workout',
+        ingredients: '', // Will treat as comma-separated string for simplicity in UI
+        benefits: '',    // Will treat as comma-separated string
+        fitnessApplication: '',
+        nutrients: [{ label: '', value: '' }],
         isActive: true
     });
     const { showToast } = useToast();
@@ -98,11 +102,19 @@ const VotingResults = () => {
     const handleSaveMix = async (e) => {
         e.preventDefault();
         try {
+            // Process comma-separated strings back into arrays
+            const processedData = {
+                ...formData,
+                ingredients: formData.ingredients.split(',').map(i => i.trim()).filter(i => i),
+                benefits: formData.benefits.split(',').map(b => b.trim()).filter(b => b),
+                nutrients: formData.nutrients.filter(n => n.label && n.value)
+            };
+
             if (editingMix) {
-                await updateMix(editingMix._id, formData);
+                await updateMix(editingMix._id, processedData);
                 showToast('Candidate updated', 'success');
             } else {
-                await createMix(formData);
+                await createMix(processedData);
                 showToast('Candidate added', 'success');
             }
             setIsModalOpen(false);
@@ -120,6 +132,10 @@ const VotingResults = () => {
             description: '',
             image: '',
             optimalTiming: 'Pre/Post-Workout',
+            ingredients: '',
+            benefits: '',
+            fitnessApplication: '',
+            nutrients: [{ label: '', value: '' }],
             isActive: true
         });
         setIsModalOpen(true);
@@ -128,13 +144,35 @@ const VotingResults = () => {
     const openEditModal = (mix) => {
         setEditingMix(mix);
         setFormData({
-            name: mix.name,
-            description: mix.description,
-            image: mix.image,
-            optimalTiming: mix.optimalTiming,
-            isActive: mix.isActive
+            name: mix.name || '',
+            description: mix.description || '',
+            image: mix.image || '',
+            optimalTiming: mix.optimalTiming || 'Pre/Post-Workout',
+            ingredients: (mix.ingredients || []).join(', '),
+            benefits: (mix.benefits || []).join(', '),
+            fitnessApplication: mix.fitnessApplication || '',
+            nutrients: (mix.nutrients && mix.nutrients.length > 0) ? mix.nutrients : [{ label: '', value: '' }],
+            isActive: mix.isActive !== undefined ? mix.isActive : true
         });
         setIsModalOpen(true);
+    };
+
+    const handleNutrientChange = (index, field, value) => {
+        const newNutrients = [...formData.nutrients];
+        newNutrients[index][field] = value;
+        setFormData({ ...formData, nutrients: newNutrients });
+    };
+
+    const addNutrientRow = () => {
+        setFormData({
+            ...formData,
+            nutrients: [...formData.nutrients, { label: '', value: '' }]
+        });
+    };
+
+    const removeNutrientRow = (index) => {
+        const newNutrients = formData.nutrients.filter((_, i) => i !== index);
+        setFormData({ ...formData, nutrients: newNutrients });
     };
 
     return (
@@ -268,7 +306,73 @@ const VotingResults = () => {
                             <option value="Post-Workout">Post-Workout</option>
                             <option value="Pre/Post-Workout">Pre/Post-Workout</option>
                             <option value="With Meals">With Meals</option>
+                            <option value="Anytime">Anytime</option>
                         </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Fitness Application</label>
+                        <input
+                            type="text"
+                            value={formData.fitnessApplication}
+                            onChange={e => setFormData({ ...formData, fitnessApplication: e.target.value })}
+                            placeholder="e.g. Muscle Recovery, Endurance"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Ingredients (comma separated)</label>
+                        <textarea
+                            value={formData.ingredients}
+                            onChange={e => setFormData({ ...formData, ingredients: e.target.value })}
+                            placeholder="e.g. Orange, Ginger, Kale"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Benefits (comma separated)</label>
+                        <textarea
+                            value={formData.benefits}
+                            onChange={e => setFormData({ ...formData, benefits: e.target.value })}
+                            placeholder="e.g. Energy Boost, Muscle Repair"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Nutrients</label>
+                        {formData.nutrients.map((nutrient, index) => (
+                            <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Label (e.g. Vit C)"
+                                    value={nutrient.label}
+                                    style={{ flex: 1 }}
+                                    onChange={e => handleNutrientChange(index, 'label', e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Value (e.g. 50mg)"
+                                    value={nutrient.value}
+                                    style={{ flex: 1 }}
+                                    onChange={e => handleNutrientChange(index, 'value', e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeNutrientRow(index)}
+                                    style={{ background: '#FF3B30', color: '#fff', border: 'none', borderRadius: '4px', padding: '0 8px' }}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            className="add-btn"
+                            onClick={addNutrientRow}
+                            style={{ fontSize: '0.8rem', padding: '4px 12px', background: '#eee', color: '#333' }}
+                        >
+                            + Add Nutrient
+                        </button>
                     </div>
                     <div className="modal-footer" style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
                         <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>

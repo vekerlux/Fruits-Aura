@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllOrders, updateOrderStatusAdmin, approveOrder, getPendingOrders } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { CheckCircle, Truck, Eye, Package } from 'lucide-react';
+import { CheckCircle, Truck, Eye, Package, Download } from 'lucide-react';
 import { formatNairaWithoutDecimals } from '../../utils/currency';
 import Modal from '../../components/Modal'; // Assuming a Modal component exists or I'll create one
 import Button from '../../components/Button';
@@ -65,6 +65,35 @@ export default function OrderManagement() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (!orders.length) {
+            showToast('No orders to export', 'error');
+            return;
+        }
+
+        const headers = ['Order ID', 'Customer', 'Email', 'Items', 'Total', 'Status', 'Date'];
+        const rows = orders.map(order => [
+            order._id,
+            order.user?.name || order.userId?.name || 'Guest',
+            order.user?.email || order.userId?.email || '',
+            `"${(order.items || []).map(i => `${i.quantity}x ${i.name}`).join(', ').replace(/"/g, '""')}"`,
+            order.totalAmount || order.total,
+            order.status,
+            new Date(order.createdAt).toLocaleDateString()
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `orders_export_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -89,19 +118,24 @@ export default function OrderManagement() {
                         <h1>Orders</h1>
                         <p>Manage customer orders and approval workflows</p>
                     </div>
-                    <div className="admin-tabs">
-                        <button
-                            className={`tab-btn ${view === 'all' ? 'active' : ''}`}
-                            onClick={() => setView('all')}
-                        >
-                            All Orders
-                        </button>
-                        <button
-                            className={`tab-btn ${view === 'pending' ? 'active' : ''}`}
-                            onClick={() => setView('pending')}
-                        >
-                            Pending Approval
-                        </button>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <Button variant="outline" size="sm" onClick={handleExportCSV}>
+                            <Download size={16} /> Export CSV
+                        </Button>
+                        <div className="admin-tabs">
+                            <button
+                                className={`tab-btn ${view === 'all' ? 'active' : ''}`}
+                                onClick={() => setView('all')}
+                            >
+                                All Orders
+                            </button>
+                            <button
+                                className={`tab-btn ${view === 'pending' ? 'active' : ''}`}
+                                onClick={() => setView('pending')}
+                            >
+                                Pending Approval
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

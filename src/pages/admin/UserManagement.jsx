@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getAllUsers, updateUserRole, deleteUser, getPendingDistributors, approveDistributor, updateUserSubscription } from '../../api/adminApi';
 import { useToast } from '../../context/ToastContext';
-import { Trash2, CheckCircle, Clock, Edit2, Gift, Users } from 'lucide-react';
+import { Trash2, CheckCircle, Clock, Edit2, Gift, Users, Download } from 'lucide-react';
 import Button from '../../components/Button';
 import { updateUserAdmin } from '../../api/adminApi'; // Assuming this exists or using generic update
 
@@ -104,6 +104,35 @@ export default function UserManagement() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (!users.length) {
+            showToast('No users to export', 'error');
+            return;
+        }
+
+        const headers = ['User ID', 'Name', 'Email', 'Role', 'Subscription', 'Referrals', 'Joined'];
+        const rows = users.map(user => [
+            user._id,
+            user.name,
+            user.email,
+            user.role || 'consumer',
+            user.subscription?.plan || 'aura',
+            user.referrals?.length || 0,
+            new Date(user.createdAt).toLocaleDateString()
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `users_export_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -128,19 +157,24 @@ export default function UserManagement() {
                         <h1>Users</h1>
                         <p>Manage user accounts, roles, and distributor approvals</p>
                     </div>
-                    <div className="admin-tabs">
-                        <button
-                            className={`tab-btn ${view === 'all' ? 'active' : ''}`}
-                            onClick={() => setView('all')}
-                        >
-                            All Users
-                        </button>
-                        <button
-                            className={`tab-btn ${view === 'pending-distributors' ? 'active' : ''}`}
-                            onClick={() => setView('pending-distributors')}
-                        >
-                            Pending Distributors
-                        </button>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <Button variant="outline" size="sm" onClick={handleExportCSV}>
+                            <Download size={16} /> Export CSV
+                        </Button>
+                        <div className="admin-tabs">
+                            <button
+                                className={`tab-btn ${view === 'all' ? 'active' : ''}`}
+                                onClick={() => setView('all')}
+                            >
+                                All Users
+                            </button>
+                            <button
+                                className={`tab-btn ${view === 'pending-distributors' ? 'active' : ''}`}
+                                onClick={() => setView('pending-distributors')}
+                            >
+                                Pending Distributors
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
