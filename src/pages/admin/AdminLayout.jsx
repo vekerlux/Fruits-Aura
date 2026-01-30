@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -17,7 +18,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 import './AdminLayout.css';
-import { useState, useEffect } from 'react';
+import LoadingMix from '../../components/LoadingMix';
 
 export default function AdminLayout() {
     const { user, logout } = useAuth();
@@ -130,7 +131,9 @@ export default function AdminLayout() {
 
             <main className="admin-main">
                 <div className="main-content-wrapper">
-                    <Outlet />
+                    <React.Suspense fallback={<LoadingMix message="Loading admin panel..." />}>
+                        <Outlet />
+                    </React.Suspense>
                 </div>
             </main>
         </div>
