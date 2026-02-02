@@ -256,7 +256,7 @@ const Menu = () => {
                                                 <img
                                                     src={mix.image}
                                                     alt={mix.name}
-                                                    style={{ width: '100%', height: '100%', object- fit: 'cover'}}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover'}}
                                                 />
                                             ) : (
                                             <div className="future-placeholder-icon" style={{ fontSize: '40px' }}>{
