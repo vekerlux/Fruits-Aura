@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, Heart, ThumbsUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Card from '../components/Card';
@@ -54,34 +54,42 @@ const Menu = () => {
         loadMixes();
     }, [showToast]);
 
-    // Filter and split products
-    const activeProducts = products.filter(p => !p.isComingSoon);
-    const comingSoonProducts = products.filter(p => p.isComingSoon)
-        .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0));
+    // Memoize active and coming soon products filtered from the full product list
+    const { activeProducts, comingSoonProducts } = useMemo(() => ({
+        activeProducts: products.filter(p => !p.isComingSoon),
+        comingSoonProducts: products.filter(p => p.isComingSoon)
+            .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0))
+    }), [products]);
 
     // Get unique categories from active products
-    const categories = ['All Drinks', ...new Set(activeProducts.map(p => p.category))];
+    const categories = useMemo(() =>
+        ['All Drinks', ...new Set(activeProducts.map(p => p.category))],
+        [activeProducts]
+    );
 
-    // Filter active products by category and search
-    let filteredActive = activeCategory === "All Drinks"
-        ? activeProducts
-        : activeProducts.filter(p => p.category === activeCategory);
+    // Filter and sort active products - memoized to prevent expensive re-calculations
+    // on every render (e.g. when favoriting or adding to cart)
+    const sortedActive = useMemo(() => {
+        let filtered = activeCategory === "All Drinks"
+            ? activeProducts
+            : activeProducts.filter(p => p.category === activeCategory);
 
-    if (searchQuery) {
-        filteredActive = filteredActive.filter(p =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query)
+            );
+        }
 
-    // Sort active products
-    const sortedActive = [...filteredActive].sort((a, b) => {
-        if (sortBy === 'name') return a.name.localeCompare(b.name);
-        if (sortBy === 'price-low') return a.price - b.price;
-        if (sortBy === 'price-high') return b.price - a.price;
-        if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        return 0;
-    });
+        return [...filtered].sort((a, b) => {
+            if (sortBy === 'name') return a.name.localeCompare(b.name);
+            if (sortBy === 'price-low') return a.price - b.price;
+            if (sortBy === 'price-high') return b.price - a.price;
+            if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+            return 0;
+        });
+    }, [activeProducts, activeCategory, searchQuery, sortBy]);
 
     const handleQuickAdd = (e, product) => {
         e.stopPropagation();
@@ -195,6 +203,7 @@ const Menu = () => {
                                             <img
                                                 src={product.image}
                                                 alt={product.name}
+                                                loading="lazy"
                                             />
                                         ) : (
                                             <div className="image-placeholder"></div>
@@ -256,7 +265,8 @@ const Menu = () => {
                                                 <img
                                                     src={mix.image}
                                                     alt={mix.name}
-                                                    style={{ width: '100%', height: '100%', object- fit: 'cover'}}
+                                                    loading="lazy"
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover'}}
                                                 />
                                             ) : (
                                             <div className="future-placeholder-icon" style={{ fontSize: '40px' }}>{
