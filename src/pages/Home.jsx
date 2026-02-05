@@ -188,7 +188,7 @@ const Home = () => {
                                                     onClick={() => setSelectedMix(mix)}
                                                 >
                                                     {mix.image ? (
-                                                        <img src={mix.image} alt={mix.name} className="mix-thumb-small" />
+                                                        <img src={mix.image} alt={mix.name} className="mix-thumb-small" loading="lazy" />
                                                     ) : (
                                                         <span style={{ fontSize: '24px' }}>{
                                                             mix.name.toLowerCase().includes('watermelon') ? '🍉' :
@@ -211,7 +211,7 @@ const Home = () => {
                                                 <div className="mix-detail-header">
                                                     <div className="mix-thumb-large">
                                                         {selectedMix.image ? (
-                                                            <img src={selectedMix.image} alt={selectedMix.name} />
+                                                            <img src={selectedMix.image} alt={selectedMix.name} loading="lazy" />
                                                         ) : (
                                                             selectedMix.name.toLowerCase().includes('watermelon') ? '🍉' :
                                                                 selectedMix.name.toLowerCase().includes('citrus') ? '🍊' :

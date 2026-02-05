@@ -1,0 +1,3 @@
+## 2025-05-15 - Route-based Code Splitting and Memoization
+**Learning:** Implemented route-based code splitting using `React.lazy` and `Suspense`, which reduced the main bundle size from ~893 kB to ~413 kB. Also identified that memoizing expensive filtering/sorting logic in `Menu.jsx` prevents unnecessary re-renders during state updates like toast notifications.
+**Action:** Always verify bundle sizes before and after code splitting using `npm run build`. Keep "placeholder" or "unused" variables like `comingSoonProducts` if they are part of the original component contract to avoid regression concerns during review. Fix syntax errors (like `object- fit`) before optimizing as they block production builds.
