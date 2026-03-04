@@ -29,7 +29,11 @@ api.interceptors.response.use(
             // Token expired or invalid
             localStorage.removeItem('fruitsAuraToken');
             localStorage.removeItem('fruitsAuraUser');
-            window.location.href = '/login'; // Redirect to login
+
+            // Only redirect if we are NOT already on the login page to avoid infinite loops
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
