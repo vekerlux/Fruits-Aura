@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../api/client';
+import api from '../api/client';
 
 interface Notification {
     _id: string;

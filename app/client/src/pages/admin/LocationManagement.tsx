@@ -48,6 +48,10 @@ const LocationManagement = () => {
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const payload = {
+                ...formData,
+                coordinates: { lat: Number(formData.lat), lng: Number(formData.lng) }
+            };
             await api.post('/locations', payload);
             setShowAddForm(false);
             fetchLocations();

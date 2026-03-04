@@ -57,7 +57,7 @@ const Checkout = () => {
                 }
             };
 
-            const token = user?.token;
+            const token = (user as any)?.token;
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
             await api.post('/orders', orderData);

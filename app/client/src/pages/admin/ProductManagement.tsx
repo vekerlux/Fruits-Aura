@@ -51,7 +51,7 @@ const ProductManagement = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const config = { headers: { Authorization: `Bearer ${user?.token}` } };
+            const config = { headers: { Authorization: `Bearer ${(user as any)?.token}` } };
             const payload = { ...formData, price: Number(formData.price) };
 
             if (editingId) {

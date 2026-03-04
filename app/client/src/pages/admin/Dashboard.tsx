@@ -35,7 +35,7 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel'>('orders');
 
     const config = {
-        headers: { Authorization: `Bearer ${user?.token}` },
+        headers: { Authorization: `Bearer ${(user as any)?.token}` },
     };
 
     const fetchData = async () => {
