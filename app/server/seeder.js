@@ -51,8 +51,8 @@ const products = [
 const users = [
     {
         name: 'Admin Chief',
-        email: 'admin@fruitsaura.com',
-        password: 'Admin123!',
+        email: 'officialfruitsaura@gmail.com',
+        password: 'Divisi0n',
         role: 'ADMIN',
         plan: 'Staff'
     },
