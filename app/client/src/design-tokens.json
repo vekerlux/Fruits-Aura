@@ -1,0 +1,35 @@
+{
+  "colors": {
+    "primary": "#FF6B6B",
+    "secondary": "#4ECDC4",
+    "accent": "#F59E0B",
+    "success": "#16A34A",
+    "error": "#EF4444",
+    "surface": "#FFFFFF",
+    "background": "#0F172A",
+    "text": "#0B1120"
+  },
+  "typography": {
+    "fontSizes": {
+      "sm": "14px",
+      "base": "16px",
+      "lg": "18px",
+      "xl": "20px",
+      "2xl": "24px"
+    },
+    "fontWeights": {
+      "normal": 400,
+      "semibold": 600,
+      "bold": 700
+    }
+  },
+  "spacing": ["4px","8px","12px","16px","24px","32px","48px"],
+  "radii": {"sm":"6px","md":"12px","lg":"20px","full":"9999px"},
+  "shadows": {"card":"0 6px 18px rgba(15,23,42,0.12)","elevated":"0 12px 32px rgba(0,0,0,0.15)"},
+  "motion": {
+    "durations": {"micro":120,"medium":320,"page":520},
+    "easings": {"standard":[0.2,0.9,0.3,1],"soft":"ease-out"}
+  },
+  "zIndex": {"overlay":800,"modal":900,"toast":1000},
+  "breakpoints": {"sm":"640px","md":"768px","lg":"1024px"}
+}
