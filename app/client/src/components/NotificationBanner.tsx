@@ -16,7 +16,7 @@ const NotificationBanner = () => {
     const fetchActiveNotifications = async () => {
         try {
             const { data } = await api.get('/notifications');
-            const dismissed = JSON.parse(sessionStorage.getItem('dismissedNotifications') || '[]');
+            const dismissed = JSON.parse(localStorage.getItem('dismissedNotifications') || '[]');
             setNotifications(data.filter((n: any) => n.isActive && !dismissed.includes(n._id)));
         } catch (error) {
             console.error('Error fetching banners', error);
@@ -32,21 +32,32 @@ const NotificationBanner = () => {
     }, []);
 
     useEffect(() => {
-        if (notifications.length > 1) {
+        if (notifications.length > 0) {
             const cycle = setInterval(() => {
                 setCurrentIdx(prev => (prev + 1) % notifications.length);
-            }, 5000);
-            return () => clearInterval(cycle);
+            }, 8000); // Cycle every 8 seconds
+
+            // Auto-dismiss current notification after 10 seconds
+            const autoDismiss = setTimeout(() => {
+                const currentId = notifications[currentIdx]?._id;
+                if (currentId) handleDismiss(currentId);
+            }, 10000);
+
+            return () => {
+                clearInterval(cycle);
+                clearTimeout(autoDismiss);
+            };
         }
-    }, [notifications]);
+    }, [notifications, currentIdx]);
 
     const handleDismiss = (id: string) => {
-        const dismissed = JSON.parse(sessionStorage.getItem('dismissedNotifications') || '[]');
+        const dismissed = JSON.parse(localStorage.getItem('dismissedNotifications') || '[]');
         if (!dismissed.includes(id)) {
             dismissed.push(id);
-            sessionStorage.setItem('dismissedNotifications', JSON.stringify(dismissed));
+            localStorage.setItem('dismissedNotifications', JSON.stringify(dismissed));
         }
         setNotifications(prev => prev.filter(n => n._id !== id));
+        setCurrentIdx(0);
     };
 
     if (notifications.length === 0) return null;

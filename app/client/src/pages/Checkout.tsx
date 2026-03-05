@@ -159,7 +159,7 @@ const Checkout = () => {
                     <div className="grid grid-cols-2 gap-3">
                         <button className="bento-card-orange border-primary flex flex-col items-center justify-center p-4 gap-2 shadow-lg shadow-primary/10">
                             <span className="material-symbols-outlined text-primary text-3xl">credit_card</span>
-                            <span className="text-xs font-bold">Paystack (Demo)</span>
+                            <span className="text-xs font-bold">Paystack</span>
                         </button>
                         <button className="bento-card border-white/5 flex flex-col items-center justify-center p-4 gap-2 opacity-50 cursor-not-allowed">
                             <span className="material-symbols-outlined text-slate-400 text-3xl">account_balance</span>
