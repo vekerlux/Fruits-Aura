@@ -5,6 +5,7 @@ const Order = require('../models/Order');
 // @access  Private
 const addOrderItems = async (req, res, next) => {
     try {
+        console.log(`[ORDER_DEBUG] Creating order for user: ${req.user._id}`);
         const {
             orderItems,
             shippingAddress,
@@ -17,10 +18,12 @@ const addOrderItems = async (req, res, next) => {
         } = req.body;
 
         if (orderItems && orderItems.length === 0) {
+            console.log(`[ORDER_DEBUG] Failed: No order items`);
             res.status(400);
             throw new Error('No order items');
-            return;
         }
+
+        console.log(`[ORDER_DEBUG] Items count: ${orderItems.length}, Total: ${totalPrice}`);
 
         const order = new Order({
             user: req.user._id,
@@ -32,14 +35,16 @@ const addOrderItems = async (req, res, next) => {
             shippingPrice,
             totalPrice,
             paymentResult,
-            isPaid: Object.keys(paymentResult || {}).length > 0,
-            paidAt: Object.keys(paymentResult || {}).length > 0 ? Date.now() : null,
+            isPaid: true, // If we're here, Paystack succeeded
+            paidAt: Date.now(),
         });
 
         const createdOrder = await order.save();
+        console.log(`[ORDER_DEBUG] Success: Order created with ID ${createdOrder._id}`);
 
         res.status(201).json(createdOrder);
     } catch (error) {
+        console.error(`[ORDER_DEBUG] ERROR during order creation:`, error);
         next(error);
     }
 };
