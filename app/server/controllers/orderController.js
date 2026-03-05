@@ -1,4 +1,6 @@
+const crypto = require('crypto');
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -126,9 +128,84 @@ const getOrderStats = async (req, res, next) => {
             dailyRevenue: result.dailyRevenue,
             popularItems: result.popularItems
         });
-    } catch (error) {
-        next(error);
-    }
-};
+        // @desc    Handle Paystack Webhook
+        // @route   POST /api/orders/webhook
+        // @access  Public
+        const paystackWebhook = async (req, res, next) => {
+            try {
+                const secret = process.env.PAYSTACK_SECRET_KEY;
 
-module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats };
+                // For local testing or if secret is missing, we might skip signature check (not recommended for prod)
+                if (secret) {
+                    const hash = crypto.createHmac('sha256', secret).update(JSON.stringify(req.body)).digest('hex');
+                    if (hash !== req.headers['x-paystack-signature']) {
+                        console.error('[WEBHOOK_ERROR] Invalid signature');
+                        return res.status(401).send('Invalid signature');
+                    }
+                }
+
+                const event = req.body;
+                console.log(`[WEBHOOK_DEBUG] Received event: ${event.event}`);
+
+                if (event.event === 'charge.success') {
+                    const { reference, amount, customer, paid_at } = event.data;
+
+                    // 1. Try to find existing order by reference
+                    let order = await Order.findOne({
+                        $or: [
+                            { 'paymentResult.reference': reference },
+                            { 'paymentResult.id': reference }
+                        ]
+                    });
+
+                    if (order) {
+                        console.log(`[WEBHOOK_DEBUG] Order found: ${order._id}. Updating to PAID.`);
+                        order.isPaid = true;
+                        order.paidAt = paid_at || Date.now();
+                        await order.save();
+                    } else {
+                        console.log(`[WEBHOOK_DEBUG] No order found with reference ${reference}. Creating recovery record.`);
+
+                        const user = await User.findOne({ email: customer.email });
+
+                        // Minimal order for recovery
+                        const recoveryOrder = new Order({
+                            user: user ? user._id : '000000000000000000000000', // Use a zeroed ID if no user found
+                            orderItems: [{
+                                name: 'Paystack Order (Recovered)',
+                                qty: 1,
+                                image: 'https://res.cloudinary.com/dlbv776ga/image/upload/v1705300000/placeholder.jpg',
+                                price: amount / 100,
+                                product: '65a54446c596328905307999' // Use an existing product ID or a dummy one
+                            }],
+                            shippingAddress: {
+                                street: 'Contact Customer (Recovered Order)',
+                                city: 'N/A',
+                                state: 'N/A',
+                                zip: '000000'
+                            },
+                            paymentMethod: 'Paystack Webhook',
+                            itemsPrice: amount / 100,
+                            totalPrice: amount / 100,
+                            paymentResult: {
+                                reference: reference,
+                                status: 'success',
+                                email_address: customer.email
+                            },
+                            isPaid: true,
+                            paidAt: paid_at || Date.now()
+                        });
+
+                        await recoveryOrder.save();
+                        console.log(`[WEBHOOK_DEBUG] Recovery order created ID: ${recoveryOrder._id}`);
+                    }
+                }
+
+                res.status(200).send('Webhook Handled');
+            } catch (error) {
+                console.error(`[WEBHOOK_ERROR]`, error);
+                res.status(500).send('Webhook Error');
+            }
+        };
+
+        module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats, paystackWebhook };

@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Locations from './pages/Locations';
 import Featured from './pages/Featured';
 import Dashboard from './pages/admin/Dashboard';
+import OrderSuccess from './pages/OrderSuccess';
 import AdminRoute from './components/AdminRoute';
 import NotificationBanner from './components/NotificationBanner';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -30,6 +31,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success/:id" element={<OrderSuccess />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />

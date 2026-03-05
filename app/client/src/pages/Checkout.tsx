@@ -62,7 +62,7 @@ const Checkout = () => {
             await api.post('/orders', orderData);
 
             clearCart();
-            setIsSuccess(true);
+            navigate(`/order-success/${reference.reference}`);
         } catch (error: any) {
             console.error('Error saving order', error);
             const errorMsg = error.response?.data?.message || 'Payment succeeded but we had an error saving your order.';
@@ -90,23 +90,7 @@ const Checkout = () => {
         );
     }
 
-    if (isSuccess) {
-        return (
-            <div className="bg-background-dark text-white min-h-screen flex flex-col items-center justify-center p-6 space-y-6 text-center">
-                <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-4 border border-green-500/50">
-                    <span className="material-symbols-outlined text-green-500 text-5xl">check_circle</span>
-                </div>
-                <h1 className="text-3xl font-black">Payment Successful!</h1>
-                <p className="text-slate-400">Your Aura is brewing and will be delivered shortly.</p>
-                <button
-                    onClick={() => navigate('/home')}
-                    className="w-full bg-primary text-white font-black py-4 rounded-2xl flex items-center justify-center mt-6 shadow-xl shadow-primary/30 active:scale-95 transition-transform"
-                >
-                    Back to Home
-                </button>
-            </div>
-        );
-    }
+
 
     if (cart.length === 0) {
         return (
