@@ -19,6 +19,11 @@ connectDB();
 
 const app = express();
 
+app.use((req, res, next) => {
+    console.log(`[REQUEST] ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+    next();
+});
+
 app.use(cors({
     origin: function (origin, callback) {
         const allowedOrigins = [
