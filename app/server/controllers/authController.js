@@ -7,7 +7,16 @@ const generateToken = require('../utils/generateToken');
 const authUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(`[LOGIN_DEBUG] Attempt for: ${email}`);
         const user = await User.findOne({ email });
+
+        if (user) {
+            console.log(`[LOGIN_DEBUG] User found. Role: ${user.role}`);
+            const isMatch = await user.matchPassword(password);
+            console.log(`[LOGIN_DEBUG] Password match: ${isMatch}`);
+        } else {
+            console.log(`[LOGIN_DEBUG] User not found`);
+        }
 
         if (user && (await user.matchPassword(password))) {
             res.json({

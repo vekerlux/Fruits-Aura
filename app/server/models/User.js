@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+console.log(`[MODEL_DEBUG] User Role Enum: ['CONSUMER', 'DISTRIBUTOR', 'ADMIN']`);
+
 const userSchema = mongoose.Schema(
     {
         name: { type: String, required: true },
