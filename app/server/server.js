@@ -6,6 +6,15 @@ const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 dotenv.config();
+
+// Startup Checks
+const requiredEnv = ['MONGODB_URI', 'JWT_SECRET', 'CLOUDINARY_API_KEY', 'PAYSTACK_SECRET_KEY'];
+requiredEnv.forEach(env => {
+    if (!process.env[env]) {
+        console.warn(`[WARNING] Missing environment variable: ${env}`);
+    }
+});
+
 connectDB();
 
 const app = express();
@@ -40,6 +49,7 @@ app.get('/api/health', (req, res) => {
 
 app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    console.error(`[INTERNAL ERROR] ${req.method} ${req.path}:`, err);
     res.status(statusCode).json({
         message: err.message,
         stack: process.env.NODE_ENV === 'production' ? null : err.stack,
