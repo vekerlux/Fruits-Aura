@@ -38,6 +38,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.getItem('fruitsAuraToken')
     );
 
+    // Sync state if localStorage changes (e.g., from another tab or interceptor)
+    React.useEffect(() => {
+        const handleStorageChange = () => {
+            const savedUser = localStorage.getItem('fruitsAuraUser');
+            const savedToken = localStorage.getItem('fruitsAuraToken');
+
+            try {
+                setUser(savedUser ? JSON.parse(savedUser) : null);
+            } catch (e) {
+                setUser(null);
+            }
+            setToken(savedToken);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
     const login = (userData: User, authToken: string) => {
         setUser(userData);
         setToken(authToken);

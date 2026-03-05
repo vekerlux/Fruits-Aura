@@ -25,14 +25,20 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Only trigger session clear on 401 (Not Authorized), never 403 (Forbidden)
         if (error.response?.status === 401) {
-            // Token expired or invalid
-            localStorage.removeItem('fruitsAuraToken');
-            localStorage.removeItem('fruitsAuraUser');
+            // Check if the request that failed was the login request itself
+            const isLoginRequest = error.config?.url?.includes('/auth/login');
 
-            // Only redirect if we are NOT already on the login page to avoid infinite loops
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
+            if (!isLoginRequest) {
+                // Token expired or invalid
+                localStorage.removeItem('fruitsAuraToken');
+                localStorage.removeItem('fruitsAuraUser');
+
+                // Only redirect if we are NOT already on the login page to avoid infinite loops
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
             }
         }
         return Promise.reject(error);
