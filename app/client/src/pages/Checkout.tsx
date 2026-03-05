@@ -10,6 +10,7 @@ const Checkout = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
     // Hardcoded fees matching Cart.tsx for demo
@@ -28,6 +29,7 @@ const Checkout = () => {
 
     const onSuccess = async (reference: any) => {
         try {
+            setIsProcessing(true);
             const orderData = {
                 orderItems: cart.map(item => ({
                     name: item.name,
@@ -38,10 +40,10 @@ const Checkout = () => {
                     product: item.id
                 })),
                 shippingAddress: {
-                    street: 'No 15, Waterworks Road',
-                    city: 'Abakaliki',
-                    state: 'Ebonyi State',
-                    zip: '000000'
+                    street: user?.address && typeof user.address === 'object' ? (user.address as any).street : 'No 15, Waterworks Road',
+                    city: user?.address && typeof user.address === 'object' ? (user.address as any).city : 'Abakaliki',
+                    state: user?.address && typeof user.address === 'object' ? (user.address as any).state : 'Ebonyi State',
+                    zip: user?.address && typeof user.address === 'object' ? (user.address as any).zip || '000000' : '000000'
                 },
                 paymentMethod: 'Paystack',
                 itemsPrice: subtotal,
@@ -57,16 +59,16 @@ const Checkout = () => {
                 }
             };
 
-            const token = (user as any)?.token;
-            const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
             await api.post('/orders', orderData);
 
             clearCart();
             setIsSuccess(true);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving order', error);
-            alert('Payment succeeded but we had an error saving your order. Please contact support.');
+            const errorMsg = error.response?.data?.message || 'Payment succeeded but we had an error saving your order.';
+            alert(`${errorMsg} Please screenshot your Paystack Reference (${reference.reference}) and contact support.`);
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -77,6 +79,16 @@ const Checkout = () => {
     const handlePayment = () => {
         initializePayment({ onSuccess, onClose });
     };
+
+    if (isProcessing) {
+        return (
+            <div className="bg-background-dark text-white min-h-screen flex flex-col items-center justify-center p-6 space-y-6 text-center">
+                <div className="w-20 h-20 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+                <h1 className="text-2xl font-black">Fulfilling Your Aura...</h1>
+                <p className="text-slate-400">Payment confirmed! We are now recording your order and preparing your shipment. Please do not close this page.</p>
+            </div>
+        );
+    }
 
     if (isSuccess) {
         return (
