@@ -36,6 +36,7 @@ const Login = () => {
 
             navigate('/home');
         } catch (err: any) {
+            console.error('[LOGIN_ERROR_DEBUG]:', err);
             setError(err.response?.data?.message || 'Invalid email or password. Try the demo credentials below.');
         } finally {
             setIsLoading(false);
