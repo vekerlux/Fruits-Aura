@@ -7,18 +7,22 @@ const generateToken = require('../utils/generateToken');
 const authUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        console.log(`[LOGIN_DEBUG] Attempt for: ${email}`);
-        const user = await User.findOne({ email });
+        console.log(`[LOGIN_DEBUG] Attempt for email: "${email}" (length: ${email?.length})`);
 
-        if (user) {
-            console.log(`[LOGIN_DEBUG] User found. Role: ${user.role}`);
-            const isMatch = await user.matchPassword(password);
-            console.log(`[LOGIN_DEBUG] Password match: ${isMatch}`);
-        } else {
-            console.log(`[LOGIN_DEBUG] User not found`);
+        const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+        if (!user) {
+            console.log(`[LOGIN_DEBUG] User NOT found for email: "${email}"`);
+            res.status(401);
+            throw new Error('Invalid email or password');
         }
 
-        if (user && (await user.matchPassword(password))) {
+        console.log(`[LOGIN_DEBUG] User found: ${user.email}. Stored hash (short): ${user.password.substring(0, 10)}...`);
+
+        const isMatch = await user.matchPassword(password);
+        console.log(`[LOGIN_DEBUG] Password match for ${email}: ${isMatch}`);
+
+        if (isMatch) {
             res.json({
                 _id: user._id,
                 name: user.name,
