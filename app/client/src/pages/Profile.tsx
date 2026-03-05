@@ -12,7 +12,13 @@ const Profile = () => {
     const [isEditingName, setIsEditingName] = useState(false);
     const [nameInput, setNameInput] = useState(user?.name ?? '');
     const [isEditingAddress, setIsEditingAddress] = useState(false);
-    const [addressInput, setAddressInput] = useState(user?.address ?? '');
+    const [addressInput, setAddressInput] = useState(() => {
+        if (typeof user?.address === 'object' && user.address !== null) {
+            const { street, city, state } = user.address as any;
+            return [street, city, state].filter(Boolean).join(', ');
+        }
+        return (user?.address as any) ?? '';
+    });
     const [phoneInput, setPhoneInput] = useState(user?.phone ?? '');
     const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar ?? null);
     const [savedToast, setSavedToast] = useState(false);
@@ -212,7 +218,11 @@ const Profile = () => {
                             </div>
                             <div>
                                 <p className="font-black text-sm">Delivery Address</p>
-                                <p className="text-xs text-slate-500">{user?.address || 'Tap to add address'}</p>
+                                <p className="text-xs text-slate-500">
+                                    {typeof user?.address === 'object' && user.address !== null
+                                        ? Object.values(user.address).filter(v => typeof v === 'string').join(', ')
+                                        : (user?.address as any) || 'Tap to add address'}
+                                </p>
                             </div>
                         </div>
                         <motion.button

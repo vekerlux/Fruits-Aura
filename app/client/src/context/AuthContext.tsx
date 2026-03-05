@@ -7,7 +7,7 @@ interface User {
     role: 'CONSUMER' | 'DISTRIBUTOR' | 'ADMIN';
     plan: string;
     avatar?: string;   // base64 or ObjectURL for local preview
-    address?: string;
+    address?: string | { street?: string; city?: string; state?: string; zip?: string };
     phone?: string;
 }
 
