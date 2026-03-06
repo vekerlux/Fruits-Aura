@@ -5,6 +5,9 @@ Fruits Aura is a premium Nigerian fruit-drink e-commerce web app built for mobil
 
 The app is live at [fruits-aura.vercel.app](https://fruits-aura.vercel.app) (frontend on Vercel, backend on Render, database on MongoDB Atlas).
 
+> [!IMPORTANT]
+> **Bulletproof Security Update:** The app now features a direct backend Webhook with Paystack. This ensures no payment ever goes unrecorded, even if a user closes their browser mid-transaction.
+
 ## 🎨 How It Looks & Feels
 
 ### Design Language
@@ -62,7 +65,7 @@ Tap any product to open its full detail page:
 - **Auraset Bundle Toggle:** Choose between a single bottle (₦1,900) or a bundle of 6 bottles at the discounted Auraset price (₦9,000)
 - "Add to Cart" button with animated confirmation + toast notification
 
-\**Note: The latest Auraset pricing reflects ₦9,000 for 6 bottles.*
+\**Note: The latest Auraset pricing reflects ₦9,000 for 6 bottles. This is synced across the seed script and all UI components.*
 
 ### 5. 🛍️ Cart — Slide-In Modal
 From any page, tapping the cart icon (header, with animated badge count) opens the `CartModal`, which slides in from the right:
@@ -81,8 +84,9 @@ The Checkout page gives a full order summary before confirming:
 - Delivery fee (calculated based on the user's location — Abakaliki pricing logic applies)
 - Total order cost in ₦
 - "Place Order" button — animated loading state ("Placing Order…")
-- On success: navigates to the Track page + sends an email confirmation to the user
-- Payment is integrated with **Paystack** (Nigeria's leading payment gateway, supports card, bank transfer, USSD).
+- **Paystack Integration:** Supports card, bank transfer, and USSD via a secure popup.
+- **Success Redirection:** On success, the app navigates to a professional "Order Verified" page (`OrderSuccess.tsx`) which shows an animated receipt and tracking details.
+- **Silent Recovery:** A backend Webhook (`/api/orders/webhook`) monitors all Paystack events to ensure orders are created even in the case of network failure or browser closing.
 
 ### 7. 📦 Order Tracking Page
 After placing an order, users land on the Track page showing:
@@ -96,8 +100,10 @@ The Profile page is a personal hub for the user. It shows:
 - Full name (editable — changes sync immediately to the backend)
 - Badge showing their account type: ADMIN / CONSUMER / FREE PLAN
 - Aura Plan subscription status/badge
-- **Order via WhatsApp** card with a "SAVE ME" badge — one-tap link to order directly via WhatsApp chat
-- **Referral Program** — each user gets a unique, human-readable referral code (e.g., `A4B2XC`) they can share to earn rewards
+- **Order via WhatsApp:** Premium green card with direct integration to the business account (`wa.me`) for one-tap chat orders.
+- **Visit Paystack Shop:** Direct link to the external `paystack.shop` for alternative purchasing methods.
+- **Support Access:** "Help & Support" item opens direct WhatsApp chat.
+- **Referral Program:** each user gets a unique, human-readable referral code (e.g., `A4B2XC`) they can share to earn rewards.
 - **Order History** link — shows past orders with status badges and dates
 - Dark Mode toggle — Moon/Sun icon with animated switch (persisted across sessions)
 - Logout button
