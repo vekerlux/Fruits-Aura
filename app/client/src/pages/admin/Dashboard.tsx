@@ -8,6 +8,7 @@ import LocationManagement from './LocationManagement';
 import PlanManagement from './PlanManagement';
 import SettingsManagement from './SettingsManagement';
 import CarouselManagement from './CarouselManagement';
+import PromoManagement from './PromoManagement';
 
 interface Order {
     id: string;
@@ -32,7 +33,7 @@ const Dashboard = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [statsData, setStatsData] = useState<StatsData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel'>('orders');
+    const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel' | 'promos'>('orders');
 
     const config = {
         headers: { Authorization: `Bearer ${(user as any)?.token}` },
@@ -88,6 +89,7 @@ const Dashboard = () => {
                         { id: 'notifications', label: 'Broadcasts', icon: 'campaign' },
                         { id: 'locations', label: 'Outlets', icon: 'storefront' },
                         { id: 'carousel', label: 'Feats', icon: 'magic_button' },
+                        { id: 'promos', label: 'Promos', icon: 'local_offer' },
                         { id: 'plans', label: 'Plans', icon: 'loyalty' },
                         { id: 'settings', label: 'Settings', icon: 'settings' },
                     ].map((tab) => (
@@ -239,6 +241,7 @@ const Dashboard = () => {
                 {activeTab === 'carousel' && <CarouselManagement />}
                 {activeTab === 'plans' && <PlanManagement />}
                 {activeTab === 'settings' && <SettingsManagement />}
+                {activeTab === 'promos' && <PromoManagement />}
             </main>
         </div>
     );

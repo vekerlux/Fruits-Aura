@@ -232,6 +232,33 @@ const Home = () => {
                             <h4 className="text-white font-black text-lg leading-tight">100% Cold Pressed<br />Zero Additives</h4>
                         </div>
                     </motion.div>
+
+                    {/* Newsletter Capture */}
+                    <motion.div
+                        variants={cardVariants}
+                        className="col-span-4 bento-card p-6 border-dashed border-primary/30 relative overflow-hidden group"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                            <div className="text-center md:text-left space-y-1">
+                                <h3 className="text-xl font-black italic tracking-tighter">Join the Aura Circle</h3>
+                                <p className="text-xs text-slate-400 font-medium">Get exclusive deals and first sip access.</p>
+                            </div>
+                            <div className="w-full flex gap-2">
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    className="flex-1 bg-accent-dark border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                                />
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    className="bg-primary text-white font-black px-6 py-3 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 cursor-pointer"
+                                >
+                                    Join
+                                </motion.button>
+                            </div>
+                        </div>
+                    </motion.div>
                 </motion.div>
             </main>
         </div>

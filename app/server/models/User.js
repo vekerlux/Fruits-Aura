@@ -16,6 +16,8 @@ const userSchema = mongoose.Schema(
             zip: { type: String },
         },
         role: { type: String, enum: ['CONSUMER', 'DISTRIBUTOR', 'ADMIN'], default: 'CONSUMER' },
+        referralCode: { type: String, unique: true },
+        referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     },
     { timestamps: true }
 );

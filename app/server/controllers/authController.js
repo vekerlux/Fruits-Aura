@@ -46,7 +46,7 @@ const authUser = async (req, res, next) => {
 // @access  Public
 const registerUser = async (req, res, next) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, referralCode } = req.body;
 
         const userExists = await User.findOne({ email });
 
@@ -55,10 +55,24 @@ const registerUser = async (req, res, next) => {
             throw new Error('User already exists');
         }
 
+        // Check if referred by someone
+        let referredBy = null;
+        if (referralCode) {
+            const referrer = await User.findOne({ referralCode });
+            if (referrer) {
+                referredBy = referrer._id;
+            }
+        }
+
+        // Generate unique referral code for the new user
+        const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
         const user = await User.create({
             name,
             email,
             password,
+            referredBy,
+            referralCode: myReferralCode
         });
 
         if (user) {
@@ -69,6 +83,7 @@ const registerUser = async (req, res, next) => {
                 avatar: user.avatar,
                 address: user.address,
                 role: user.role,
+                referralCode: user.referralCode,
                 token: generateToken(user._id),
             });
         } else {
