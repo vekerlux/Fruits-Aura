@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const Order = require('../models/Order');
 const User = require('../models/User');
+const { sendOrderConfirmationEmail } = require('../utils/emailService');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -190,6 +191,11 @@ const paystackWebhook = async (req, res, next) => {
                 const pointsAwarded = totalQty * 100;
                 await User.findByIdAndUpdate(order.user, { $inc: { loyaltyPoints: pointsAwarded } });
                 console.log(`[WEBHOOK_LOYALTY] Awarded ${pointsAwarded} points to user ${order.user}`);
+
+                // Send confirmation email
+                const emailAddr = customer.email || (await User.findById(order.user))?.email;
+                if (emailAddr) await sendOrderConfirmationEmail(order, emailAddr);
+
             } else {
                 console.log(`[WEBHOOK_DEBUG] No order found with reference ${reference}. Creating recovery record.`);
 
@@ -225,6 +231,10 @@ const paystackWebhook = async (req, res, next) => {
 
                 await recoveryOrder.save();
                 console.log(`[WEBHOOK_DEBUG] Recovery order created ID: ${recoveryOrder._id}`);
+
+                // Send confirmation email for recovery order
+                if (customer.email) await sendOrderConfirmationEmail(recoveryOrder, customer.email);
+
 
                 // Award points for recovery order
                 if (user) {
