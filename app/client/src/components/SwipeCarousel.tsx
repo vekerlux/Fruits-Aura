@@ -113,6 +113,7 @@ const SwipeCarousel = () => {
                 <motion.img
                     src={currentProduct.image}
                     alt={currentProduct.name}
+                    loading="lazy"
                     className="w-full h-full object-contain drop-shadow-2xl"
                     style={{ filter: currentProduct.cssFilter }}
                     animate={{ y: [0, -10, 0] }}

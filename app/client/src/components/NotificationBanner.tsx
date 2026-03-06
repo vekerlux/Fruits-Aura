@@ -81,8 +81,8 @@ const NotificationBanner = () => {
                     exit={{ opacity: 0, scale: 1.05, transition: { duration: 0.2 } }}
                     className={`max-w-md mx-auto bento-card p-4 border flex items-center gap-4 pointer-events-auto shadow-2xl backdrop-blur-xl ${typeStyles[current.type]}`}
                 >
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 flex-shrink-0 animate-pulse">
-                        <span className="material-symbols-outlined text-sm">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 flex-shrink-0 animate-pulse">
+                        <span className="material-symbols-outlined text-lg">
                             {current.type === 'warning' ? 'warning' : 'campaign'}
                         </span>
                     </div>
@@ -92,9 +92,9 @@ const NotificationBanner = () => {
                     </div>
                     <button
                         onClick={() => handleDismiss(current._id)}
-                        className="p-1 hover:bg-white/5 rounded-full transition-colors flex-shrink-0 cursor-pointer"
+                        className="w-11 h-11 hover:bg-white/5 rounded-full transition-colors flex-shrink-0 cursor-pointer flex items-center justify-center"
                     >
-                        <span className="material-symbols-outlined text-xs">close</span>
+                        <span className="material-symbols-outlined text-sm">close</span>
                     </button>
                 </motion.div>
             </AnimatePresence>

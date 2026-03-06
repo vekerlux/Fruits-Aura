@@ -19,11 +19,11 @@ const Cart = () => {
                 className="px-6 pt-14 pb-4 sticky top-0 z-50 bg-background-dark/90 backdrop-blur-xl border-b border-white/[0.04]"
             >
                 <div className="flex items-center justify-between">
-                    <motion.button onClick={() => navigate(-1)} whileTap={{ scale: 0.88 }} className="w-10 h-10 rounded-full glass flex items-center justify-center cursor-pointer">
+                    <motion.button onClick={() => navigate(-1)} whileTap={{ scale: 0.88 }} className="w-11 h-11 rounded-full glass flex items-center justify-center cursor-pointer">
                         <span className="material-symbols-outlined text-white">arrow_back_ios_new</span>
                     </motion.button>
                     <h1 className="text-xl font-black">Your <span className="text-primary">Bag</span></h1>
-                    <motion.button whileTap={{ scale: 0.88 }} className="w-10 h-10 rounded-full glass flex items-center justify-center cursor-pointer">
+                    <motion.button whileTap={{ scale: 0.88 }} className="w-11 h-11 rounded-full glass flex items-center justify-center cursor-pointer">
                         <span className="material-symbols-outlined text-white">more_vert</span>
                     </motion.button>
                 </div>

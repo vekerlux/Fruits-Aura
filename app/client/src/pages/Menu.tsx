@@ -148,7 +148,13 @@ const Menu = () => {
                                         whileHover={{ scale: 1.05 }}
                                         transition={{ duration: 0.3 }}
                                     >
-                                        <img alt={product.name} className="w-full h-full object-contain" src={product.image} style={{ filter: product.cssFilter }} />
+                                        <img
+                                            alt={product.name}
+                                            loading="lazy"
+                                            className="w-full h-full object-contain"
+                                            src={product.image}
+                                            style={{ filter: product.cssFilter }}
+                                        />
                                     </motion.div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-start">

@@ -155,7 +155,7 @@ const Checkout = () => {
                     <div className="grid grid-cols-2 gap-3">
                         <button className="bento-card-orange border-primary flex flex-col items-center justify-center p-4 gap-2 shadow-lg shadow-primary/10">
                             <span className="material-symbols-outlined text-primary text-3xl">credit_card</span>
-                            <span className="text-xs font-bold">Paystack</span>
+                            <span className="text-xs font-bold uppercase tracking-widest">Paystack</span>
                         </button>
                         <button className="bento-card border-white/5 flex flex-col items-center justify-center p-4 gap-2 opacity-50 cursor-not-allowed">
                             <span className="material-symbols-outlined text-slate-400 text-3xl">account_balance</span>
@@ -196,10 +196,15 @@ const Checkout = () => {
                     </div>
                     <button
                         onClick={() => handlePayment()}
-                        className="w-full bg-[#0ba4db] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-[#0ba4db]/30 active:scale-[0.98] transition-all mt-4"
+                        disabled={isProcessing}
+                        className={`w-full ${isProcessing ? 'bg-slate-700' : 'bg-[#f27f0d]'} text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-[#f27f0d]/30 active:scale-[0.98] transition-all mt-4`}
                     >
-                        <span className="material-symbols-outlined">lock</span>
-                        <span>Pay With Paystack</span>
+                        {isProcessing ? (
+                            <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        ) : (
+                            <span className="material-symbols-outlined">lock</span>
+                        )}
+                        <span>{isProcessing ? 'Verifying...' : `Pay ₦${total.toLocaleString()} Now`}</span>
                     </button>
                 </section>
 
