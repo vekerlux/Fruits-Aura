@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
+import OrderTimeline from '../components/OrderTimeline';
 
 const Profile = () => {
     const { user, logout, updateUser, isAuthenticated } = useAuth();
@@ -202,259 +203,289 @@ const Profile = () => {
                         <span className="inline-block bg-primary/10 text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mt-1 border border-primary/20">
                             {user?.plan ?? 'Auraset Subscriber'}
                         </span>
+                        <div className="mt-3 flex items-center justify-center gap-2">
+                            <div className="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${Math.min((((user as any)?.loyaltyPoints || 0) % 1000) / 10, 100)}%` }}
+                                    className="h-full bg-primary"
+                                />
+                            </div>
+                            <span className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
+                                {1000 - (((user as any)?.loyaltyPoints || 0) % 1000)} pts to next reward
+                            </span>
+                        </div>
                     </div>
                 </motion.div>
 
-                {/* Address & Contact */}
-            </motion.div>
+                {/* Loyalty Points / Aura Rewards Card */}
+                <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-4 flex flex-col items-center justify-center gap-1">
+                        <span className="text-primary font-black text-2xl">{(user as any)?.loyaltyPoints || 0}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Aura Points</span>
+                    </div>
+                    <div className="bg-secondary/5 border border-secondary/20 rounded-3xl p-4 flex flex-col items-center justify-center gap-1">
+                        <span className="text-secondary font-black text-2xl">
+                            {((user as any)?.loyaltyPoints || 0) >= 5000 ? 'Gold' : ((user as any)?.loyaltyPoints || 0) >= 2000 ? 'Silver' : 'Bronze'}
+                        </span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Tier Status</span>
+                    </div>
+                </div>
 
-            {/* Invite Friends / Referral Card */}
-            <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.4 }}
-                className="bento-card-orange p-5 relative overflow-hidden group"
-            >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-                <div className="relative z-10 flex flex-col gap-4">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="text-xs text-white/70 font-black uppercase tracking-widest">Share the Aura</p>
-                            <h3 className="text-xl font-black text-white">Invite Friends</h3>
+                {/* Invite Friends / Referral Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.4 }}
+                    className="bento-card-orange p-5 relative overflow-hidden group"
+                >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                    <div className="relative z-10 flex flex-col gap-4">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-xs text-white/70 font-black uppercase tracking-widest">Share the Aura</p>
+                                <h3 className="text-xl font-black text-white">Invite Friends</h3>
+                            </div>
+                            <div className="w-10 h-10 bg-white text-primary rounded-full flex items-center justify-center shadow-lg">
+                                <span className="material-symbols-outlined font-black">celebration</span>
+                            </div>
                         </div>
-                        <div className="w-10 h-10 bg-white text-primary rounded-full flex items-center justify-center shadow-lg">
-                            <span className="material-symbols-outlined font-black">celebration</span>
+                        <p className="text-xs text-white/80 leading-relaxed font-medium">Your friends get 10% off their first order, and you earn Aura credit!</p>
+
+                        <div className="flex gap-2">
+                            <div className="flex-1 bg-black/20 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center justify-between border border-white/20">
+                                <span className="text-sm font-black tracking-widest uppercase">{(user as any)?.referralCode || 'AURA500'}</span>
+                                <motion.button
+                                    whileTap={{ scale: 0.8 }}
+                                    onClick={() => navigator.clipboard.writeText((user as any)?.referralCode || 'AURA500')}
+                                    className="text-white hover:text-secondary transition-colors cursor-pointer"
+                                >
+                                    <span className="material-symbols-outlined text-sm">content_copy</span>
+                                </motion.button>
+                            </div>
+                            <motion.button
+                                whileTap={{ scale: 0.94 }}
+                                className="bg-white text-primary font-black px-6 py-3 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-black/10 cursor-pointer"
+                            >
+                                Share
+                            </motion.button>
                         </div>
                     </div>
-                    <p className="text-xs text-white/80 leading-relaxed font-medium">Your friends get 10% off their first order, and you earn Aura credit!</p>
+                </motion.div>
 
-                    <div className="flex gap-2">
-                        <div className="flex-1 bg-black/20 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center justify-between border border-white/20">
-                            <span className="text-sm font-black tracking-widest uppercase">{(user as any)?.referralCode || 'AURA500'}</span>
-                            <motion.button
-                                whileTap={{ scale: 0.8 }}
-                                onClick={() => navigator.clipboard.writeText((user as any)?.referralCode || 'AURA500')}
-                                className="text-white hover:text-secondary transition-colors cursor-pointer"
-                            >
-                                <span className="material-symbols-outlined text-sm">content_copy</span>
-                            </motion.button>
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-0 pt-2 pb-1">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <span className="material-symbols-outlined text-primary text-lg">location_on</span>
+                            </div>
+                            <div>
+                                <p className="font-black text-sm">Delivery Address</p>
+                                <p className="text-xs text-slate-500 truncate max-w-[200px]">
+                                    {typeof user?.address === 'object' && user.address !== null
+                                        ? Object.values(user.address).filter(v => typeof v === 'string').join(', ')
+                                        : (user?.address as any) || 'Tap to add address'}
+                                </p>
+                            </div>
                         </div>
                         <motion.button
-                            whileTap={{ scale: 0.94 }}
-                            className="bg-white text-primary font-black px-6 py-3 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-black/10 cursor-pointer"
+                            whileTap={{ scale: 0.88 }}
+                            onClick={() => setIsEditingAddress(!isEditingAddress)}
+                            className="text-primary text-xs font-black uppercase tracking-widest cursor-pointer"
                         >
-                            Share
+                            {isEditingAddress ? 'Cancel' : 'Edit'}
                         </motion.button>
                     </div>
-                </div>
-            </motion.div>
-            <div className="flex items-center justify-between px-5 pt-5 pb-3">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-primary text-lg">location_on</span>
-                    </div>
-                    <div>
-                        <p className="font-black text-sm">Delivery Address</p>
-                        <p className="text-xs text-slate-500">
-                            {typeof user?.address === 'object' && user.address !== null
-                                ? Object.values(user.address).filter(v => typeof v === 'string').join(', ')
-                                : (user?.address as any) || 'Tap to add address'}
-                        </p>
-                    </div>
-                </div>
-                <motion.button
-                    whileTap={{ scale: 0.88 }}
-                    onClick={() => setIsEditingAddress(!isEditingAddress)}
-                    className="text-primary text-xs font-black uppercase tracking-widest cursor-pointer"
-                >
-                    {isEditingAddress ? 'Cancel' : 'Edit'}
-                </motion.button>
-            </div>
 
-            <AnimatePresence>
-                {isEditingAddress && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="overflow-hidden"
-                    >
-                        <div className="px-5 pb-5 space-y-3">
-                            <div className="h-px bg-white/5" />
-                            <input
-                                placeholder="Street address, City, State..."
-                                value={addressInput}
-                                onChange={(e) => setAddressInput(e.target.value)}
-                                className="aura-input"
-                            />
-                            <input
-                                placeholder="Phone number (+234...)"
-                                value={phoneInput}
-                                onChange={(e) => setPhoneInput(e.target.value)}
-                                className="aura-input"
-                            />
-                            <motion.button
-                                whileTap={{ scale: 0.96 }}
-                                onClick={saveAddress}
-                                className="w-full btn-primary py-3 rounded-xl text-sm"
+                    <AnimatePresence>
+                        {isEditingAddress && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: 'easeOut' }}
+                                className="overflow-hidden"
                             >
-                                Save Address
-                            </motion.button>
+                                <div className="pb-5 space-y-3">
+                                    <div className="h-px bg-white/5" />
+                                    <input
+                                        placeholder="Street address, City, State..."
+                                        value={addressInput}
+                                        onChange={(e) => setAddressInput(e.target.value)}
+                                        className="aura-input"
+                                    />
+                                    <input
+                                        placeholder="Phone number (+234...)"
+                                        value={phoneInput}
+                                        onChange={(e) => setPhoneInput(e.target.value)}
+                                        className="aura-input"
+                                    />
+                                    <motion.button
+                                        whileTap={{ scale: 0.96 }}
+                                        onClick={saveAddress}
+                                        className="w-full btn-primary py-3 rounded-xl text-sm"
+                                    >
+                                        Save Address
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* WhatsApp Order */}
+                <motion.div
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.12 }}
+                    className="bento-card-green p-5 flex items-center justify-between cursor-pointer"
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => window.open('https://wa.me/message/LFA2LUMSBCYAL1', '_blank')}
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 rounded-2xl bg-secondary/15 border border-secondary/20 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-secondary">chat</span>
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.div>
-
-                {/* WhatsApp Order */ }
-    <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12 }}
-        className="bento-card-green p-5 flex items-center justify-between cursor-pointer"
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={() => window.open('https://wa.me/message/LFA2LUMSBCYAL1', '_blank')}
-    >
-        <div className="flex items-center gap-4">
-            <div className="w-11 h-11 rounded-2xl bg-secondary/15 border border-secondary/20 flex items-center justify-center">
-                <span className="material-symbols-outlined text-secondary">chat</span>
-            </div>
-            <div>
-                <p className="text-xs text-secondary font-black uppercase tracking-widest">Fast Response</p>
-                <p className="font-black text-sm">Order via WhatsApp</p>
-                <p className="text-xs text-slate-500">Chat directly with our team</p>
-            </div>
-        </div>
-        <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center">
-            <span className="material-symbols-outlined text-black text-lg">arrow_forward</span>
-        </div>
-    </motion.div>
-
-    {/* Menu Items */ }
-    <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.16 }}
-        className="liquid-glass overflow-hidden divide-y divide-white/5"
-    >
-        {menuItems.map((item, i) => (
-            <motion.button
-                key={item.label}
-                whileTap={{ scale: 0.98 }}
-                onClick={item.action}
-                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] transition-colors cursor-pointer text-left"
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.18 + i * 0.05 }}
-            >
-                <div className="w-10 h-10 rounded-xl bg-accent-dark border border-white/5 flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-slate-400 text-lg">{item.icon}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                    <p className="font-black text-sm text-white">{item.label}</p>
-                    <p className="text-xs text-slate-500">{item.sub}</p>
-                </div>
-                <span className="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
-            </motion.button>
-        ))}
-    </motion.div>
-
-    {/* Logout */ }
-    <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-    >
-        <motion.button
-            whileTap={{ scale: 0.96 }}
-            whileHover={{ borderColor: 'rgba(239,68,68,0.5)' }}
-            onClick={handleLogout}
-            className="w-full border border-white/8 text-red-400 font-black py-4 rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-colors"
-        >
-            <span className="material-symbols-outlined">logout</span>
-            Log Out
-        </motion.button>
-    </motion.div>
-            </main >
-
-    {/* Orders Overlay */ }
-    <AnimatePresence>
-{
-    showOrders && (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-background-dark/95 backdrop-blur-2xl px-6 pt-20 pb-10 overflow-y-auto"
-        >
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black">Order History</h2>
-                <button onClick={() => setShowOrders(false)} className="w-10 h-10 glass rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined">close</span>
-                </button>
-            </div>
-
-            {loadingOrders ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                    <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Fetching Auras...</p>
-                </div>
-            ) : orders.length === 0 ? (
-                <div className="text-center py-20 space-y-4">
-                    <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                        <span className="material-symbols-outlined text-slate-600 text-4xl">inventory_2</span>
+                        <div>
+                            <p className="text-xs text-secondary font-black uppercase tracking-widest">Fast Response</p>
+                            <p className="font-black text-sm">Order via WhatsApp</p>
+                            <p className="text-xs text-slate-500">Chat directly with our team</p>
+                        </div>
                     </div>
-                    <h3 className="text-lg font-bold">No orders yet</h3>
-                    <p className="text-slate-500 text-sm max-w-[240px] mx-auto">Your aura journey begins with your first sip. Visit the menu to start!</p>
-                    <button onClick={() => navigate('/menu')} className="btn-primary px-8 py-3 rounded-xl text-sm mt-4">Browse Menu</button>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {orders.map((order) => (
-                        <div key={order._id} className="bento-card p-5 border border-white/5 bg-white/[0.03]">
-                            <div className="flex items-center justify-between mb-4">
-                                <div>
-                                    <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Order ID</p>
-                                    <p className="font-bold text-xs">#{order._id.slice(-8).toUpperCase()}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Date</p>
-                                    <p className="font-bold text-xs">{new Date(order.createdAt).toLocaleDateString()}</p>
-                                </div>
+                    <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center">
+                        <span className="material-symbols-outlined text-black text-lg">arrow_forward</span>
+                    </div>
+                </motion.div>
+
+                {/* Menu Items */}
+                <motion.div
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.16 }}
+                    className="liquid-glass overflow-hidden divide-y divide-white/5"
+                >
+                    {menuItems.map((item, i) => (
+                        <motion.button
+                            key={item.label}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={item.action}
+                            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] transition-colors cursor-pointer text-left"
+                            initial={{ opacity: 0, x: -12 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.18 + i * 0.05 }}
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-accent-dark border border-white/5 flex items-center justify-center flex-shrink-0">
+                                <span className="material-symbols-outlined text-slate-400 text-lg">{item.icon}</span>
                             </div>
-                            <div className="space-y-3 mb-4">
-                                {order.orderItems.map((item: any) => (
-                                    <div key={item._id} className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 overflow-hidden">
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            <div className="flex-1 min-w-0">
+                                <p className="font-black text-sm text-white">{item.label}</p>
+                                <p className="text-xs text-slate-500">{item.sub}</p>
+                            </div>
+                            <span className="material-symbols-outlined text-slate-600 text-sm">chevron_right</span>
+                        </motion.button>
+                    ))}
+                </motion.div>
+
+                {/* Logout */}
+                <motion.div
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <motion.button
+                        whileTap={{ scale: 0.96 }}
+                        whileHover={{ borderColor: 'rgba(239,68,68,0.5)' }}
+                        onClick={handleLogout}
+                        className="w-full border border-white/8 text-red-400 font-black py-4 rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                    >
+                        <span className="material-symbols-outlined">logout</span>
+                        Log Out
+                    </motion.button>
+                </motion.div>
+            </main>
+
+            {/* Orders Overlay */}
+            <AnimatePresence>
+                {showOrders && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-background-dark/95 backdrop-blur-2xl px-6 pt-20 pb-10 overflow-y-auto"
+                    >
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-black">Order History</h2>
+                            <button onClick={() => setShowOrders(false)} className="w-10 h-10 glass rounded-full flex items-center justify-center">
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+
+                        {loadingOrders ? (
+                            <div className="flex flex-col items-center justify-center py-20 gap-4">
+                                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Fetching Auras...</p>
+                            </div>
+                        ) : orders.length === 0 ? (
+                            <div className="text-center py-20 space-y-4">
+                                <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
+                                    <span className="material-symbols-outlined text-slate-600 text-4xl">inventory_2</span>
+                                </div>
+                                <h3 className="text-lg font-bold">No orders yet</h3>
+                                <p className="text-slate-500 text-sm max-w-[240px] mx-auto">Your aura journey begins with your first sip. Visit the menu to start!</p>
+                                <button onClick={() => navigate('/menu')} className="btn-primary px-8 py-3 rounded-xl text-sm mt-4">Browse Menu</button>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {orders.map((order) => (
+                                    <div key={order._id} className="bento-card p-5 border border-white/5 bg-white/[0.03]">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div>
+                                                <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Order ID</p>
+                                                <p className="font-bold text-xs">#{order._id.slice(-8).toUpperCase()}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Date</p>
+                                                <p className="font-bold text-xs">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                            </div>
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="font-bold text-xs">{item.name}</p>
-                                            <p className="text-[10px] text-slate-500">Qty: {item.qty} × ₦{item.price.toLocaleString()}</p>
+                                        <div className="space-y-3 mb-4">
+                                            {order.orderItems.map((item: any) => (
+                                                <div key={item._id} className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 overflow-hidden">
+                                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="font-bold text-xs">{item.name}</p>
+                                                        <p className="text-[10px] text-slate-500">Qty: {item.qty} × ₦{item.price.toLocaleString()}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-white/5 space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                        {order.isPaid ? 'Paid' : 'Pending'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xl font-black text-primary">₦{order.totalPrice.toLocaleString()}</p>
+                                            </div>
+
+                                            {/* New Order Lifecycle Timeline */}
+                                            <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                                                <OrderTimeline status={order.status || 'PLACED'} date={order.createdAt} />
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                                <div className="flex items-center gap-2">
-                                    <span className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-green-500' : 'bg-red-500'}`} />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                        {order.isPaid ? 'Paid' : 'Pending'}
-                                    </span>
-                                </div>
-                                <p className="text-lg font-black text-primary">₦{order.totalPrice.toLocaleString()}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </motion.div>
-    )
-}
-            </AnimatePresence >
-        </div >
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 

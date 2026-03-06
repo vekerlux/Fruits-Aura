@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import api from '../api/client';
 import { useCart } from '../context/CartContext';
 import { getProducts } from '../api/products';
 import type { Product } from '../api/products';

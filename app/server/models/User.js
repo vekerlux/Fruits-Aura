@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema(
         role: { type: String, enum: ['CONSUMER', 'DISTRIBUTOR', 'ADMIN'], default: 'CONSUMER' },
         referralCode: { type: String, unique: true },
         referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+        loyaltyPoints: { type: Number, default: 0 },
     },
     { timestamps: true }
 );

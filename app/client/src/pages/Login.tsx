@@ -37,6 +37,10 @@ const Login = () => {
             navigate('/home');
 
             setIsLoading(false);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Login failed. Check your credentials.');
+        } finally {
+            setIsLoading(false);
         }
     };
 

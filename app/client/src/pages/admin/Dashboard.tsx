@@ -9,11 +9,14 @@ import PlanManagement from './PlanManagement';
 import SettingsManagement from './SettingsManagement';
 import CarouselManagement from './CarouselManagement';
 import PromoManagement from './PromoManagement';
+import OrderManagement from './OrderManagement';
+import UserManagement from './UserManagement';
 
 interface Order {
     id: string;
     totalPrice: number;
     isPaid: boolean;
+    status: string;
     createdAt: string;
     user: { name: string };
 }
@@ -33,7 +36,7 @@ const Dashboard = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [statsData, setStatsData] = useState<StatsData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel' | 'promos'>('orders');
+    const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel' | 'promos' | 'users'>('overview');
 
     const config = {
         headers: { Authorization: `Bearer ${(user as any)?.token}` },
@@ -84,13 +87,15 @@ const Dashboard = () => {
                 {/* Tab Switcher */}
                 <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-2 px-2">
                     {[
-                        { id: 'orders', label: 'Overview', icon: 'grid_view' },
+                        { id: 'overview', label: 'Stats', icon: 'analytics' },
+                        { id: 'orders', label: 'Orders', icon: 'grid_view' },
                         { id: 'inventory', label: 'Inventory', icon: 'inventory_2' },
                         { id: 'notifications', label: 'Broadcasts', icon: 'campaign' },
                         { id: 'locations', label: 'Outlets', icon: 'storefront' },
                         { id: 'carousel', label: 'Feats', icon: 'magic_button' },
                         { id: 'promos', label: 'Promos', icon: 'local_offer' },
                         { id: 'plans', label: 'Plans', icon: 'loyalty' },
+                        { id: 'users', label: 'Users', icon: 'group' },
                         { id: 'settings', label: 'Settings', icon: 'settings' },
                     ].map((tab) => (
                         <button
@@ -107,7 +112,7 @@ const Dashboard = () => {
                     ))}
                 </div>
 
-                {activeTab === 'orders' && (
+                {activeTab === 'overview' && (
                     <div className="space-y-8">
                         {/* Statistics Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -235,6 +240,7 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                {activeTab === 'orders' && <OrderManagement />}
                 {activeTab === 'inventory' && <ProductManagement />}
                 {activeTab === 'notifications' && <NotificationManagement />}
                 {activeTab === 'locations' && <LocationManagement />}
@@ -242,6 +248,7 @@ const Dashboard = () => {
                 {activeTab === 'plans' && <PlanManagement />}
                 {activeTab === 'settings' && <SettingsManagement />}
                 {activeTab === 'promos' && <PromoManagement />}
+                {activeTab === 'users' && <UserManagement />}
             </main>
         </div>
     );

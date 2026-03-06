@@ -17,11 +17,18 @@ const Checkout = () => {
     const [isSubscription, setIsSubscription] = useState(false);
     const [subscriptionFrequency, setSubscriptionFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('monthly');
 
+    // Loyalty Points State
+    const userPoints = user?.loyaltyPoints || 0;
+    const [usePoints, setUsePoints] = useState(false);
+    const pointsValue = Math.min(Math.floor(userPoints / 1000) * 500, Math.floor(subtotal * 0.5)); // Max 50% of subtotal
+    const pointsToDeduct = usePoints ? (pointsValue / 500) * 1000 : 0;
+    const redemptionDiscount = usePoints ? pointsValue : 0;
+
     // Hardcoded fees matching Cart.tsx
     const deliveryFee = 1500;
     const discount = 500;
     const subscriptionDiscount = isSubscription ? Math.round(subtotal * 0.05) : 0;
-    const total = subtotal + deliveryFee - discount - subscriptionDiscount;
+    const total = subtotal + deliveryFee - discount - subscriptionDiscount - redemptionDiscount;
 
     const config = {
         reference: (new Date()).getTime().toString(),
@@ -63,7 +70,8 @@ const Checkout = () => {
                     reference: reference.reference
                 },
                 isSubscription,
-                subscriptionFrequency: isSubscription ? subscriptionFrequency : undefined
+                subscriptionFrequency: isSubscription ? subscriptionFrequency : undefined,
+                pointsUsed: pointsToDeduct
             };
 
             await api.post('/orders', orderData);
@@ -156,6 +164,37 @@ const Checkout = () => {
                     </div>
                 </section>
 
+                {/* Aura Rewards / Loyalty Points */}
+                {userPoints >= 1000 && (
+                    <section className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold">Aura Rewards</h2>
+                            <div className="bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">{userPoints.toLocaleString()} Pts Available</span>
+                            </div>
+                        </div>
+                        <div
+                            className={`liquid-glass p-5 border-2 transition-all cursor-pointer ${usePoints ? 'border-primary bg-primary/5' : 'border-transparent'}`}
+                            onClick={() => setUsePoints(!usePoints)}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${usePoints ? 'bg-primary text-white' : 'bg-white/10 text-slate-500'}`}>
+                                        <span className="material-symbols-outlined">{usePoints ? 'redeem' : 'stars'}</span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-sm">Redeem Points</h4>
+                                        <p className="text-xs text-slate-400">Used {pointsToDeduct} pts for ₦{pointsValue.toLocaleString()} off</p>
+                                    </div>
+                                </div>
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${usePoints ? 'border-primary bg-primary' : 'border-white/10'}`}>
+                                    {usePoints && <span className="material-symbols-outlined text-white text-sm font-black">check</span>}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* Aura Auto-Ship */}
                 <section className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -243,6 +282,14 @@ const Checkout = () => {
                                     <span className="material-symbols-outlined text-[10px]">autorenew</span> Auto-Ship Savings
                                 </span>
                                 <span className="font-bold text-secondary">-₦{subscriptionDiscount.toLocaleString()}</span>
+                            </div>
+                        )}
+                        {usePoints && (
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-slate-400 uppercase font-black text-[10px] tracking-widest flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[10px]">stars</span> Points Redeemed
+                                </span>
+                                <span className="font-bold text-red-400">-₦{redemptionDiscount.toLocaleString()}</span>
                             </div>
                         )}
                         <div className="h-px border-t border-dashed border-primary/30 my-2"></div>

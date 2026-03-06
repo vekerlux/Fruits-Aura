@@ -9,6 +9,7 @@ interface User {
     avatar?: string;   // base64 or ObjectURL for local preview
     address?: string | { street?: string; city?: string; state?: string; zip?: string };
     phone?: string;
+    loyaltyPoints?: number;
 }
 
 interface AuthContextType {

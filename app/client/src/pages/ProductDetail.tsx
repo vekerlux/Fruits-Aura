@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { getProductById } from '../api/products';
 import type { Product } from '../api/products';
-import { getProductReviews, createReview, Review } from '../api/reviews';
+import { getProductReviews, createReview } from '../api/reviews';
+import type { Review } from '../api/reviews';
 import { useAuth } from '../context/AuthContext';
 
 const nutVariants = {

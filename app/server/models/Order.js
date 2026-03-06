@@ -44,6 +44,12 @@ const orderSchema = mongoose.Schema(
         deliveredAt: { type: Date },
         isSubscription: { type: Boolean, default: false },
         subscriptionFrequency: { type: String, enum: ['weekly', 'biweekly', 'monthly'] },
+        status: {
+            type: String,
+            required: true,
+            enum: ['PLACED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+            default: 'PLACED'
+        },
     },
     { timestamps: true }
 );
