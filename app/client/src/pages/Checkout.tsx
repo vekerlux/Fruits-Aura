@@ -13,7 +13,7 @@ const Checkout = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    // Hardcoded fees matching Cart.tsx for demo
+    // Hardcoded fees matching Cart.tsx
     const deliveryFee = 1500;
     const discount = 500;
     const total = subtotal + deliveryFee - discount;
