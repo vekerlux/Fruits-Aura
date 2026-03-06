@@ -17,6 +17,7 @@ const addOrderItems = async (req, res, next) => {
             shippingPrice,
             totalPrice,
             paymentResult,
+            pointsUsed,
         } = req.body;
 
         if (orderItems && orderItems.length === 0) {
@@ -41,8 +42,20 @@ const addOrderItems = async (req, res, next) => {
             paidAt: Date.now(),
         });
 
+        // Deduct points if used
+        if (pointsUsed && pointsUsed > 0) {
+            await User.findByIdAndUpdate(req.user._id, { $inc: { loyaltyPoints: -pointsUsed } });
+            console.log(`[LOYALTY_DEBUG] Deducted ${pointsUsed} points from user ${req.user._id}`);
+        }
+
         const createdOrder = await order.save();
         console.log(`[ORDER_DEBUG] Success: Order created with ID ${createdOrder._id}`);
+
+        // Loyalty Points: 100 points per unit
+        const totalQty = orderItems.reduce((acc, item) => acc + item.qty, 0);
+        const pointsAwarded = totalQty * 100;
+        await User.findByIdAndUpdate(req.user._id, { $inc: { loyaltyPoints: pointsAwarded } });
+        console.log(`[LOYALTY_DEBUG] Awarded ${pointsAwarded} points to user ${req.user._id}`);
 
         res.status(201).json(createdOrder);
     } catch (error) {
@@ -171,6 +184,12 @@ const paystackWebhook = async (req, res, next) => {
                 order.isPaid = true;
                 order.paidAt = paid_at || Date.now();
                 await order.save();
+
+                // Award points for existing order
+                const totalQty = order.orderItems.reduce((acc, item) => acc + item.qty, 0);
+                const pointsAwarded = totalQty * 100;
+                await User.findByIdAndUpdate(order.user, { $inc: { loyaltyPoints: pointsAwarded } });
+                console.log(`[WEBHOOK_LOYALTY] Awarded ${pointsAwarded} points to user ${order.user}`);
             } else {
                 console.log(`[WEBHOOK_DEBUG] No order found with reference ${reference}. Creating recovery record.`);
 
@@ -206,6 +225,15 @@ const paystackWebhook = async (req, res, next) => {
 
                 await recoveryOrder.save();
                 console.log(`[WEBHOOK_DEBUG] Recovery order created ID: ${recoveryOrder._id}`);
+
+                // Award points for recovery order
+                if (user) {
+                    const totalQty = recoveryOrder.orderItems.reduce((acc, item) => acc + item.qty, 0);
+                    const pointsAwarded = totalQty * 100;
+                    user.loyaltyPoints = (user.loyaltyPoints || 0) + pointsAwarded;
+                    await user.save();
+                    console.log(`[WEBHOOK_LOYALTY] Awarded ${pointsAwarded} points to user ${user._id}`);
+                }
             }
         }
 
@@ -216,4 +244,30 @@ const paystackWebhook = async (req, res, next) => {
     }
 };
 
-module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats, paystackWebhook };
+// @desc    Update order status
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (order) {
+            order.status = req.body.status || order.status;
+
+            if (req.body.status === 'DELIVERED') {
+                order.isDelivered = true;
+                order.deliveredAt = Date.now();
+            }
+
+            const updatedOrder = await order.save();
+            res.json(updatedOrder);
+        } else {
+            res.status(404);
+            throw new Error('Order not found');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats, paystackWebhook, updateOrderStatus };
