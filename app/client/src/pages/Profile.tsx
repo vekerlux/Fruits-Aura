@@ -87,7 +87,8 @@ const Profile = () => {
         { icon: 'receipt_long', label: 'Order History', sub: `${orders.length} orders found`, action: () => setShowOrders(true) },
         { icon: 'local_offer', label: 'Promo Codes', sub: 'AURAFRESH24 active', action: () => { } },
         { icon: 'favorite', label: 'Wishlist', sub: 'Saved products', action: () => { } },
-        { icon: 'help_outline', label: 'Help & Support', sub: 'Chat with us', action: () => navigate('/locations') },
+        { icon: 'help_outline', label: 'Help & Support', sub: 'Chat with us', action: () => window.open('https://wa.me/message/LFA2LUMSBCYAL1', '_blank') },
+        { icon: 'shopping_bag', label: 'Visit Paystack Shop', sub: 'Buy via external link', action: () => window.open('https://paystack.shop/pay/fruits-aura', '_blank') },
     ];
 
     return (
@@ -278,6 +279,7 @@ const Profile = () => {
                     className="bento-card-green p-5 flex items-center justify-between cursor-pointer"
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.97 }}
+                    onClick={() => window.open('https://wa.me/message/LFA2LUMSBCYAL1', '_blank')}
                 >
                     <div className="flex items-center gap-4">
                         <div className="w-11 h-11 rounded-2xl bg-secondary/15 border border-secondary/20 flex items-center justify-center">
