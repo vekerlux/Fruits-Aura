@@ -21,6 +21,9 @@ const Home = () => {
     const { addToCart } = useCart();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [isSubscribing, setIsSubscribing] = useState(false);
+    const [subscribeStatus, setSubscribeStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 
     useEffect(() => {
         getProducts()
@@ -38,6 +41,22 @@ const Home = () => {
         e.preventDefault();
         e.stopPropagation();
         addToCart({ id: product.id, name: product.name, price: product.price, quantity: 1, image: product.image, isBundle: false, subtext: product.subtext });
+    };
+
+    const handleNewsletter = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newsletterEmail) return;
+        try {
+            setIsSubscribing(true);
+            setSubscribeStatus(null);
+            await api.post('/newsletter/subscribe', { email: newsletterEmail });
+            setSubscribeStatus({ type: 'success', msg: 'Welcome to the circle!' });
+            setNewsletterEmail('');
+        } catch (error: any) {
+            setSubscribeStatus({ type: 'error', msg: error.response?.data?.message || 'Something went wrong.' });
+        } finally {
+            setIsSubscribing(false);
+        }
     };
 
     return (

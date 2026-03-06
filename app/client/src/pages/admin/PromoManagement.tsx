@@ -27,9 +27,7 @@ const PromoManagement = () => {
     };
 
     useEffect(() => {
-        // Mocking list for now as we only added POST /api/promos
-        // fetchPromos();
-        setLoading(false);
+        fetchPromos();
     }, []);
 
     const handleCreate = async (e: React.FormEvent) => {
