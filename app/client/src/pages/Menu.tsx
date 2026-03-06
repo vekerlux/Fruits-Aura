@@ -15,10 +15,11 @@ const itemVariants = {
 };
 
 const categories = [
-    { label: 'All', icon: 'apps' },
-    { label: 'Citrus', icon: 'brightness_7' },
-    { label: 'Detox', icon: 'eco' },
-    { label: 'Energy', icon: 'bolt' },
+    { label: 'All', icon: 'apps', value: undefined },
+    { label: 'Detox', icon: 'eco', value: 'detox' },
+    { label: 'Energy', icon: 'bolt', value: 'energy' },
+    { label: 'Immunity', icon: 'health_and_safety', value: 'immunity' },
+    { label: 'Glow', icon: 'auto_awesome', value: 'glow' },
 ];
 
 const Menu = () => {
@@ -30,11 +31,17 @@ const Menu = () => {
     const { addToCart } = useCart();
 
     useEffect(() => {
-        getProducts()
-            .then(setProducts)
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    }, []);
+        const categoryValue = categories.find(c => c.label === activeCategory)?.value;
+        const delayDebounceFn = setTimeout(() => {
+            setLoading(true);
+            getProducts(search, categoryValue)
+                .then(setProducts)
+                .catch(console.error)
+                .finally(() => setLoading(false));
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [activeCategory, search]);
 
     const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
         e.preventDefault();
@@ -42,9 +49,7 @@ const Menu = () => {
         addToCart({ id: product.id, name: product.name, price: product.price, quantity: 1, image: product.image, isBundle: false, subtext: product.subtext });
     };
 
-    const filteredProducts = products.filter(p =>
-        search === '' || p.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredProducts = products;
 
     return (
         <div className="bg-background-dark text-white min-h-screen pb-32">

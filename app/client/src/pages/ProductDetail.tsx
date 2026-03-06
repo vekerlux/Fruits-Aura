@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { getProductById } from '../api/products';
 import type { Product } from '../api/products';
+import { getProductReviews, createReview, Review } from '../api/reviews';
+import { useAuth } from '../context/AuthContext';
 
 const nutVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 10 },
@@ -21,13 +23,44 @@ const ProductDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const [addedFlash, setAddedFlash] = useState(false);
 
+    // Review state
+    const { isAuthenticated, user } = useAuth();
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState('');
+    const [isReviewing, setIsReviewing] = useState(false);
+    const [reviewLoading, setReviewLoading] = useState(false);
+
     useEffect(() => {
         if (!id) return;
-        getProductById(id)
-            .then((data) => { if (data) setProduct(data); else navigate('/menu'); })
-            .catch(console.error)
+        setLoading(true);
+        Promise.all([
+            getProductById(id),
+            getProductReviews(id)
+        ]).then(([productData, reviewData]) => {
+            if (productData) setProduct(productData);
+            else navigate('/menu');
+            setReviews(reviewData);
+        }).catch(console.error)
             .finally(() => setLoading(false));
     }, [id, navigate]);
+
+    const handleReviewSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!id || !comment) return;
+        try {
+            setReviewLoading(true);
+            await createReview(id, rating, comment);
+            const updatedReviews = await getProductReviews(id);
+            setReviews(updatedReviews);
+            setComment('');
+            setIsReviewing(false);
+        } catch (error) {
+            alert('Could not post review. Maybe you already reviewed this?');
+        } finally {
+            setReviewLoading(false);
+        }
+    };
 
     if (loading || !product) {
         return (
@@ -94,8 +127,12 @@ const ProductDetail = () => {
                     {/* Rating badge */}
                     <div className="absolute bottom-5 right-5 bg-black/55 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-1 z-20">
                         <span className="material-symbols-outlined text-yellow-400 text-sm filled">star</span>
-                        <span className="font-black text-sm">4.9</span>
-                        <span className="text-xs text-slate-400">(128)</span>
+                        <span className="font-black text-sm">
+                            {reviews.length > 0
+                                ? (reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length).toFixed(1)
+                                : '5.0'}
+                        </span>
+                        <span className="text-xs text-slate-400">({reviews.length})</span>
                     </div>
                 </div>
 
@@ -229,6 +266,84 @@ const ProductDetail = () => {
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Vibe Check (Reviews) Section */}
+                    <section className="space-y-4 pb-10">
+                        <div className="flex justify-between items-center px-1">
+                            <h3 className="font-black text-sm text-slate-300 uppercase tracking-widest">Vibe Check</h3>
+                            {isAuthenticated && !isReviewing && (
+                                <button
+                                    onClick={() => setIsReviewing(true)}
+                                    className="text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border border-primary/20 bg-primary/5"
+                                >
+                                    Leave a Review
+                                </button>
+                            )}
+                        </div>
+
+                        <AnimatePresence>
+                            {isReviewing && (
+                                <motion.form
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    onSubmit={handleReviewSubmit}
+                                    className="overflow-hidden bg-card-dark rounded-3xl p-5 border border-primary/20 space-y-4"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3, 4, 5].map((s) => (
+                                                <button
+                                                    key={s}
+                                                    type="button"
+                                                    onClick={() => setRating(s)}
+                                                    className={`material-symbols-outlined text-xl ${rating >= s ? 'text-yellow-400 filled' : 'text-slate-600'}`}
+                                                >
+                                                    star
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <button type="button" onClick={() => setIsReviewing(false)} className="text-slate-500 material-symbols-outlined">close</button>
+                                    </div>
+                                    <textarea
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        placeholder="How's the aura? (e.g., Super fresh, very gingery!)"
+                                        className="w-full bg-accent-dark border border-white/5 rounded-2xl p-4 text-sm outline-none focus:border-primary/50"
+                                        rows={3}
+                                        required
+                                    />
+                                    <button
+                                        disabled={reviewLoading}
+                                        className="w-full bg-primary text-white font-black py-3 rounded-xl text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20 disabled:opacity-50"
+                                    >
+                                        {reviewLoading ? 'Posting...' : 'Post Vibe Check'}
+                                    </button>
+                                </motion.form>
+                            )}
+                        </AnimatePresence>
+
+                        <div className="space-y-3">
+                            {reviews.length === 0 ? (
+                                <p className="text-center text-xs text-slate-600 italic py-6">No one has checked the vibe yet. Be the first!</p>
+                            ) : (
+                                reviews.map((rev) => (
+                                    <div key={rev._id} className="bg-card-dark p-4 rounded-3xl border border-white/5 space-y-2">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs font-black uppercase text-slate-300">{rev.name}</span>
+                                            <div className="flex gap-0.5">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <span key={i} className={`material-symbols-outlined text-[10px] ${rev.rating > i ? 'text-yellow-400 filled' : 'text-slate-800'}`}>star</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-slate-400 leading-relaxed font-medium">{rev.comment}</p>
+                                        <p className="text-[8px] text-slate-600 font-black uppercase tracking-tighter">{new Date(rev.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </section>
                 </div>
             </main>
 

@@ -263,19 +263,31 @@ const Home = () => {
                                 <h3 className="text-xl font-black italic tracking-tighter">Join the Aura Circle</h3>
                                 <p className="text-xs text-slate-400 font-medium">Get exclusive deals and first sip access.</p>
                             </div>
-                            <div className="w-full flex gap-2">
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    className="flex-1 bg-accent-dark border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
-                                />
-                                <motion.button
-                                    whileTap={{ scale: 0.95 }}
-                                    className="bg-primary text-white font-black px-6 py-3 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 cursor-pointer"
-                                >
-                                    Join
-                                </motion.button>
-                            </div>
+                            <form onSubmit={handleNewsletter} className="w-full flex flex-col gap-2">
+                                <div className="flex gap-2">
+                                    <input
+                                        type="email"
+                                        value={newsletterEmail}
+                                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        className="flex-1 bg-accent-dark border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-all"
+                                        required
+                                    />
+                                    <motion.button
+                                        whileTap={{ scale: 0.95 }}
+                                        disabled={isSubscribing}
+                                        type="submit"
+                                        className="bg-primary text-white font-black px-6 py-3 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-primary/20 cursor-pointer disabled:opacity-50"
+                                    >
+                                        {isSubscribing ? '...' : 'Join'}
+                                    </motion.button>
+                                </div>
+                                {subscribeStatus && (
+                                    <p className={`text-[10px] font-bold uppercase tracking-widest ${subscribeStatus.type === 'success' ? 'text-secondary' : 'text-red-400'}`}>
+                                        {subscribeStatus.msg}
+                                    </p>
+                                )}
+                            </form>
                         </div>
                     </motion.div>
                 </motion.div>

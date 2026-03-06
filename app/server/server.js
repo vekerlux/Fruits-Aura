@@ -65,6 +65,7 @@ app.use('/api/settings', require('./routes/settingRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 app.use('/api/promos', require('./routes/promoRoutes'));
 app.use('/api/newsletter', require('./routes/newsletterRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'success', message: 'Fruits Aura API is running.' });

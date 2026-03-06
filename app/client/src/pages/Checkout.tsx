@@ -13,10 +13,15 @@ const Checkout = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    // Subscription State
+    const [isSubscription, setIsSubscription] = useState(false);
+    const [subscriptionFrequency, setSubscriptionFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('monthly');
+
     // Hardcoded fees matching Cart.tsx
     const deliveryFee = 1500;
     const discount = 500;
-    const total = subtotal + deliveryFee - discount;
+    const subscriptionDiscount = isSubscription ? Math.round(subtotal * 0.05) : 0;
+    const total = subtotal + deliveryFee - discount - subscriptionDiscount;
 
     const config = {
         reference: (new Date()).getTime().toString(),
@@ -56,7 +61,9 @@ const Checkout = () => {
                     update_time: new Date().toISOString(),
                     email_address: user ? user.email : 'guest@fruitsaura.com',
                     reference: reference.reference
-                }
+                },
+                isSubscription,
+                subscriptionFrequency: isSubscription ? subscriptionFrequency : undefined
             };
 
             await api.post('/orders', orderData);
@@ -149,6 +156,48 @@ const Checkout = () => {
                     </div>
                 </section>
 
+                {/* Aura Auto-Ship */}
+                <section className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-bold">Aura Auto-Ship</h2>
+                        <div className="flex items-center gap-2 bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">
+                            <span className="material-symbols-outlined text-secondary text-xs">savings</span>
+                            <span className="text-[10px] font-black text-secondary uppercase tracking-widest">Save 5%</span>
+                        </div>
+                    </div>
+                    <div className={`bento-card-green p-5 border-2 transition-all cursor-pointer ${isSubscription ? 'border-secondary bg-secondary/5' : 'border-transparent opacity-60'}`} onClick={() => setIsSubscription(!isSubscription)}>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSubscription ? 'bg-secondary text-white' : 'bg-white/10 text-slate-500'}`}>
+                                    <span className="material-symbols-outlined">{isSubscription ? 'check_circle' : 'autorenew'}</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-sm">Subscribe & Save</h4>
+                                    <p className="text-xs text-slate-400">Regular delivery, better price.</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] text-secondary font-black uppercase tracking-widest">Extra Off</p>
+                                <p className="font-black text-white">-₦{Math.round(subtotal * 0.05).toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        {isSubscription && (
+                            <div className="mt-5 pt-5 border-t border-white/5 flex gap-2">
+                                {['weekly', 'biweekly', 'monthly'].map((freq) => (
+                                    <button
+                                        key={freq}
+                                        onClick={(e) => { e.stopPropagation(); setSubscriptionFrequency(freq as any); }}
+                                        className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${subscriptionFrequency === freq ? 'bg-secondary text-white shadow-lg shadow-secondary/20' : 'bg-white/5 text-slate-500'}`}
+                                    >
+                                        {freq}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </section>
+
                 {/* Payment Method */}
                 <section className="space-y-4">
                     <h2 className="text-lg font-bold">Payment Method</h2>
@@ -188,6 +237,14 @@ const Checkout = () => {
                             <span className="text-slate-400">AURAFRESH24</span>
                             <span className="font-bold text-green-500">-₦{discount.toLocaleString()}</span>
                         </div>
+                        {isSubscription && (
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-slate-400 uppercase font-black text-[10px] tracking-widest flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[10px]">autorenew</span> Auto-Ship Savings
+                                </span>
+                                <span className="font-bold text-secondary">-₦{subscriptionDiscount.toLocaleString()}</span>
+                            </div>
+                        )}
                         <div className="h-px border-t border-dashed border-primary/30 my-2"></div>
                         <div className="flex justify-between items-end">
                             <span className="text-sm text-slate-400 uppercase tracking-widest font-bold">To Pay</span>

@@ -53,13 +53,24 @@ export const mockProducts: Product[] = [
 
 import api from './client';
 
-export const getProducts = async (): Promise<Product[]> => {
+export const getProducts = async (keyword?: string, category?: string): Promise<Product[]> => {
     try {
-        const response = await api.get('/products');
+        const response = await api.get('/products', {
+            params: {
+                keyword,
+                category
+            }
+        });
         return response.data;
     } catch (error) {
         console.warn('Backend unavailable, falling back to mock data.', error);
-        return mockProducts; // Fallback
+        let products = mockProducts;
+        if (keyword) {
+            products = products.filter(p => p.name.toLowerCase().includes(keyword.toLowerCase()));
+        }
+        // Category filtering for mock data would require adding category to Product interface/mock, 
+        // but since we are moving towards real backend, we'll keep it simple.
+        return products;
     }
 };
 
