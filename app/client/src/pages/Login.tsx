@@ -115,11 +115,7 @@ const Login = () => {
                     New to Fruits Aura? <Link to="/register" className="text-primary font-bold">Create an account</Link>
                 </p>
 
-                {/* Demo Credentials Hint */}
-                <div onClick={() => { setEmail('user@fruitsaura.com'); setPassword('Aura123!'); }} className="mt-8 p-4 bento-card border-dashed border-white/20 text-center space-y-2 relative cursor-pointer hover:border-primary/50 transition-colors">
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-card-dark px-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Demo (Click to Fill)</span>
-                    <p className="text-xs font-mono text-slate-400">user@fruitsaura.com / Aura123!</p>
-                </div>
+
             </div>
         </div>
     );
