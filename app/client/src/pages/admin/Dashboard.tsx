@@ -38,15 +38,23 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'inventory' | 'notifications' | 'locations' | 'plans' | 'settings' | 'carousel' | 'promos' | 'users'>('overview');
 
+    // Analytics states
+    const [dateRange, setDateRange] = useState({
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Last 7 days default
+        end: new Date().toISOString().split('T')[0]
+    });
+
     const config = {
         headers: { Authorization: `Bearer ${(user as any)?.token}` },
     };
 
+
     const fetchData = async () => {
         try {
+            setLoading(true);
             const [ordersRes, statsRes] = await Promise.all([
                 api.get('/orders'),
-                api.get('/orders/stats')
+                api.get(`/orders/stats?startDate=${dateRange.start}&endDate=${dateRange.end}`)
             ]);
             setOrders(ordersRes.data);
             setStatsData(statsRes.data);
@@ -59,7 +67,25 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [user]);
+    }, [user, dateRange]);
+
+    const handleExportCSV = async () => {
+        try {
+            const response = await api.get(`/orders/export?startDate=${dateRange.start}&endDate=${dateRange.end}`, {
+                responseType: 'blob'
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `aura-report-${dateRange.start}-to-${dateRange.end}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Export failed', error);
+        }
+    };
+
 
     const statCards = [
         { label: 'Total Revenue', value: `₦${statsData?.totals.totalRevenue.toLocaleString() || 0}`, icon: 'payments', color: 'primary' },
@@ -114,7 +140,41 @@ const Dashboard = () => {
 
                 {activeTab === 'overview' && (
                     <div className="space-y-8">
+                        {/* Insights Controls */}
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 glass p-6 rounded-3xl border border-white/5">
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-sm">date_range</span>
+                                    Filter Insights
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="date"
+                                        value={dateRange.start}
+                                        onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                                        className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    />
+                                    <span className="text-slate-600 text-[10px] font-black uppercase">to</span>
+                                    <input
+                                        type="date"
+                                        value={dateRange.end}
+                                        onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                                        className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleExportCSV}
+                                className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95"
+                            >
+                                <span className="material-symbols-outlined text-sm">download</span>
+                                Export CSV
+                            </button>
+                        </div>
+
                         {/* Statistics Cards */}
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {statCards.map((stat, i) => (
                                 <motion.div

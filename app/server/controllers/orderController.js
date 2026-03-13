@@ -94,11 +94,20 @@ const getOrders = async (req, res, next) => {
 // @access  Private/Admin
 const getOrderStats = async (req, res, next) => {
     try {
+        const { startDate, endDate } = req.query;
+        const matchStage = { isPaid: true };
+
+        if (startDate || endDate) {
+            matchStage.createdAt = {};
+            if (startDate) matchStage.createdAt.$gte = new Date(startDate);
+            if (endDate) matchStage.createdAt.$lte = new Date(endDate);
+        }
+
         const stats = await Order.aggregate([
             {
                 $facet: {
                     totals: [
-                        { $match: { isPaid: true } },
+                        { $match: matchStage },
                         {
                             $group: {
                                 _id: null,
@@ -109,7 +118,7 @@ const getOrderStats = async (req, res, next) => {
                         }
                     ],
                     dailyRevenue: [
-                        { $match: { isPaid: true } },
+                        { $match: matchStage },
                         {
                             $group: {
                                 _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
@@ -118,9 +127,10 @@ const getOrderStats = async (req, res, next) => {
                             }
                         },
                         { $sort: { _id: 1 } },
-                        { $limit: 7 }
+                        { $limit: 30 } // Increased limit for filtered views
                     ],
                     popularItems: [
+                        { $match: matchStage },
                         { $unwind: '$orderItems' },
                         {
                             $group: {
@@ -130,7 +140,7 @@ const getOrderStats = async (req, res, next) => {
                             }
                         },
                         { $sort: { count: -1 } },
-                        { $limit: 5 }
+                        { $limit: 10 }
                     ]
                 }
             }
@@ -147,6 +157,41 @@ const getOrderStats = async (req, res, next) => {
         next(error);
     }
 };
+
+// @desc    Export orders as CSV
+// @route   GET /api/orders/export
+// @access  Private/Admin
+const exportOrdersCSV = async (req, res, next) => {
+    try {
+        const { startDate, endDate } = req.query;
+        const filter = {};
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) filter.createdAt.$gte = new Date(startDate);
+            if (endDate) filter.createdAt.$lte = new Date(endDate);
+        }
+
+        const orders = await Order.find(filter).populate('user', 'name email').sort({ createdAt: -1 });
+
+        let csv = 'OrderID,Date,Customer,Email,Total,Items,Status,Paid\n';
+
+        orders.forEach(order => {
+            const items = order.orderItems.map(i => `${i.name}(x${i.qty})`).join(' | ');
+            const date = new Date(order.createdAt).toLocaleDateString();
+            const customer = order.user ? order.user.name : 'Guest';
+            const email = order.user ? order.user.email : 'N/A';
+
+            csv += `"${order._id}","${date}","${customer}","${email}","${order.totalPrice}","${items}","${order.status}","${order.isPaid}"\n`;
+        });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment(`fruits-aura-orders-${new Date().toISOString().split('T')[0]}.csv`);
+        res.send(csv);
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 // @desc    Handle Paystack Webhook
 // @route   POST /api/orders/webhook
