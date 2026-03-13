@@ -9,9 +9,13 @@ const Register = () => {
 
             <div className="w-full max-w-sm space-y-8 relative z-10 pt-10">
                 <div className="text-center space-y-2">
+                    <div className="w-20 h-20 mx-auto flex items-center justify-center mb-2">
+                        <img src="/logo.png" alt="Fruits Aura Logo" className="w-full h-full object-contain filter drop-shadow-xl" />
+                    </div>
                     <h1 className="text-3xl font-black tracking-tighter">Get the Aura</h1>
                     <p className="text-sm text-slate-400">Join the Fruits Aura community today.</p>
                 </div>
+
 
                 <form className="space-y-4">
                     <div className="space-y-1">

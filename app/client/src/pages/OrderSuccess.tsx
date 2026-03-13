@@ -38,8 +38,13 @@ const OrderSuccess = () => {
 
             <main className="w-full max-w-md relative z-10 space-y-8">
                 <div className="text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto flex items-center justify-center mb-6">
+                        <img src="/logo.png" alt="Fruits Aura" className="w-full h-full object-contain filter drop-shadow-xl" />
+                    </div>
+
                     <motion.div
                         initial={{ scale: 0, rotate: -45 }}
+
                         animate={{ scale: 1, rotate: 0 }}
                         className="w-24 h-24 bg-green-500 rounded-[2.5rem] mx-auto flex items-center justify-center shadow-2xl shadow-green-500/40 relative"
                     >

@@ -52,27 +52,54 @@ const Profile = () => {
 
     const handleAvatarClick = () => fileInputRef.current?.click();
 
-    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
         const url = URL.createObjectURL(file);
         setAvatarPreview(url);
-        updateUser({ avatar: url });
+        // We'd ideally upload the file to Cloudinary here first instead of just saving the ObjectURL
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+            const uploadRes = await api.post('/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            const { data } = await api.put('/auth/profile', { avatar: uploadRes.data.imageUrl });
+            updateUser(data);
+            showToast();
+        } catch (error) {
+            console.error('Failed to upload avatar:', error);
+        }
     };
 
-    const saveName = () => {
+
+    const saveName = async () => {
         if (nameInput.trim()) {
-            updateUser({ name: nameInput.trim() });
-            showToast();
+            try {
+                const { data } = await api.put('/auth/profile', { name: nameInput.trim() });
+                updateUser(data);
+                showToast();
+            } catch (error) {
+                console.error('Failed to save name:', error);
+            }
         }
         setIsEditingName(false);
     };
 
-    const saveAddress = () => {
-        updateUser({ address: addressInput, phone: phoneInput });
-        setIsEditingAddress(false);
-        showToast();
+    const saveAddress = async () => {
+        try {
+            const { data } = await api.put('/auth/profile', {
+                address: addressInput,
+                phone: phoneInput
+            });
+            updateUser(data);
+            setIsEditingAddress(false);
+            showToast();
+        } catch (error) {
+            console.error('Failed to save address:', error);
+        }
     };
+
 
     const showToast = () => {
         setSavedToast(true);

@@ -52,12 +52,13 @@ const Login = () => {
 
             <div className="w-full max-w-sm space-y-8 relative z-10">
                 <div className="text-center space-y-2">
-                    <div className="w-20 h-20 bg-primary rounded-[2rem] mx-auto flex items-center justify-center rotate-12 mb-6 shadow-2xl shadow-primary/40 border border-white/20">
-                        <span className="material-symbols-outlined text-white text-5xl font-black -rotate-12">person_filled</span>
+                    <div className="w-24 h-24 mx-auto flex items-center justify-center mb-6">
+                        <img src="/logo.png" alt="Fruits Aura Logo" className="w-full h-full object-contain filter drop-shadow-2xl" />
                     </div>
                     <h1 className="text-3xl font-black tracking-tighter">Welcome Back</h1>
                     <p className="text-sm text-slate-400">Refresh your aura. Log in to your account.</p>
                 </div>
+
 
                 <form className="space-y-4" onSubmit={handleLogin}>
                     {error && (

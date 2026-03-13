@@ -74,16 +74,17 @@ const Home = () => {
                         <motion.div
                             whileTap={{ scale: 0.92 }}
                             whileHover={{ scale: 1.05 }}
-                            className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center border-2 border-white/10 shadow-lg shadow-primary/25 cursor-pointer"
+                            className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center border-2 border-white/10 shadow-lg shadow-primary/25 cursor-pointer overflow-hidden"
                         >
-                            <span className="material-symbols-outlined text-white">person</span>
+                            {/* We can grab avatar from AuthContext later if needed, fallback to icon */}
+                            <span className="material-symbols-outlined text-white text-lg">person</span>
                         </motion.div>
                     </Link>
                     <div>
-                        <p className="text-[10px] uppercase tracking-widest text-primary font-black">Nigeria's Finest</p>
-                        <h1 className="text-lg font-black tracking-tight">Fruits Aura</h1>
+                        <img src="/logo.png" alt="Fruits Aura" className="h-9 w-auto object-contain filter drop-shadow-lg" />
                     </div>
                 </div>
+
                 <div className="flex gap-2">
                     <motion.button
                         whileTap={{ scale: 0.9 }}

@@ -31,24 +31,18 @@ const Splash = () => {
             <div className="relative z-10 flex flex-col items-center justify-center">
                 {/* Logo icon */}
                 <motion.div
-                    initial={{ scale: 0, rotate: -20, opacity: 0 }}
-                    animate={{ scale: 1, rotate: 12, opacity: 1 }}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: 'spring', stiffness: 280, damping: 18 }}
-                    className="w-24 h-24 bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl border-2 border-white/15 mb-6 relative"
-                    style={{ boxShadow: '0 0 60px rgba(255,107,0,0.4), 0 20px 40px rgba(0,0,0,0.5)' }}
+                    className="w-32 h-32 flex items-center justify-center mb-6 relative"
                 >
                     {/* Pulsing ring */}
                     <motion.div
-                        className="absolute inset-0 rounded-[2.5rem] border-2 border-primary/50"
+                        className="absolute inset-0 rounded-full bg-white/20 blur-xl"
                         animate={{ scale: [1, 1.4], opacity: [0.5, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
                     />
-                    <motion.span
-                        animate={{ rotate: [-12, -12] }}
-                        className="material-symbols-outlined text-white text-5xl font-black -rotate-12"
-                    >
-                        spa
-                    </motion.span>
+                    <img src="/logo.png" alt="Fruits Aura" className="w-full h-full object-contain filter drop-shadow-2xl z-10" />
                 </motion.div>
 
                 {/* Brand name */}
@@ -60,6 +54,7 @@ const Splash = () => {
                 >
                     Fruits Aura
                 </motion.h1>
+
 
                 {/* Tagline */}
                 <motion.p
