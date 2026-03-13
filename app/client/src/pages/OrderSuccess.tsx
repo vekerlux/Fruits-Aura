@@ -109,6 +109,12 @@ const OrderSuccess = () => {
                                 <span className="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
                                 <span className="text-sm font-black uppercase italic">Processing</span>
                             </div>
+                            {order?.deliveryTimeSlot && (
+                                <p className="text-[10px] font-bold text-slate-300 uppercase tracking-wide mt-2">
+                                    <span className="material-symbols-outlined text-[10px] align-middle mr-1">schedule</span>
+                                    {order.deliveryTimeSlot}
+                                </p>
+                            )}
                         </div>
                         <div className="text-right">
                             <p className="text-[10px] font-black uppercase text-slate-500">Total Paid</p>

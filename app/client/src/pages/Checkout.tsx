@@ -13,6 +13,10 @@ const Checkout = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    // Delivery Time Slot State
+    const timeSlots = ['Morning (9am - 12pm)', 'Afternoon (12pm - 3pm)', 'Evening (3pm - 6pm)'];
+    const [deliveryTimeSlot, setDeliveryTimeSlot] = useState(timeSlots[0]);
+
     // Subscription State
     const [isSubscription, setIsSubscription] = useState(false);
     const [subscriptionFrequency, setSubscriptionFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('monthly');
@@ -71,7 +75,8 @@ const Checkout = () => {
                 },
                 isSubscription,
                 subscriptionFrequency: isSubscription ? subscriptionFrequency : undefined,
-                pointsUsed: pointsToDeduct
+                pointsUsed: pointsToDeduct,
+                deliveryTimeSlot
             };
 
             await api.post('/orders', orderData);
@@ -161,6 +166,31 @@ const Checkout = () => {
                                 <p className="text-xs text-slate-400">{user ? user.email : 'guest@example.com'}</p>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                {/* Delivery Time Slot Section */}
+                <section className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-bold">Delivery Time Slot</h2>
+                        <div className="bg-primary/10 px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-primary text-xs">schedule</span>
+                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Select One</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        {timeSlots.map((slot) => (
+                            <button
+                                key={slot}
+                                onClick={() => setDeliveryTimeSlot(slot)}
+                                className={`p-4 rounded-2xl flex items-center justify-between transition-all border-2 text-left ${deliveryTimeSlot === slot ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10' : 'border-white/5 bg-white/5 text-slate-400'}`}
+                            >
+                                <span className={`text-sm font-bold ${deliveryTimeSlot === slot ? 'text-white' : ''}`}>{slot}</span>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${deliveryTimeSlot === slot ? 'border-primary bg-primary' : 'border-slate-500'}`}>
+                                    {deliveryTimeSlot === slot && <span className="material-symbols-outlined text-[12px] text-white font-black">check</span>}
+                                </div>
+                            </button>
+                        ))}
                     </div>
                 </section>
 

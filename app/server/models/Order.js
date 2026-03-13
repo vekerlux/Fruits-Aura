@@ -44,6 +44,11 @@ const orderSchema = mongoose.Schema(
         deliveredAt: { type: Date },
         isSubscription: { type: Boolean, default: false },
         subscriptionFrequency: { type: String, enum: ['weekly', 'biweekly', 'monthly'] },
+        deliveryTimeSlot: {
+            type: String,
+            enum: ['Morning (9am - 12pm)', 'Afternoon (12pm - 3pm)', 'Evening (3pm - 6pm)'],
+            default: 'Morning (9am - 12pm)'
+        },
         status: {
             type: String,
             required: true,

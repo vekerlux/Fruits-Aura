@@ -17,8 +17,10 @@ const addOrderItems = async (req, res, next) => {
             taxPrice,
             shippingPrice,
             totalPrice,
+            totalPrice,
             paymentResult,
             pointsUsed,
+            deliveryTimeSlot,
         } = req.body;
 
         if (orderItems && orderItems.length === 0) {
@@ -39,6 +41,7 @@ const addOrderItems = async (req, res, next) => {
             shippingPrice,
             totalPrice,
             paymentResult,
+            deliveryTimeSlot,
             isPaid: true, // If we're here, Paystack succeeded
             paidAt: Date.now(),
         });

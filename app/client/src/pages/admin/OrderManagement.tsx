@@ -9,6 +9,7 @@ interface Order {
     isPaid: boolean;
     status: string;
     createdAt: string;
+    deliveryTimeSlot?: string;
 }
 
 const OrderManagement = () => {
@@ -81,16 +82,24 @@ const OrderManagement = () => {
                                         #{order.id.slice(-4).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-sm text-white">{order.user?.name || 'Guest'}</h4>
+                                        <h4 className="font-bold text-sm text-white flex items-center gap-2">
+                                            {order.user?.name || 'Guest'}
+                                            {order.deliveryTimeSlot && (
+                                                <span className="bg-primary/20 text-primary px-1.5 py-0.5 rounded text-[8px] uppercase tracking-widest flex items-center gap-0.5">
+                                                    <span className="material-symbols-outlined text-[10px]">schedule</span>
+                                                    {order.deliveryTimeSlot.split(' ')[0]}
+                                                </span>
+                                            )}
+                                        </h4>
                                         <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">
                                             ₦{order.totalPrice.toLocaleString()} • {new Date(order.createdAt).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
                                 <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.1em] border ${order.status === 'DELIVERED' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
-                                        order.status === 'CANCELLED' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                                            order.status === 'SHIPPED' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                                                'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                                    order.status === 'CANCELLED' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                                        order.status === 'SHIPPED' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                                            'bg-amber-500/10 text-amber-500 border-amber-500/20'
                                     }`}>
                                     {order.status || 'PLACED'}
                                 </div>
@@ -102,8 +111,8 @@ const OrderManagement = () => {
                                         key={s}
                                         onClick={() => updateStatus(order.id, s)}
                                         className={`px-3 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest whitespace-nowrap transition-all border ${order.status === s
-                                                ? 'bg-primary text-white border-primary cursor-default'
-                                                : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'
+                                            ? 'bg-primary text-white border-primary cursor-default'
+                                            : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'
                                             }`}
                                     >
                                         {s}

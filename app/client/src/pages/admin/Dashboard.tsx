@@ -19,6 +19,7 @@ interface Order {
     status: string;
     createdAt: string;
     user: { name: string };
+    deliveryTimeSlot?: string;
 }
 
 interface StatsData {
@@ -280,7 +281,15 @@ const Dashboard = () => {
                                                     #{order.id.slice(-4).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-bold text-sm text-white">{order.user?.name || 'Guest'}</h4>
+                                                    <h4 className="font-bold text-sm text-white flex items-center gap-2">
+                                                        {order.user?.name || 'Guest'}
+                                                        {order.deliveryTimeSlot && (
+                                                            <span className="bg-primary/20 text-primary px-1.5 py-0.5 rounded text-[8px] uppercase tracking-widest flex items-center gap-0.5">
+                                                                <span className="material-symbols-outlined text-[10px]">schedule</span>
+                                                                {order.deliveryTimeSlot.split(' ')[0]}
+                                                            </span>
+                                                        )}
+                                                    </h4>
                                                     <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">
                                                         {new Date(order.createdAt).toLocaleDateString()}
                                                     </p>
