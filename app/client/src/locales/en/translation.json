@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "locations": "Locations",
+    "cart": "Cart",
+    "dashboard": "Dashboard",
+    "login": "Sign In",
+    "profile": "Profile"
+  },
+  "home": {
+    "hero_title": "Redefining Pure Hydration",
+    "hero_subtitle": "Sip the Vibe. Taste the Aura.",
+    "cta": "Explore the Menu",
+    "featured": "Featured Auras",
+    "benefits_detox": "Detox",
+    "benefits_energy": "Energy",
+    "benefits_immunity": "Immunity"
+  },
+  "footer": {
+    "tagline": "Crafted with 100% real fruit, no preservatives, and pure positive energy.",
+    "rights": "All rights reserved. Hydrate responsibly."
+  },
+  "cart": {
+    "title1": "Your",
+    "title2": "Bag",
+    "empty": "Your bag is empty",
+    "browse": "Browse Menu",
+    "promo_applied": "Promo code applied",
+    "summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery Fee",
+    "discount": "Discount",
+    "total": "Total Amount",
+    "checkout": "Checkout Now"
+  }
+}

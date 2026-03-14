@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import api from '../api/client';
 import { useCart } from '../context/CartContext';
 import { getProducts } from '../api/products';
-import type { Product } from '../api/products';
 import SwipeCarousel from '../components/SwipeCarousel';
+import { useTranslation } from 'react-i18next';
 
 const containerVariants = {
     hidden: {},
@@ -21,10 +21,10 @@ const Home = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
     const [newsletterEmail, setNewsletterEmail] = useState('');
     const [isSubscribing, setIsSubscribing] = useState(false);
     const [subscribeStatus, setSubscribeStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         getProducts()
@@ -141,7 +141,7 @@ const Home = () => {
                                 >
                                     <span className="material-symbols-outlined text-white text-3xl">eco</span>
                                 </motion.div>
-                                <span className="text-[9px] font-black uppercase tracking-wide text-center text-slate-400">Organic</span>
+                                <span className="text-[9px] font-black uppercase tracking-wide text-center text-slate-400">{t('home.benefits_detox', 'Organic')}</span>
                             </div>
                             <div className="flex flex-col items-center gap-2">
                                 <motion.div
@@ -151,7 +151,7 @@ const Home = () => {
                                 >
                                     <span className="material-symbols-outlined text-primary text-3xl">bolt</span>
                                 </motion.div>
-                                <span className="text-[9px] font-black uppercase tracking-wide text-center text-slate-400">Energy</span>
+                                <span className="text-[9px] font-black uppercase tracking-wide text-center text-slate-400">{t('home.benefits_energy', 'Energy')}</span>
                             </div>
                         </div>
                     </motion.div>
@@ -187,7 +187,7 @@ const Home = () => {
 
                     {/* Section header */}
                     <motion.div variants={cardVariants} className="col-span-4 flex items-center justify-between mt-2">
-                        <h3 className="text-xl font-black uppercase tracking-tighter italic">Vibrant Aura Picks</h3>
+                        <h3 className="text-xl font-black uppercase tracking-tighter italic">{t('home.featured', 'Vibrant Aura Picks')}</h3>
                         <Link to="/menu" className="text-primary text-xs font-black uppercase tracking-widest hover:underline">View All</Link>
                     </motion.div>
 

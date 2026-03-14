@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "menu": "Menu",
+    "locations": "Emplacements",
+    "cart": "Panier",
+    "dashboard": "Tableau de Bord",
+    "login": "Se connecter",
+    "profile": "Profil"
+  },
+  "home": {
+    "hero_title": "Redéfinir L'hydratation Pure",
+    "hero_subtitle": "Sirotez l'Ambiance. Goûtez l'Aura.",
+    "cta": "Explorer le Menu",
+    "featured": "Auras en Vedette",
+    "benefits_detox": "Détox",
+    "benefits_energy": "Énergie",
+    "benefits_immunity": "Immunité"
+  },
+  "footer": {
+    "tagline": "Élaboré avec 100% de vrais fruits, sans conservateurs, et avec une énergie pure et positive.",
+    "rights": "Tous droits réservés. Hydratez-vous de manière responsable."
+  },
+  "cart": {
+    "title1": "Votre",
+    "title2": "Panier",
+    "empty": "Votre panier est vide",
+    "browse": "Explorer le Menu",
+    "promo_applied": "Code promo appliqué",
+    "summary": "Résumé de la Commande",
+    "subtotal": "Sous-total",
+    "delivery": "Frais de Livraison",
+    "discount": "Réduction",
+    "total": "Montant Total",
+    "checkout": "Passer à la Caisse"
+  }
+}

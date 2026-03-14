@@ -1,22 +1,27 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-
-const navItems = [
-    { path: '/home', icon: 'home', label: 'Home' },
-    { path: '/menu', icon: 'restaurant_menu', label: 'Menu' },
-    { path: '/cart', icon: 'shopping_bag', label: 'Cart', isCenter: true },
-    { path: '/locations', icon: 'share_location', label: 'Stores' },
-    { path: '/profile', icon: 'person', label: 'Profile' },
-];
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const Navigation = () => {
     const location = useLocation();
-    const { cartCount } = useCart();
-    const { user } = useAuth();
+    const { cartCount, cart } = useCart();
+    const { user, isProfileComplete } = useAuth();
+    const { t } = useTranslation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const adminItem = { path: '/admin', icon: 'shield_person', label: 'Admin' };
+    const navItems = [
+        { path: '/home', icon: 'home', label: t('nav.home') },
+        { path: '/menu', icon: 'restaurant_menu', label: t('nav.menu') },
+        { path: '/cart', icon: 'shopping_bag', label: t('nav.cart'), isCenter: true },
+        { path: '/locations', icon: 'storefront', label: t('nav.locations') },
+        { path: '/profile', icon: 'person', label: t('nav.profile') },
+    ];
+
+    const adminItem = { path: '/admin', icon: 'shield_person', label: t('nav.dashboard') };
 
     // Create local copy of navItems so we don't mutate the global one
     const currentNavItems = [...navItems];

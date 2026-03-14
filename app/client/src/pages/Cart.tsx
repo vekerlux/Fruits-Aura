@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { useTranslation } from 'react-i18next';
 
 const Cart = () => {
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, subtotal } = useCart();
+    const { t } = useTranslation();
 
     const deliveryFee = cart.length > 0 ? 1500 : 0;
     const discount = cart.length > 0 ? 500 : 0;
@@ -22,7 +24,7 @@ const Cart = () => {
                     <motion.button onClick={() => navigate(-1)} whileTap={{ scale: 0.88 }} className="w-11 h-11 rounded-full glass flex items-center justify-center cursor-pointer">
                         <span className="material-symbols-outlined text-white">arrow_back_ios_new</span>
                     </motion.button>
-                    <h1 className="text-xl font-black">Your <span className="text-primary">Bag</span></h1>
+                    <h1 className="text-xl font-black">{t('cart.title1', 'Your')} <span className="text-primary">{t('cart.title2', 'Bag')}</span></h1>
                     <motion.button whileTap={{ scale: 0.88 }} className="w-11 h-11 rounded-full glass flex items-center justify-center cursor-pointer">
                         <span className="material-symbols-outlined text-white">more_vert</span>
                     </motion.button>
@@ -46,13 +48,13 @@ const Cart = () => {
                             >
                                 shopping_bag
                             </motion.span>
-                            <p className="text-sm font-black tracking-widest uppercase">Your bag is empty</p>
+                            <p className="text-sm font-black tracking-widest uppercase">{t('cart.empty', 'Your bag is empty')}</p>
                             <Link to="/menu">
                                 <motion.button
                                     whileTap={{ scale: 0.94 }}
                                     className="bg-primary/20 text-primary px-6 py-2.5 rounded-full font-black text-sm border border-primary/20"
                                 >
-                                    Browse Menu
+                                    {t('cart.browse', 'Browse Menu')}
                                 </motion.button>
                             </Link>
                         </motion.div>
@@ -131,26 +133,25 @@ const Cart = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-black">AURAFRESH24</p>
-                                            <p className="text-[10px] text-slate-500 font-medium">Promo code applied</p>
+                                            <p className="text-[10px] text-slate-500 font-medium">{t('cart.promo_applied', 'Promo code applied')}</p>
                                         </div>
                                     </div>
                                     <span className="text-secondary font-black text-sm">−₦{discount.toLocaleString()}</span>
                                 </div>
                             </motion.div>
 
-                            {/* Summary */}
                             <motion.div
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
                                 className="bento-card-orange space-y-4 mb-8"
                             >
-                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Order Summary</h3>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">{t('cart.summary', 'Order Summary')}</h3>
                                 <div className="space-y-2">
                                     {[
-                                        { label: 'Subtotal', value: `₦${subtotal.toLocaleString()}`, color: '' },
-                                        { label: 'Delivery Fee', value: `₦${deliveryFee.toLocaleString()}`, color: '' },
-                                        { label: 'Discount', value: `−₦${discount.toLocaleString()}`, color: 'text-secondary' },
+                                        { label: t('cart.subtotal', 'Subtotal'), value: `₦${subtotal.toLocaleString()}`, color: '' },
+                                        { label: t('cart.delivery', 'Delivery Fee'), value: `₦${deliveryFee.toLocaleString()}`, color: '' },
+                                        { label: t('cart.discount', 'Discount'), value: `−₦${discount.toLocaleString()}`, color: 'text-secondary' },
                                     ].map((row) => (
                                         <div key={row.label} className="flex justify-between items-center text-sm">
                                             <span className="text-slate-400">{row.label}</span>
@@ -159,7 +160,7 @@ const Cart = () => {
                                     ))}
                                     <div className="h-px bg-white/5 my-2" />
                                     <div className="flex justify-between items-center">
-                                        <span className="text-base font-black">Total Amount</span>
+                                        <span className="text-base font-black">{t('cart.total', 'Total Amount')}</span>
                                         <motion.span
                                             key={total}
                                             initial={{ scale: 0.85, opacity: 0 }}
@@ -176,7 +177,7 @@ const Cart = () => {
                                         whileHover={{ boxShadow: '0 12px 40px rgba(255,107,0,0.45)' }}
                                         className="w-full bg-primary text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-primary/25 cursor-pointer transition-all"
                                     >
-                                        Checkout Now
+                                        {t('cart.checkout', 'Checkout Now')}
                                         <span className="material-symbols-outlined">arrow_forward</span>
                                     </motion.button>
                                 </Link>

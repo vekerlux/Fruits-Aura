@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Ụlọ",
+    "menu": "Ndepụta",
+    "locations": "Ebe Anyị Nọ",
+    "cart": "Ụgbọ",
+    "dashboard": "Oghere Njikwa",
+    "login": "Banye",
+    "profile": "Profaịlụ"
+  },
+  "home": {
+    "hero_title": "Na-akọwapụta Mmiri Ọma Ọhụrụ",
+    "hero_subtitle": "Nụọ Udiri Nke Ọma. Detụ Aura.",
+    "cta": "Leba Anya Na Ndepụta",
+    "featured": "Aura Pụrụ Iche",
+    "benefits_detox": "Nchacha Ahụ",
+    "benefits_energy": "Ike",
+    "benefits_immunity": "Nchekwa Ahụ"
+  },
+  "footer": {
+    "tagline": "Emere ya na 100% ezigbo mkpụrụ osisi, enweghị ihe nchekwa, na ezigbo ike ọma.",
+    "rights": "Ikike niile echekwara. Nṅụọ mmiri nke ọma."
+  },
+  "cart": {
+    "title1": "Akwà Ozi",
+    "title2": "Gị",
+    "empty": "Akwà ozi gị tọgbọrọ chakoo",
+    "browse": "Lelee Ndepụta",
+    "promo_applied": "Ejirila Koodu Mbelata",
+    "summary": "Nchịkọta Nhazi",
+    "subtotal": "Nchịkọta Nke Mbụ",
+    "delivery": "Ego Nzipụ",
+    "discount": "Ego Mbelata",
+    "total": "Ego Ruru",
+    "checkout": "Kụọ Ụgwọ Ugbu A"
+  }
+}
