@@ -1,17 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
+import { ChevronLeft, Plus, Sparkles, Snowflake, CheckCircle2 } from 'lucide-react';
 import { getProducts } from '../api/products';
 import type { Product } from '../api/products';
 import { useCart } from '../context/CartContext';
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.08 } },
+    visible: { 
+        transition: { 
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+        } 
+    },
 };
-const cardVariants = {
-    hidden: { opacity: 0, y: 28, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: 'easeOut' as const } },
+
+const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: { 
+        opacity: 1, 
+        y: 0, 
+        scale: 1, 
+        transition: { 
+            duration: 0.6, 
+            ease: [0.22, 1, 0.36, 1] 
+        } 
+    },
 };
 
 const Featured = () => {
@@ -30,7 +45,16 @@ const Featured = () => {
     const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        addToCart({ id: product.id, name: product.name, price: product.price, quantity: 1, image: product.image, isBundle: false, subtext: product.subtext, cssFilter: product.cssFilter });
+        addToCart({ 
+            id: product.id, 
+            name: product.name, 
+            price: product.price, 
+            quantity: 1, 
+            image: product.image, 
+            isBundle: false, 
+            subtext: product.subtext, 
+            cssFilter: product.cssFilter 
+        });
     };
 
     return (
@@ -38,16 +62,22 @@ const Featured = () => {
             {/* Aurora ambient */}
             <div className="absolute inset-0 pointer-events-none">
                 <motion.div
-                    className="absolute top-32 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full"
-                    style={{ background: 'radial-gradient(circle, rgba(255,107,0,0.12) 0%, transparent 65%)' }}
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute top-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full"
+                    style={{ background: 'radial-gradient(circle, rgba(242,127,13,0.08) 0%, transparent 70%)' }}
+                    animate={{ 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.6, 0.3]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                    className="absolute bottom-20 right-0 w-72 h-72 rounded-full"
-                    style={{ background: 'radial-gradient(circle, rgba(74,222,128,0.1) 0%, transparent 65%)' }}
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+                    className="absolute bottom-20 right-[-10%] w-96 h-96 rounded-full"
+                    style={{ background: 'radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%)' }}
+                    animate={{ 
+                        scale: [1, 1.3, 1],
+                        opacity: [0.2, 0.5, 0.2]
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
                 />
             </div>
 
@@ -55,64 +85,83 @@ const Featured = () => {
             <motion.header
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4 }}
-                className="px-5 pt-14 pb-5 sticky top-0 z-50 bg-background-dark/85 backdrop-blur-xl border-b border-white/[0.04]"
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="px-6 pt-14 pb-5 sticky top-0 z-50 bg-background-dark/80 backdrop-blur-xl border-b border-white/[0.05]"
             >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-5">
                     <motion.button
-                        whileTap={{ scale: 0.88 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => navigate(-1)}
-                        className="w-11 h-11 rounded-full glass flex items-center justify-center cursor-pointer"
+                        className="w-12 h-12 rounded-2xl glass flex items-center justify-center cursor-pointer border border-white/10"
                     >
-                        <span className="material-symbols-outlined text-white">arrow_back_ios_new</span>
+                        <ChevronLeft className="w-6 h-6 text-white" />
                     </motion.button>
                     <div>
-                        <h1 className="text-2xl font-black leading-tight">Featured <span className="text-primary">Picks</span></h1>
-                        <p className="text-xs text-slate-500 font-medium">Handcrafted by Nigeria's finest</p>
+                        <h1 className="text-2xl font-black tracking-tight leading-tight">
+                            Featured <span className="text-primary glow-text-orange">Picks</span>
+                        </h1>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Handcrafted Wellness</p>
                     </div>
                 </div>
             </motion.header>
 
-            <main className="px-5 pt-5 space-y-6 relative z-10">
+            <main className="px-6 pt-6 space-y-8 relative z-10">
                 {/* Hero bento — full width */}
                 {!loading && products[0] && (
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.55, ease: 'easeOut' }}
-                        whileHover={{ y: -5 }}
-                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        whileHover={{ y: -8 }}
                         onClick={() => navigate(`/product/${products[0].id}`)}
-                        className="relative h-64 rounded-[2.5rem] overflow-hidden cursor-pointer"
+                        className="relative h-72 rounded-[3.5rem] overflow-hidden cursor-pointer group shadow-2xl shadow-primary/10"
                     >
-                        <img src={products[0].image} alt={products[0].name} className="w-full h-full object-cover" style={{ filter: products[0].cssFilter }} />
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
+                        <img 
+                            src={products[0].image} 
+                            alt={products[0].name} 
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                            style={{ filter: products[0].cssFilter }} 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-black/90 via-black/40 to-transparent" />
 
-                        {/* Floating product image */}
+                        {/* Floating Product Radiance */}
                         <motion.div
-                            className="absolute right-4 bottom-0 w-36 h-36"
-                            animate={{ y: [0, -8, 0] }}
-                            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                            className="absolute right-6 bottom-4 w-44 h-44"
+                            animate={{ y: [0, -12, 0], rotate: [0, 2, 0] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                         >
-                            <img src={products[0].image} alt="" className="w-full h-full object-contain drop-shadow-xl" style={{ filter: products[0].cssFilter }} />
+                            <img 
+                                src={products[0].image} 
+                                alt="" 
+                                className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(242,127,13,0.4)]" 
+                                style={{ filter: products[0].cssFilter }} 
+                            />
                         </motion.div>
 
-                        <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                            <div className="space-y-1">
-                                <span className="inline-block bg-primary text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider">
+                        <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                            <div className="space-y-2">
+                                <motion.span 
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="inline-flex items-center gap-1.5 bg-primary/20 backdrop-blur-md text-primary text-[10px] font-black px-4 py-1.5 rounded-full border border-primary/30 uppercase tracking-widest"
+                                >
+                                    <Sparkles className="w-3 h-3" />
                                     #1 Best Seller
-                                </span>
-                                <h2 className="text-3xl font-black leading-tight text-white">{products[0].name}</h2>
-                                <p className="text-xs text-white/70">{products[0].subtext}</p>
+                                </motion.span>
+                                <h2 className="text-4xl font-black leading-tight text-white drop-shadow-md">{products[0].name}</h2>
+                                <p className="text-xs text-white/60 font-medium max-w-[60%]">{products[0].subtext}</p>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-2xl font-black text-white">₦{products[0].price.toLocaleString()}</span>
+                                <span className="text-3xl font-black text-white">₦{products[0].price.toLocaleString()}</span>
                                 <motion.button
-                                    whileTap={{ scale: 0.85 }}
+                                    whileHover={{ scale: 1.05, backgroundColor: '#ff8c1a' }}
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={(e) => handleQuickAdd(products[0], e)}
-                                    className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-black flex items-center gap-2 shadow-lg shadow-primary/30 cursor-pointer"
+                                    className="bg-primary text-white pl-5 pr-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2 shadow-xl shadow-primary/30 cursor-pointer"
                                 >
-                                    <span className="material-symbols-outlined text-sm">add</span>
+                                    <Plus className="w-4 h-4" />
                                     Add to Bag
                                 </motion.button>
                             </div>
@@ -120,45 +169,46 @@ const Featured = () => {
                     </motion.div>
                 )}
 
-                {/* Freshness stats (green bento) */}
-                <div className="grid grid-cols-3 gap-3">
+                {/* Freshness stats (Branded Bento) */}
+                <div className="grid grid-cols-3 gap-4">
                     {[
-                        { icon: 'spa', label: '100% Organic', color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20' },
-                        { icon: 'ac_unit', label: 'Cold Pressed', color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' },
-                        { icon: 'verified', label: 'NAFDAC Cert.', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
+                        { icon: Sparkles, label: '100% Organic', color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20', glow: 'shadow-secondary/20' },
+                        { icon: Snowflake, label: 'Cold Pressed', color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', glow: 'shadow-blue-400/20' },
+                        { icon: CheckCircle2, label: 'NAFDAC Cert.', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20', glow: 'shadow-primary/20' },
                     ].map((s, i) => (
                         <motion.div
                             key={s.label}
-                            initial={{ opacity: 0, scale: 0.85 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.15 + i * 0.08 }}
-                            whileHover={{ y: -4 }}
-                            className={`${s.bg} border ${s.border} rounded-2xl p-3 flex flex-col items-center gap-2 text-center cursor-default`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 + i * 0.1 }}
+                            whileHover={{ y: -5, scale: 1.02 }}
+                            className={`${s.bg} border ${s.border} rounded-3xl p-4 flex flex-col items-center gap-3 text-center cursor-default shadow-lg ${s.glow}`}
                         >
-                            <motion.div
-                                animate={{ y: [0, -4, 0] }}
-                                transition={{ duration: 2.5 + i, repeat: Infinity, ease: 'easeInOut' }}
-                            >
-                                <span className={`material-symbols-outlined ${s.color} text-2xl`}>{s.icon}</span>
-                            </motion.div>
-                            <span className={`text-[10px] font-black ${s.color} uppercase tracking-wide`}>{s.label}</span>
+                            <div className={`p-2 rounded-xl bg-white/5`}>
+                                <s.icon className={`${s.color} w-6 h-6`} />
+                            </div>
+                            <span className={`text-[9px] font-black ${s.color} uppercase tracking-widest leading-none`}>{s.label}</span>
                         </motion.div>
                     ))}
                 </div>
 
                 {/* All Products Grid */}
-                <div>
-                    <h2 className="text-lg font-black mb-4">All Products</h2>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-black tracking-tight">Full <span className="text-primary">Collection</span></h2>
+                        <div className="h-[2px] flex-1 bg-white/5 mx-4" />
+                    </div>
+                    
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="grid grid-cols-2 gap-3"
+                        className="grid grid-cols-2 gap-4"
                     >
                         {loading ? (
                             <>
                                 {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="shimmer h-56 rounded-bento" />
+                                    <div key={i} className="shimmer h-64 rounded-[2.5rem] opacity-20" />
                                 ))}
                             </>
                         ) : (
@@ -166,37 +216,39 @@ const Featured = () => {
                                 <motion.div
                                     key={product.id}
                                     variants={cardVariants}
-                                    whileHover={{ y: -6, boxShadow: '0 16px 40px rgba(255,107,0,0.15)' }}
-                                    whileTap={{ scale: 0.97 }}
+                                    whileHover={{ y: -10 }}
+                                    className="cursor-pointer group"
                                     onClick={() => navigate(`/product/${product.id}`)}
-                                    className="cursor-pointer"
                                 >
-                                    <div className="liquid-glass overflow-hidden">
-                                        <div className="relative h-40 bg-accent-dark overflow-hidden">
+                                    <div className="liquid-glass rounded-[2.5rem] overflow-hidden border border-white/5 h-full flex flex-col">
+                                        <div className="relative h-44 bg-accent-dark/30 overflow-hidden">
                                             <motion.img
                                                 src={product.image}
                                                 alt={product.name}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                                style={{ animation: 'float-slow 6s ease-in-out infinite', filter: product.cssFilter }}
+                                                className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110 mt-2"
+                                                style={{ filter: product.cssFilter }}
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                             {product.isPopular && (
-                                                <span className="absolute top-3 left-3 bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">
+                                                <div className="absolute top-4 left-4 bg-primary text-white text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20 border border-primary/30">
                                                     Popular
-                                                </span>
+                                                </div>
                                             )}
                                         </div>
-                                        <div className="p-4">
-                                            <h4 className="font-black text-sm leading-tight">{product.name}</h4>
-                                            <p className="text-xs text-slate-500 mt-0.5">{product.subtext}</p>
-                                            <div className="flex items-center justify-between mt-3">
-                                                <span className="font-black text-base">₦{product.price.toLocaleString()}</span>
+                                        <div className="p-5 flex-1 flex flex-col justify-between">
+                                            <div>
+                                                <h4 className="font-black text-sm leading-tight text-white/90">{product.name}</h4>
+                                                <p className="text-[10px] text-slate-500 mt-1 font-bold uppercase tracking-wide leading-none">{product.subtext}</p>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-4">
+                                                <span className="font-black text-lg text-white">₦{product.price.toLocaleString()}</span>
                                                 <motion.button
-                                                    whileTap={{ scale: 0.8 }}
+                                                    whileHover={{ scale: 1.1, backgroundColor: '#f27f0d' }}
+                                                    whileTap={{ scale: 0.9 }}
                                                     onClick={(e) => handleQuickAdd(product, e)}
-                                                    className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white shadow-md shadow-primary/30 cursor-pointer"
+                                                    className="w-10 h-10 bg-primary/10 hover:bg-primary rounded-2xl flex items-center justify-center text-primary hover:text-white border border-primary/20 transition-colors shadow-lg active:shadow-none cursor-pointer"
                                                 >
-                                                    <span className="material-symbols-outlined text-sm">add</span>
+                                                    <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
                                                 </motion.button>
                                             </div>
                                         </div>

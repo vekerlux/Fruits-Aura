@@ -1,3 +1,5 @@
+import api from './client';
+
 // MOCK DATA for Fruits Aura until the real backend is connected
 
 export interface Product {
@@ -51,7 +53,6 @@ export const mockProducts: Product[] = [
     }
 ];
 
-import api from './client';
 
 export const getProducts = async (keyword?: string, category?: string): Promise<Product[]> => {
     try {

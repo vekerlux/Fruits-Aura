@@ -1,37 +1,33 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Home, LayoutGrid, ShoppingBag, Store, User, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 const Navigation = () => {
     const location = useLocation();
-    const { cartCount, cart } = useCart();
-    const { user, isProfileComplete } = useAuth();
+    const { cartCount } = useCart();
+    const { user } = useAuth();
     const { t } = useTranslation();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navItems = [
-        { path: '/home', icon: 'home', label: t('nav.home') },
-        { path: '/menu', icon: 'restaurant_menu', label: t('nav.menu') },
-        { path: '/cart', icon: 'shopping_bag', label: t('nav.cart'), isCenter: true },
-        { path: '/locations', icon: 'storefront', label: t('nav.locations') },
-        { path: '/profile', icon: 'person', label: t('nav.profile') },
+        { path: '/home', icon: Home, label: t('nav.home') },
+        { path: '/menu', icon: LayoutGrid, label: t('nav.menu') },
+        { path: '/cart', icon: ShoppingBag, label: t('nav.cart'), isCenter: true },
+        { path: '/locations', icon: Store, label: t('nav.locations') },
+        { path: '/profile', icon: User, label: t('nav.profile') },
     ];
 
-    const adminItem = { path: '/admin', icon: 'shield_person', label: t('nav.dashboard') };
+    const adminItem = { path: '/admin', icon: ShieldCheck, label: t('nav.dashboard') };
 
-    // Create local copy of navItems so we don't mutate the global one
     const currentNavItems = [...navItems];
     if (user && user.role?.toLowerCase() === 'admin') {
-        // Replace locations or profile with Admin for better fit? 
-        // Or just push it. Let's push it after Menu.
-        currentNavItems.splice(2, 0, adminItem);
+        currentNavItems.push(adminItem);
     }
 
-    const hideOnPaths = ['/', '/login', '/register'];
+    const hideOnPaths = ['/', '/login', '/register', '/admin'];
+    if (location.pathname.startsWith('/admin')) return null;
     if (hideOnPaths.includes(location.pathname)) return null;
 
     const isActive = (path: string) =>
@@ -41,51 +37,59 @@ const Navigation = () => {
 
     return (
         <motion.nav
-            className="fixed bottom-6 left-1/2 z-50"
+            className="fixed bottom-8 left-1/2 z-50 pointer-events-none"
             initial={{ y: 100, x: '-50%', opacity: 0 }}
             animate={{ y: 0, x: '-50%', opacity: 1 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22, delay: 0.2 }}
-            style={{ width: '92%' }}
+            style={{ width: '90%', maxWidth: '420px' }}
         >
-            <div className={`glass rounded-[2.5rem] h-[68px] flex items-center justify-around px-2 shadow-2xl shadow-black/60 border border-white/10 relative ${user?.role?.toLowerCase() === 'admin' ? 'gap-0' : 'px-3'}`}>
+            <div className="glass rounded-[2.5rem] h-[72px] flex items-center justify-around px-4 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-white/10 relative pointer-events-auto">
                 {currentNavItems.map((item) => {
+                    const Icon = item.icon;
                     if (item.isCenter) {
                         const active = isActive(item.path);
                         return (
-                            <div key={item.path} className="relative -top-7">
+                            <div key={item.path} className="relative -top-8">
                                 <Link to={item.path}>
                                     <motion.div
-                                        whileTap={{ scale: 0.88 }}
-                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{ y: -2 }}
                                         className="relative"
                                     >
-                                        {/* Pulsing glow ring */}
-                                        {cartCount > 0 && (
-                                            <motion.div
-                                                className="absolute inset-0 rounded-full"
-                                                animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
-                                                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
-                                                style={{ background: 'rgba(255,107,0,0.5)' }}
-                                            />
-                                        )}
+                                        {/* Dynamic Glow Ring */}
+                                        <AnimatePresence>
+                                            {cartCount > 0 && (
+                                                <motion.div
+                                                    initial={{ scale: 0.8, opacity: 0 }}
+                                                    animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.2, 0.4] }}
+                                                    exit={{ scale: 0.8, opacity: 0 }}
+                                                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                                                    className="absolute inset-[-8px] rounded-full bg-primary/20 blur-xl"
+                                                />
+                                            )}
+                                        </AnimatePresence>
+                                        
                                         <div
-                                            className={`w-[62px] h-[62px] rounded-full flex items-center justify-center text-white shadow-xl border-[5px] border-[#0A0A0A] transition-all duration-300 ${active ? 'bg-orange-500' : 'bg-primary'}`}
-                                            style={{ boxShadow: '0 8px 30px rgba(255,107,0,0.45)' }}
+                                            className={`w-[68px] h-[68px] rounded-full flex items-center justify-center text-white shadow-2xl border-[6px] border-[#0c0c0c] transition-all duration-500 relative z-10 ${active ? 'bg-primary' : 'bg-[#1a1a1a]'}`}
+                                            style={{ 
+                                                boxShadow: active 
+                                                    ? '0 12px 35px rgba(242,127,13,0.5), inset 0 2px 4px rgba(255,255,255,0.3)' 
+                                                    : '0 8px 30px rgba(0,0,0,0.4)' 
+                                            }}
                                         >
-                                            <span className={`material-symbols-outlined text-2xl ${active ? 'filled' : ''}`}>
-                                                {item.icon}
-                                            </span>
+                                            <Icon className={`w-7 h-7 ${active ? 'stroke-[3px]' : 'stroke-[2px]'}`} />
                                         </div>
+
                                         {/* Cart count badge */}
                                         <AnimatePresence>
                                             {cartCount > 0 && (
                                                 <motion.span
                                                     key="badge"
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: 1 }}
-                                                    exit={{ scale: 0 }}
-                                                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                                                    className="absolute top-0 right-0 bg-white text-primary text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0A0A0A] leading-none"
+                                                    initial={{ scale: 0, y: 10 }}
+                                                    animate={{ scale: 1, y: 0 }}
+                                                    exit={{ scale: 0, y: 10 }}
+                                                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                                                    className="absolute -top-1 -right-1 bg-white text-primary text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-[3px] border-[#0c0c0c] leading-none z-20 shadow-lg"
                                                 >
                                                     {cartCount > 9 ? '9+' : cartCount}
                                                 </motion.span>
@@ -102,23 +106,33 @@ const Navigation = () => {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className="relative w-12 h-12 flex items-center justify-center"
+                            className="relative flex flex-col items-center justify-center w-12 h-12"
                         >
                             {active && (
                                 <motion.div
                                     layoutId="nav-pill"
-                                    className="absolute inset-0 rounded-2xl bg-primary/12"
+                                    className="absolute inset-0 rounded-2xl bg-primary/10 border border-primary/20 backdrop-blur-sm"
                                     transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                                 />
                             )}
-                            <motion.span
-                                whileTap={{ scale: 0.85 }}
-                                animate={{ color: active ? '#FF6B00' : '#94a3b8' }}
-                                transition={{ duration: 0.2 }}
-                                className={`material-symbols-outlined text-2xl z-10 ${active ? 'filled' : ''}`}
+                            <motion.div
+                                whileTap={{ scale: 0.8 }}
+                                animate={{ 
+                                    color: active ? '#f27f0d' : '#64748b',
+                                    y: active ? -2 : 0
+                                }}
+                                transition={{ duration: 0.3 }}
+                                className="relative z-10"
                             >
-                                {item.icon}
-                            </motion.span>
+                                <Icon className={`w-6 h-6 ${active ? 'stroke-[2.5px] drop-shadow-[0_0_8px_rgba(242,127,13,0.3)]' : 'stroke-[2px]'}`} />
+                            </motion.div>
+                            {active && (
+                                <motion.div 
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="w-1 h-1 bg-primary rounded-full absolute bottom-1"
+                                />
+                            )}
                         </Link>
                     );
                 })}

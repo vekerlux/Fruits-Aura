@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const { productSchema } = require('../utils/validators');
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -16,7 +17,8 @@ const getProducts = async (req, res, next) => {
 
         const category = req.query.category ? { category: req.query.category } : {};
 
-        const products = await Product.find({ ...keyword, ...category });
+        const products = await Product.find({ ...keyword, ...category })
+            .select('name price image category subtext cssFilter isPopular');
         res.json(products);
     } catch (error) {
         next(error);
@@ -65,6 +67,9 @@ const deleteProduct = async (req, res, next) => {
 // @access  Private/Admin
 const createProduct = async (req, res, next) => {
     try {
+        // Validate input
+        const validatedData = productSchema.parse(req.body);
+
         const {
             name,
             price,
@@ -75,8 +80,9 @@ const createProduct = async (req, res, next) => {
             nutrition,
             subtext,
             cssFilter,
-            isPopular
-        } = req.body;
+            isPopular,
+            isVibrant
+        } = validatedData;
 
         const product = new Product({
             name: name || 'Sample name',
@@ -89,7 +95,8 @@ const createProduct = async (req, res, next) => {
             description: description || 'Sample description',
             subtext: subtext || 'New Juice',
             cssFilter: cssFilter || '',
-            isPopular: isPopular || false
+            isPopular: isPopular || false,
+            isVibrant: isVibrant || false
         });
 
         const createdProduct = await product.save();
@@ -104,6 +111,9 @@ const createProduct = async (req, res, next) => {
 // @access  Private/Admin
 const updateProduct = async (req, res, next) => {
     try {
+        // Validate input
+        const validatedData = productSchema.partial().parse(req.body);
+
         const {
             name,
             price,
@@ -114,8 +124,9 @@ const updateProduct = async (req, res, next) => {
             nutrition,
             subtext,
             cssFilter,
-            isPopular
-        } = req.body;
+            isPopular,
+            isVibrant
+        } = validatedData;
 
         const product = await Product.findById(req.params.id);
 
@@ -130,6 +141,7 @@ const updateProduct = async (req, res, next) => {
             product.subtext = subtext || product.subtext;
             product.cssFilter = cssFilter || product.cssFilter;
             product.isPopular = isPopular !== undefined ? isPopular : product.isPopular;
+            product.isVibrant = isVibrant !== undefined ? isVibrant : product.isVibrant;
 
             const updatedProduct = await product.save();
             res.json(updatedProduct);

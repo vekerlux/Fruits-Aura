@@ -1,0 +1,37 @@
+[
+  {
+    "_id": "69a0d0ca4aee46cafd11bf4e",
+    "email": "officialfruitsaura@gmail.com",
+    "role": "ADMIN"
+  },
+  {
+    "_id": "69a0d0ca4aee46cafd11bf4f",
+    "email": "user@fruitsaura.com",
+    "role": "CONSUMER"
+  },
+  {
+    "_id": "69b53b1ad5854f30c494cfb1",
+    "email": "vekerlux@gmail.com",
+    "role": "CONSUMER"
+  },
+  {
+    "_id": "69b7d6b4b0d9f1e85aa12f5e",
+    "email": "lovedivine201@gmail.com",
+    "role": "CONSUMER"
+  },
+  {
+    "_id": "69b853311090a52763b71cd4",
+    "email": "chbzrcyril@gmail.com",
+    "role": "CONSUMER"
+  },
+  {
+    "_id": "69c01a148c81261c56c96652",
+    "email": "testadmin@fruitsaura.com",
+    "role": "CONSUMER"
+  },
+  {
+    "_id": "69c01a7e8c81261c56c96662",
+    "email": "admin@fruitsaura.com",
+    "role": "CONSUMER"
+  }
+]

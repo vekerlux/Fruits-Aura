@@ -9,7 +9,7 @@ const authUser = async (req, res, next) => {
         const { email, password } = req.body;
         console.log(`[LOGIN_DEBUG] Attempt for email: "${email}" (length: ${email?.length})`);
 
-        const user = await User.findOne({ email: email.toLowerCase().trim() });
+        const user = await User.findOne({ email: email.toLowerCase() });
 
         if (!user) {
             console.log(`[LOGIN_DEBUG] User NOT found for email: "${email}"`);
@@ -30,6 +30,9 @@ const authUser = async (req, res, next) => {
                 avatar: user.avatar,
                 address: user.address,
                 role: user.role,
+                plan: user.plan,
+                hasEmailDiscount: user.hasEmailDiscount,
+                isSpecialDistributor: user.isSpecialDistributor,
                 token: generateToken(user._id),
             });
         } else {
@@ -83,7 +86,10 @@ const registerUser = async (req, res, next) => {
                 avatar: user.avatar,
                 address: user.address,
                 role: user.role,
+                plan: user.plan,
                 referralCode: user.referralCode,
+                hasEmailDiscount: user.hasEmailDiscount,
+                isSpecialDistributor: user.isSpecialDistributor,
                 token: generateToken(user._id),
             });
         } else {
@@ -109,6 +115,10 @@ const getUserProfile = async (req, res, next) => {
                 email: user.email,
                 avatar: user.avatar,
                 address: user.address,
+                role: user.role,
+                plan: user.plan,
+                hasEmailDiscount: user.hasEmailDiscount,
+                isSpecialDistributor: user.isSpecialDistributor,
             });
         } else {
             res.status(404);
@@ -145,6 +155,9 @@ const updateUserProfile = async (req, res, next) => {
                 avatar: updatedUser.avatar,
                 address: updatedUser.address,
                 role: updatedUser.role,
+                plan: updatedUser.plan,
+                hasEmailDiscount: updatedUser.hasEmailDiscount,
+                isSpecialDistributor: updatedUser.isSpecialDistributor,
                 token: generateToken(updatedUser._id),
             });
         } else {

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 interface User {
     id: string;
@@ -23,7 +23,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(() => {
         try {
             const saved = localStorage.getItem('fruitsAuraUser');
@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // Sync state if localStorage changes (e.g., from another tab or interceptor)
-    React.useEffect(() => {
+    useEffect(() => {
         const handleStorageChange = () => {
             const savedUser = localStorage.getItem('fruitsAuraUser');
             const savedToken = localStorage.getItem('fruitsAuraToken');

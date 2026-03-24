@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Bell, AlertTriangle, X } from 'lucide-react';
 import api from '../api/client';
 
 interface Notification {
@@ -81,10 +82,12 @@ const NotificationBanner = () => {
                     exit={{ opacity: 0, scale: 1.05, transition: { duration: 0.2 } }}
                     className={`max-w-md mx-auto bento-card p-4 border flex items-center gap-4 pointer-events-auto shadow-2xl backdrop-blur-xl ${typeStyles[current.type]}`}
                 >
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 flex-shrink-0 animate-pulse">
-                        <span className="material-symbols-outlined text-lg">
-                            {current.type === 'warning' ? 'warning' : 'campaign'}
-                        </span>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 flex-shrink-0">
+                        {current.type === 'warning' ? (
+                            <AlertTriangle className="w-5 h-5 animate-pulse" />
+                        ) : (
+                            <Bell className="w-5 h-5 animate-bounce" />
+                        )}
                     </div>
                     <div className="flex-1 overflow-hidden">
                         <p className="text-[10px] font-black uppercase tracking-widest truncate">{current.title}</p>
@@ -92,9 +95,9 @@ const NotificationBanner = () => {
                     </div>
                     <button
                         onClick={() => handleDismiss(current._id)}
-                        className="w-11 h-11 hover:bg-white/5 rounded-full transition-colors flex-shrink-0 cursor-pointer flex items-center justify-center"
+                        className="w-11 h-11 hover:bg-white/5 rounded-full transition-colors flex-shrink-0 cursor-pointer flex items-center justify-center group"
                     >
-                        <span className="material-symbols-outlined text-sm">close</span>
+                        <X className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                     </button>
                 </motion.div>
             </AnimatePresence>

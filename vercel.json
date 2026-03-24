@@ -1,4 +1,5 @@
 {
+    "name": "fruits-aura",
     "buildCommand": "cd app/client && npm install --legacy-peer-deps && npm run build",
     "outputDirectory": "app/client/dist",
     "installCommand": "echo skip",

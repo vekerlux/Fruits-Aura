@@ -7,6 +7,7 @@ export interface CartItem {
     quantity: number;
     image: string;
     isBundle: boolean;
+    size?: 'big' | 'small';
     subtext?: string;
     cssFilter?: string;
 }
@@ -14,8 +15,8 @@ export interface CartItem {
 interface CartContextType {
     cart: CartItem[];
     addToCart: (item: CartItem) => void;
-    removeFromCart: (id: string, isBundle: boolean) => void;
-    updateQuantity: (id: string, isBundle: boolean, delta: number) => void;
+    removeFromCart: (id: string, isBundle: boolean, size?: 'big' | 'small') => void;
+    updateQuantity: (id: string, isBundle: boolean, delta: number, size?: 'big' | 'small') => void;
     clearCart: () => void;
     cartCount: number;
     subtotal: number;
@@ -36,11 +37,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const addToCart = (newItem: CartItem) => {
         setCart(prevCart => {
             const existingItem = prevCart.find(
-                item => item.id === newItem.id && item.isBundle === newItem.isBundle
+                item => item.id === newItem.id && item.isBundle === newItem.isBundle && item.size === newItem.size
             );
             if (existingItem) {
                 return prevCart.map(item =>
-                    item.id === newItem.id && item.isBundle === newItem.isBundle
+                    (item.id === newItem.id && item.isBundle === newItem.isBundle && item.size === newItem.size)
                         ? { ...item, quantity: item.quantity + newItem.quantity }
                         : item
                 );
@@ -49,14 +50,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
     };
 
-    const removeFromCart = (id: string, isBundle: boolean) => {
-        setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isBundle === isBundle)));
+    const removeFromCart = (id: string, isBundle: boolean, size?: 'big' | 'small') => {
+        setCart(prevCart => prevCart.filter(item => !(item.id === id && item.isBundle === isBundle && item.size === size)));
     };
 
-    const updateQuantity = (id: string, isBundle: boolean, delta: number) => {
+    const updateQuantity = (id: string, isBundle: boolean, delta: number, size?: 'big' | 'small') => {
         setCart(prevCart =>
             prevCart.map(item => {
-                if (item.id === id && item.isBundle === isBundle) {
+                if (item.id === id && item.isBundle === isBundle && item.size === size) {
                     const newQty = item.quantity + delta;
                     return { ...item, quantity: Math.max(1, newQty) };
                 }

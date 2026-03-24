@@ -1,9 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --primary: #f27f0d;
+    --primary-glow: hsla(30, 91%, 50%, 0.35);
+    --secondary: #4ade80;
+    --secondary-glow: hsla(142, 71%, 50%, 0.3);
+    --bg-dark: #0a0a0a;
+    --card-dark: rgba(255, 255, 255, 0.03);
+    --glass-blur: 15px;
+    --transition-cinematic: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-micro: 200ms ease-out;
+}
 
 @layer base {
     body {
@@ -11,6 +22,7 @@
         -webkit-tap-highlight-color: transparent;
         min-height: max(884px, 100dvh);
         overscroll-behavior: none;
+        background-color: var(--bg-dark);
     }
 
     * {
@@ -25,126 +37,66 @@
 }
 
 /* ============================================
-   GLASS SYSTEM
+   GLASS SYSTEM & LIQUID GLASS 💎
 ============================================ */
 .glass {
     background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.ghost-card {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-/* The premium "Liquid Glass" card — main card style */
 .liquid-glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card-dark);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 2rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: var(--transition-cinematic);
     position: relative;
     overflow: hidden;
+    /* Chromatic Aberration Shadow */
+    box-shadow: 
+        1px 1px 0 rgba(255, 0, 0, 0.05), 
+        -1px -1px 0 rgba(0, 255, 255, 0.05),
+        0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.liquid-glass::before {
+.liquid-glass::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.liquid-glass:hover::before {
-    opacity: 1;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .liquid-glass:hover {
-    border-color: rgba(255, 107, 0, 0.35);
-    box-shadow: 0 0 30px rgba(255, 107, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
-}
-
-/* Green freshness variant */
-.liquid-glass-green:hover {
-    border-color: rgba(74, 222, 128, 0.35);
-    box-shadow: 0 0 30px rgba(74, 222, 128, 0.12), 0 8px 32px rgba(0, 0, 0, 0.4);
-    transform: translateY(-3px);
+    border-color: rgba(242, 127, 13, 0.3);
+    box-shadow: 
+        0 0 40px var(--primary-glow),
+        2px 2px 0 rgba(255, 0, 0, 0.08), 
+        -2px -2px 0 rgba(0, 255, 255, 0.08),
+        0 12px 48px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px) scale(1.01);
 }
 
 /* ============================================
-   BENTO CARDS
-============================================ */
-.bento-card {
-    @apply bg-card-dark border border-border-dark rounded-bento overflow-hidden cursor-pointer transition-all duration-300;
-}
-
-.bento-card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 20px rgba(255, 107, 0, 0.08);
-}
-
-.bento-card-orange {
-    @apply bg-card-dark border border-primary/20 rounded-[2.5rem] p-5 relative overflow-hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.bento-card-orange:hover {
-    border-color: rgba(255, 107, 0, 0.5);
-    box-shadow: 0 0 25px rgba(255, 107, 0, 0.15);
-}
-
-.bento-card-green {
-    @apply bg-card-dark border border-secondary/20 rounded-[2.5rem] p-5 relative overflow-hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.bento-card-green:hover {
-    border-color: rgba(74, 222, 128, 0.5);
-    box-shadow: 0 0 25px rgba(74, 222, 128, 0.12);
-}
-
-.bento-item {
-    @apply rounded-[2rem] overflow-hidden relative flex flex-col justify-end p-5 cursor-pointer;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-}
-
-.bento-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-.bento-item:active {
-    transform: scale(0.97);
-}
-
-/* ============================================
-   GLOW EFFECTS
+   GLOW EFFECTS & ACCENTS
 ============================================ */
 .orange-glow {
-    box-shadow: 0 0 20px rgba(255, 107, 0, 0.35), 0 0 60px rgba(255, 107, 0, 0.1);
+    box-shadow: 0 0 25px var(--primary-glow), 0 0 50px rgba(242, 127, 13, 0.1);
 }
 
 .green-glow {
-    box-shadow: 0 0 20px rgba(74, 222, 128, 0.3), 0 0 60px rgba(74, 222, 128, 0.08);
+    box-shadow: 0 0 25px var(--secondary-glow), 0 0 50px rgba(74, 222, 128, 0.08);
 }
 
 .text-glow-orange {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    text-shadow: 0 0 15px rgba(242, 127, 13, 0.6);
 }
 
 .text-glow-green {
-    text-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+    text-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
 }
 
 /* ============================================
@@ -224,19 +176,6 @@
 .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
-}
-
-/* ============================================
-   MATERIAL ICONS
-============================================ */
-.material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    user-select: none;
-    pointer-events: none;
-}
-
-.material-symbols-outlined.filled {
-    font-variation-settings: 'FILL' 1;
 }
 
 /* ============================================
@@ -332,4 +271,23 @@
 
 .carousel-drag:active {
     cursor: grabbing;
+}
+
+/* Admin Touch Targets & Cursor Controls */
+.admin-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer !important;
+}
+
+.cursor-aura {
+    cursor: pointer !important;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }

@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const Order = require('../models/Order');
 const User = require('../models/User');
 const { sendOrderConfirmationEmail } = require('../utils/emailService');
+const { orderStatusSchema } = require('../utils/validators');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -16,7 +17,6 @@ const addOrderItems = async (req, res, next) => {
             itemsPrice,
             taxPrice,
             shippingPrice,
-            totalPrice,
             totalPrice,
             paymentResult,
             pointsUsed,
@@ -85,7 +85,10 @@ const getMyOrders = async (req, res, next) => {
 // @access  Private/Admin
 const getOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find({}).populate('user', 'id name').sort({ _id: -1 });
+        const orders = await Order.find({})
+            .populate('user', 'id name email')
+            .select('user totalPrice isPaid status createdAt deliveryTimeSlot')
+            .sort({ _id: -1 });
         res.json(orders);
     } catch (error) {
         next(error);
@@ -310,7 +313,9 @@ const updateOrderStatus = async (req, res, next) => {
         const order = await Order.findById(req.params.id);
 
         if (order) {
-            order.status = req.body.status || order.status;
+            // Validate input
+            const { status } = orderStatusSchema.parse(req.body);
+            order.status = status || order.status;
 
             if (req.body.status === 'DELIVERED') {
                 order.isDelivered = true;
@@ -328,4 +333,27 @@ const updateOrderStatus = async (req, res, next) => {
     }
 };
 
-module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats, paystackWebhook, updateOrderStatus };
+// @desc    Update order to paid manually
+// @route   PUT /api/orders/:id/pay
+// @access  Private/Admin
+const updateOrderToPaid = async (req, res, next) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (order) {
+            order.isPaid = true;
+            order.paidAt = Date.now();
+            order.paymentResult = {
+                status: 'success_manual_admin'
+            };
+            const updatedOrder = await order.save();
+            res.json(updatedOrder);
+        } else {
+            res.status(404);
+            throw new Error('Order not found');
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { addOrderItems, getMyOrders, getOrders, getOrderStats, exportOrdersCSV, paystackWebhook, updateOrderStatus, updateOrderToPaid };

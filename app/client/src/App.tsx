@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import Navigation from './components/Navigation';
 import NotificationBanner from './components/NotificationBanner';
 import ErrorBoundary from './components/ErrorBoundary';
 import AdminRoute from './components/AdminRoute';
+import { Toaster } from 'sonner';
 
 // Lazy-loaded pages for code splitting
 const Splash = lazy(() => import('./pages/Splash'));
@@ -17,7 +18,8 @@ const Register = lazy(() => import('./pages/Register'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Locations = lazy(() => import('./pages/Locations'));
 const Featured = lazy(() => import('./pages/Featured'));
-const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+import Dashboard from './pages/admin/Dashboard';
+// const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
 const OrderSuccess = lazy(() => import('./pages/OrderSuccess'));
 
 const PageLoader = () => (
@@ -33,6 +35,7 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
+        <Toaster position="top-right" theme="dark" closeButton richColors />
         <NotificationBanner />
         <Suspense fallback={<PageLoader />}>
           <Routes>

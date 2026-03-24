@@ -19,6 +19,7 @@ const productSchema = mongoose.Schema(
             hydration: { type: String },
         },
         isPopular: { type: Boolean, default: false },
+        isVibrant: { type: Boolean, default: false },
         subtext: { type: String },
         cssFilter: { type: String },
     },

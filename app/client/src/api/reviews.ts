@@ -9,8 +9,13 @@ export interface Review {
 }
 
 export const getProductReviews = async (productId: string): Promise<Review[]> => {
-    const { data } = await api.get(`/reviews/${productId}`);
-    return data;
+    try {
+        const { data } = await api.get(`/reviews/${productId}`);
+        return data;
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        return []; // Return empty array on failure to prevent blocking
+    }
 };
 
 export const createReview = async (productId: string, rating: number, comment: string) => {

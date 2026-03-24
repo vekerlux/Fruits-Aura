@@ -85,10 +85,22 @@ const settings = [
         category: 'general'
     },
     {
+        key: 'delivery_fee',
+        value: 1500,
+        description: 'Default flat rate delivery fee',
+        category: 'payment'
+    },
+    {
         key: 'free_shipping_threshold',
         value: 10000,
         description: 'Minimum order amount for free shipping',
         category: 'payment'
+    },
+    {
+        key: 'delivery_time_slots',
+        value: 'Morning (9am - 12pm), Afternoon (12pm - 3pm), Evening (3pm - 6pm)',
+        description: 'Available delivery time slots (comma separated)',
+        category: 'general'
     }
 ];
 

@@ -19,6 +19,13 @@ const userSchema = mongoose.Schema(
         referralCode: { type: String, unique: true },
         referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
         loyaltyPoints: { type: Number, default: 0 },
+        plan: { 
+            type: String, 
+            default: 'Auraset Subscriber',
+            enum: ['Auraset Subscriber', 'Auraset Explorer', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Staff']
+        },
+        hasEmailDiscount: { type: Boolean, default: false },
+        isSpecialDistributor: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

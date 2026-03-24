@@ -1,195 +1,181 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, type Variants, AnimatePresence } from 'framer-motion';
+import { ShoppingBasket, Search, SlidersHorizontal, Heart, Plus, LayoutGrid, Leaf, Zap, ShieldCheck, Sparkles } from 'lucide-react';
 import { getProducts } from '../api/products';
 import type { Product } from '../api/products';
 import { useCart } from '../context/CartContext';
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.06 } },
+    visible: { 
+        transition: { 
+            staggerChildren: 0.05,
+            delayChildren: 0.1
+        } 
+    },
 };
-const itemVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.97 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: 'easeOut' as const } },
+
+const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    visible: { 
+        opacity: 1, 
+        y: 0, 
+        scale: 1, 
+        transition: { 
+            duration: 0.5, 
+            ease: [0.22, 1, 0.36, 1] 
+        } 
+    },
 };
 
 const categories = [
-    { label: 'All', icon: 'apps', value: undefined },
-    { label: 'Detox', icon: 'eco', value: 'detox' },
-    { label: 'Energy', icon: 'bolt', value: 'energy' },
-    { label: 'Immunity', icon: 'health_and_safety', value: 'immunity' },
-    { label: 'Glow', icon: 'auto_awesome', value: 'glow' },
+    { label: 'All', icon: LayoutGrid, value: undefined },
+    { label: 'Detox', icon: Leaf, value: 'detox' },
+    { label: 'Energy', icon: Zap, value: 'energy' },
+    { label: 'Immunity', icon: ShieldCheck, value: 'immunity' },
+    { label: 'Glow', icon: Sparkles, value: 'glow' },
 ];
 
 const Menu = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeCategory, setActiveCategory] = useState('All');
-    const [search, setSearch] = useState('');
-    const [searchFocused, setSearchFocused] = useState(false);
     const { addToCart } = useCart();
 
     useEffect(() => {
-        const categoryValue = categories.find(c => c.label === activeCategory)?.value;
-        const delayDebounceFn = setTimeout(() => {
-            setLoading(true);
-            getProducts(search, categoryValue)
-                .then(setProducts)
-                .catch(console.error)
-                .finally(() => setLoading(false));
-        }, 300);
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [activeCategory, search]);
+        setLoading(true);
+        getProducts()
+            .then(setProducts)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
 
     const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        addToCart({ id: product.id, name: product.name, price: product.price, quantity: 1, image: product.image, isBundle: false, subtext: product.subtext });
+        addToCart({ 
+            id: product.id, 
+            name: product.name, 
+            price: product.price, 
+            quantity: 1, 
+            image: product.image, 
+            isBundle: false, 
+            subtext: product.subtext,
+            cssFilter: product.cssFilter
+        });
     };
 
-    const filteredProducts = products;
-
     return (
-        <div className="bg-background-dark text-white min-h-screen pb-32">
+        <div className="bg-background-dark text-white min-h-screen pb-32 relative">
             <motion.header
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                className="px-6 pt-14 pb-5 sticky top-0 z-50 bg-background-dark/90 backdrop-blur-xl border-b border-white/[0.04]"
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="px-6 pt-14 pb-5 sticky top-0 z-50 bg-background-dark/80 backdrop-blur-xl border-b border-white/[0.05]"
             >
-                <div className="flex items-center justify-between mb-5">
-                    <h1 className="text-2xl font-black tracking-tight">Our <span className="text-primary">Menu</span></h1>
-                    <motion.div whileTap={{ scale: 0.9 }}>
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-2xl font-black tracking-tight leading-none">
+                        Our <span className="text-primary glow-text-orange">Menu</span>
+                    </h1>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Link to="/cart">
-                            <button className="w-10 h-10 rounded-full glass flex items-center justify-center cursor-pointer">
-                                <span className="material-symbols-outlined text-white">shopping_basket</span>
+                            <button className="w-11 h-11 rounded-2xl glass flex items-center justify-center cursor-pointer border border-white/10 shadow-lg">
+                                <ShoppingBasket className="w-5 h-5 text-white" />
                             </button>
                         </Link>
                     </motion.div>
                 </div>
-
-                {/* Animated search bar */}
-                <motion.div
-                    animate={{ boxShadow: searchFocused ? '0 0 0 2px rgba(255,107,0,0.35)' : '0 0 0 0px transparent' }}
-                    transition={{ duration: 0.25 }}
-                    className="relative rounded-2xl overflow-hidden"
-                >
-                    <span className={`material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${searchFocused ? 'text-primary' : 'text-slate-500'}`}>search</span>
-                    <input
-                        className="w-full bg-card-dark border border-white/5 rounded-2xl py-4 pl-12 pr-12 text-sm placeholder:text-slate-600 outline-none text-white"
-                        placeholder="Find your aura mix..."
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                    />
-                    <motion.button
-                        whileTap={{ scale: 0.9 }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-accent-dark w-9 h-9 rounded-xl flex items-center justify-center border border-white/5 cursor-pointer"
-                    >
-                        <span className="material-symbols-outlined text-white text-lg">tune</span>
-                    </motion.button>
-                </motion.div>
-
-                {/* Category pills */}
-                <div className="flex gap-2 mt-4 overflow-x-auto hide-scrollbar">
-                    {categories.map((cat) => (
-                        <motion.button
-                            key={cat.label}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => setActiveCategory(cat.label)}
-                            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer ${activeCategory === cat.label
-                                ? 'bg-primary text-white border-primary shadow-md shadow-primary/30'
-                                : 'glass text-slate-400 border-white/8 hover:border-primary/30 hover:text-primary'
-                                }`}
-                        >
-                            <span className="material-symbols-outlined text-sm">{cat.icon}</span>
-                            {cat.label}
-                        </motion.button>
-                    ))}
-                </div>
             </motion.header>
 
-            <main className="px-5 pt-5">
-                <div className="flex items-center justify-between mb-4 px-1">
-                    <h3 className="text-base font-black">Best Sellers</h3>
-                    <Link to="/featured" className="text-primary text-xs font-black uppercase tracking-widest">View All</Link>
+            <main className="px-6 pt-6">
+                <div className="flex items-center justify-between mb-6 px-1">
+                    <h3 className="text-xl font-black tracking-tight">Today's <span className="text-primary/80">Freshness</span></h3>
                 </div>
 
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="space-y-3"
+                    className="space-y-4"
                 >
-                    {loading ? (
-                        <>
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="h-[130px] shimmer rounded-[2.5rem]" />
-                            ))}
-                        </>
-                    ) : filteredProducts.length === 0 ? (
-                        <div className="text-center py-16 text-slate-500">
-                            <span className="material-symbols-outlined text-4xl block mb-2">search_off</span>
-                            <p className="text-sm font-bold">No products found</p>
-                        </div>
-                    ) : (
-                        filteredProducts.map((product) => (
-                            <motion.div
-                                key={product.id}
-                                variants={itemVariants}
-                                whileHover={{ y: -3, boxShadow: '0 8px 30px rgba(255,107,0,0.1)' }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <Link
-                                    to={`/product/${product.id}`}
-                                    className="bg-card-dark p-4 rounded-[2.5rem] flex items-center gap-4 border border-white/5 product-card-hover block"
-                                >
-                                    <motion.div
-                                        className="w-28 h-28 rounded-3xl bg-accent-dark flex items-center justify-center p-2 shrink-0 overflow-hidden"
-                                        whileHover={{ scale: 1.05 }}
-                                        transition={{ duration: 0.3 }}
-                                    >
-                                        <img
-                                            alt={product.name}
-                                            loading="lazy"
-                                            className="w-full h-full object-contain"
-                                            src={product.image}
-                                            style={{ filter: product.cssFilter }}
-                                        />
-                                    </motion.div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <h4 className="font-black text-base text-white leading-tight">{product.name}</h4>
-                                                <p className="text-xs text-slate-500 mt-0.5">{product.subtext}</p>
-                                            </div>
-                                            <motion.button
-                                                whileTap={{ scale: 0.8 }}
-                                                className={`cursor-pointer ${product.isPopular ? 'text-primary' : 'text-slate-700'}`}
-                                            >
-                                                <span className={`material-symbols-outlined text-xl ${product.isPopular ? 'filled' : ''}`}>favorite</span>
-                                            </motion.button>
-                                        </div>
-                                        <div className="flex items-center justify-between mt-3">
-                                            <span className="text-xl font-black text-white">₦{product.price.toLocaleString()}</span>
-                                            <motion.button
-                                                whileTap={{ scale: 0.85 }}
-                                                onClick={(e) => handleQuickAdd(product, e)}
-                                                className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/35 cursor-pointer"
-                                                style={{ boxShadow: '0 4px 20px rgba(255,107,0,0.35)' }}
-                                            >
-                                                <span className="material-symbols-outlined font-bold">add</span>
-                                            </motion.button>
-                                        </div>
-                                    </div>
-                                </Link>
+                    <AnimatePresence mode="popLayout">
+                        {loading ? (
+                            <motion.div key="loading" exit={{ opacity: 0 }} className="space-y-4">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="h-32 shimmer rounded-[2rem] opacity-20" />
+                                ))}
                             </motion.div>
-                        ))
-                    )}
+                        ) : products.length === 0 ? (
+                            <motion.div 
+                                key="empty"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-center py-20 bg-card-dark/30 rounded-[3rem] border border-dashed border-white/5"
+                            >
+                                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                                    <ShoppingBasket className="w-8 h-8 text-slate-600" />
+                                </div>
+                                <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">No aura discovered</p>
+                                <p className="text-[10px] text-slate-600 mt-2">Check back soon for fresh mixes</p>
+                            </motion.div>
+                        ) : (
+                            products.map((product) => (
+                                <motion.div
+                                    key={product.id}
+                                    variants={itemVariants}
+                                    layout
+                                    whileHover={{ y: -5 }}
+                                    className="group"
+                                >
+                                    <Link
+                                        to={`/product/${product.id}`}
+                                        className="bg-card-dark/40 backdrop-blur-md p-5 rounded-[2.5rem] flex items-center gap-5 border border-white/5 hover:border-primary/20 transition-colors block relative overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        
+                                        <motion.div
+                                            className="w-32 h-32 rounded-[2rem] bg-accent-dark/50 flex items-center justify-center p-3 shrink-0 overflow-hidden border border-white/5"
+                                            whileHover={{ scale: 1.05, rotate: 2 }}
+                                        >
+                                            <img
+                                                alt={product.name}
+                                                loading="lazy"
+                                                className="w-full h-full object-contain drop-shadow-xl"
+                                                src={product.image}
+                                                style={{ filter: product.cssFilter }}
+                                            />
+                                        </motion.div>
+                                        <div className="flex-1 min-w-0 py-1">
+                                            <div className="flex justify-between items-start">
+                                                <div className="min-w-0">
+                                                    <h4 className="font-black text-lg text-white leading-tight truncate">{product.name}</h4>
+                                                    <p className="text-[10px] text-slate-500 mt-1 font-bold uppercase tracking-widest leading-none">{product.subtext}</p>
+                                                </div>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.15 }}
+                                                    whileTap={{ scale: 0.85 }}
+                                                    className={`cursor-pointer transition-colors p-1 ${product.isPopular ? 'text-primary drop-shadow-[0_0_8px_rgba(242,127,13,0.4)]' : 'text-slate-800 hover:text-slate-600'}`}
+                                                >
+                                                    <Heart className={`w-5 h-5 ${product.isPopular ? 'fill-current' : ''}`} />
+                                                </motion.button>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-5">
+                                                <span className="text-2xl font-black text-white tracking-tight">₦{product.price.toLocaleString()}</span>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1, backgroundColor: '#f27f0d' }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={(e) => handleQuickAdd(product, e)}
+                                                    className="w-11 h-11 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary/20 cursor-pointer border border-primary/20"
+                                                >
+                                                    <Plus className="w-6 h-6" />
+                                                </motion.button>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            ))
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             </main>
         </div>

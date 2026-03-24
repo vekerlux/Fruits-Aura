@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://fruits-aura.onrender.com/api',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -31,11 +31,10 @@ api.interceptors.response.use(
             const isLoginRequest = error.config?.url?.includes('/auth/login');
 
             if (!isLoginRequest) {
-                // Token expired or invalid
-                localStorage.removeItem('fruitsAuraToken');
-                localStorage.removeItem('fruitsAuraUser');
-
-                // Only redirect if we are NOT already on the login page to avoid infinite loops
+                // Nuclear Session Clear
+                localStorage.clear(); // Clear all, including tokens and user data
+                
+                // Only redirect if we are NOT already on the login page
                 if (window.location.pathname !== '/login') {
                     window.location.href = '/login';
                 }

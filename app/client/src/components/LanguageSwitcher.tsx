@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 
 const LanguageSwitcher = () => {
     const { i18n } = useTranslation();
@@ -27,9 +28,7 @@ const LanguageSwitcher = () => {
             >
                 <span className="text-sm">{currentLanguage.flag}</span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-white">{currentLanguage.code}</span>
-                <span className={`material-symbols-outlined text-sm text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-                    expand_more
-                </span>
+                <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
