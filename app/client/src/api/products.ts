@@ -17,6 +17,7 @@ export interface Product {
         hydration: string;
     };
     isPopular?: boolean;
+    isVibrant?: boolean;
 }
 
 export const mockProducts: Product[] = [

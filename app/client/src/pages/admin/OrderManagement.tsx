@@ -8,7 +8,8 @@ import {
 import api from '../../api/client';
 
 interface Order {
-    id: string;
+    _id: string;
+    id?: string;
     user: { name: string; email: string };
     totalPrice: number;
     isPaid: boolean;

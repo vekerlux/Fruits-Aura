@@ -36,7 +36,8 @@ import {
 } from 'lucide-react';
 
 interface Order {
-    id: string;
+    _id: string;
+    id?: string;
     totalPrice: number;
     isPaid: boolean;
     status: string;
@@ -333,7 +334,7 @@ const Dashboard = () => {
                                 ) : (
                                     orders.slice(0, 8).map((order, i) => (
                                         <motion.div
-                                            key={order.id}
+                                            key={order._id}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.05 }}
@@ -341,7 +342,7 @@ const Dashboard = () => {
                                         >
                                             <div className="flex items-center gap-5">
                                                 <div className="w-12 h-12 rounded-2xl bg-white/[0.03] flex items-center justify-center font-black text-[10px] text-primary border border-white/[0.05] shadow-lg group-hover:border-primary/30 group-hover:bg-primary/5 transition-all">
-                                                    #{order.id.slice(-4).toUpperCase()}
+                                                    #{order._id.slice(-4).toUpperCase()}
                                                 </div>
                                                 <div>
                                                     <h4 className="font-black text-xs text-white italic uppercase tracking-tight flex items-center gap-2">
